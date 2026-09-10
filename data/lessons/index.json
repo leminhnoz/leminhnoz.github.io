@@ -1,0 +1,27 @@
+{
+  "readme": "Mỗi bài học một file JSON. id trong file phải trùng id trong DATA.posts. Thêm tên file vào files để override nội dung inline.",
+  "files": [
+    "cpp-operators.json",
+    "cpp-casting-ascii.json",
+    "cpp-basic-io.json",
+    "cpp-file-io.json",
+    "contest-strategy.json",
+    "debug-macros.json",
+    "two-pointers.json",
+    "binary-search.json",
+    "number-theory.json",
+    "coordinate-compression.json",
+    "prefix-difference.json",
+    "frequency-map-set.json",
+    "stack-queue.json",
+    "segment-tree.json",
+    "fenwick-tree.json",
+    "dsu.json",
+    "dp-classics.json",
+    "dp-dag.json",
+    "graph-traversal.json",
+    "shortest-path.json",
+    "tree-algorithms.json",
+    "graph-representation.json"
+  ]
+}

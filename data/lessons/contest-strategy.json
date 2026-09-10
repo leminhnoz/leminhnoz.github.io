@@ -1,0 +1,90 @@
+{
+  "id": "contest-strategy",
+  "author": "Le Minh",
+  "title": "Contest Strategy & 15-minute Checklist",
+  "description": "Đọc đề, chia thời gian, chọn bài theo điểm kỳ vọng và kiểm soát penalty.",
+  "category": "Contest Strategy",
+  "tags": ["contest", "strategy", "checklist"],
+  "level": "Module 0",
+  "sections": [
+    {
+      "id": "first-15",
+      "title": "Quy trình 15 phút đầu",
+      "summary": "Đọc bản đồ contest trước khi code.",
+      "content": [
+        "Đọc hết đề, ghi n, constraints, và dạng bài dự đoán (greedy, BS, graph...).",
+        "Xếp bài theo độ chắc chắn nhân với điểm, không chỉ theo thứ tự A-B-C.",
+        "Bài implementation ngắn với sample rõ thường nên làm trước để lấy AC sớm, giảm áp lực.",
+        "Nếu sau 10-15 phút vẫn không có hướng, đổi bài. Penalty tăng theo thời gian đứng im."
+      ],
+      "examples": [
+        "Read -> Plan -> Code -> Test sample -> Test biên -> Submit"
+      ]
+    },
+    {
+      "id": "during",
+      "title": "Trong lúc code",
+      "summary": "Ước lượng complexity trước, viết brute nếu n nhỏ, chừa debug.",
+      "content": [
+        "Đối chiếu O(f(n)) với time limit. n = 2e5 thì O(N log N) ổn, O(N^2) chết.",
+        "Viết comment invariant: vòng lặp này đang duy trì điều gì.",
+        "Test: n = 1, giá trị min/max, trùng, chuỗi rỗng, đồ thị không cạnh.",
+        "Wrong answer trên sample: đừng đoán thêm test ảo; in biến trung gian trên sample trước."
+      ],
+      "examples": [
+        "1e8 phép/s là mốc an toàn cho 1 giây",
+        "long long mọi tổng và tích lớn"
+      ]
+    },
+    {
+      "id": "mindset",
+      "title": "Quản lý tâm lý và penalty",
+      "summary": "Submit khi đã có lý do tin tưởng, không spam.",
+      "content": [
+        "Mỗi WA tốn thời gian và điểm. Hãy có checklist overflow, 0-index, off-by-one trước F5.",
+        "Nếu đứng hạng vì một bài kẹt, đọc lại constraints: thường là tín hiệu thuật toán khác.",
+        "Sau contest, upsolve ngay bài suýt ra. Đó là phần học nhanh nhất."
+      ],
+      "examples": [
+        "Checklist: overflow, OOB, TLE, modulo âm, quên '\\n'"
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "Contest 60 phút, 4 bài",
+      "steps": [
+        "0-8 phút: đọc A B C D, ghi constraints. A chắc, B implementation, C binary search, D graph.",
+        "8-25 phút: code A, test biên, AC.",
+        "25-45 phút: C vì đã có hướng check(mid), AC.",
+        "45-55 phút: B kẹt sample 2, in debug, sửa off-by-one.",
+        "55-60 phút: đọc D, viết ý tưởng upsolve, không spam submit."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "Template đầu file contest",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n#ifdef LOCAL\n#define debug(x) cerr << #x << \" = \" << (x) << '\\n'\n#else\n#define debug(x)\n#endif\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // 1. Constraints?\n    // 2. Algorithm + complexity?\n    // 3. Edge cases: n=1, 0, max, duplicate\n    // 4. Sample + handmade tests\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-263a",
+      "name": "263A - Beautiful Matrix",
+      "rating": 800,
+      "tags": ["implementation"],
+      "url": "post.html?editorial=editorial-cf-263a",
+      "originalUrl": "https://codeforces.com/problemset/problem/263/A"
+    },
+    {
+      "id": "editorial-cf-268a",
+      "name": "268A - Games",
+      "rating": 800,
+      "tags": ["brute force"],
+      "url": "post.html?editorial=editorial-cf-268a",
+      "originalUrl": "https://codeforces.com/problemset/problem/268/A"
+    }
+  ]
+}

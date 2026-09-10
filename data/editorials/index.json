@@ -1,0 +1,12 @@
+{
+  "readme": "Mỗi Editorial là một file JSON riêng. Thêm tên file vào mảng files để bài xuất hiện.",
+  "files": [
+    "cf-4a-watermelon.json", "cf-71a-way-too-long-words.json", "cf-231a-team.json", "cf-158a-next-round.json", "cf-282a-bit-plus-plus.json", "cf-1a-theatre-square.json",
+    "cf-263a-beautiful-matrix.json", "cf-236a-boy-or-girl.json", "cf-268a-games.json", "cf-550b-preparing-olympiad.json",
+    "cf-279b-books.json", "cf-381a-sereja-and-dima.json", "cf-616d-longest-k-good-segment.json", "cf-474b-worms.json", "cf-706b-interesting-drink.json", "cf-1201c-maximum-median.json", "cf-1480c-searching-local-minimum.json", "cf-26a-almost-prime.json", "cf-230b-t-primes.json", "cf-776b-sherlock-and-his-girlfriend.json",
+    "cf-363b-fence.json", "cf-433b-kuriyama-mirais-stones.json", "cf-816b-karen-and-coffee.json", "cf-1398c-good-subarrays.json", "cf-4c-registration-system.json", "cf-43a-football.json", "cf-1490c-sum-of-cubes.json", "cf-26b-regular-bracket-sequence.json", "cf-5c-longest-regular-bracket-sequence.json",
+    "cf-339d-xenia-bit-operations.json", "cf-380c-sereja-and-brackets.json", "cf-474f-ant-colony.json", "cf-52c-circular-rmq.json", "cf-459d-pashmak-and-parmidas-problem.json", "cf-61e-enemy-is-weak.json", "cf-1042d-petya-and-array.json", "cf-1156d-0-1-tree.json", "cf-1095f-make-it-connected.json", "cf-1242b-0-1-tree.json",
+    "cf-455a-boredom.json", "cf-474d-flowers.json", "cf-698a-vacations.json", "cf-189a-cut-ribbon.json", "cf-543a-writing-code.json",
+    "cf-520b-two-buttons.json", "cf-977e-cyclic-components.json", "cf-580c-kefa-and-park.json", "cf-1063b-labyrinth.json", "cf-20c-dijkstra.json", "cf-601a-the-two-routes.json", "cf-115a-party.json", "cf-1187e-tree-painting.json", "cf-1328e-tree-queries.json"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "id": "graph-representation",
+  "author": "Le Minh",
+  "title": "Graph Representations",
+  "description": "Adjacency list, edge list và khi nào dùng ma trận kề.",
+  "category": "Graph Representation",
+  "tags": ["graphs", "adjacency list"],
+  "level": "Module 5",
+  "sections": [
+    {
+      "id": "list",
+      "title": "Adjacency List",
+      "summary": "graph[u] chứa danh sách hàng xóm; tiết kiệm bộ nhớ khi đồ thị thưa.",
+      "content": [
+        "Đồ thị vô hướng: thêm cả u->v và v->u. Có hướng: chỉ một chiều.",
+        "Có trọng số: lưu pair {v, w} hoặc struct Edge.",
+        "Đỉnh thường 1-based: vector size n+1, bỏ index 0.",
+        "Đa cạnh và self-loop: list vẫn lưu được; thuật toán phải quyết định có bỏ không."
+      ],
+      "examples": [
+        "Cạnh 1-2, 1-3 => graph[1] = [2, 3]"
+      ]
+    },
+    {
+      "id": "other",
+      "title": "Edge list và ma trận",
+      "summary": "Kruskal thích edge list; Floyd và n nhỏ thích ma trận.",
+      "content": [
+        "Edge list: vector các {u, v, w}, sort theo w cho MST.",
+        "Ma trận adj[u][v] = w tốn O(N^2) bộ nhớ. n <= 400 thì ổn (Floyd).",
+        "Chuyển list -> ma trận khi cần biết có cạnh nhanh O(1)."
+      ],
+      "examples": [
+        "vector<tuple<int,int,int>> edges; edges.push_back({u, v, w});"
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "Xây list từ 3 cạnh vô hướng",
+      "steps": [
+        "Đọc 1 2: graph[1].push(2), graph[2].push(1).",
+        "Đọc 1 3: graph[1].push(3), graph[3].push(1).",
+        "graph[1] = [2, 3], graph[2] = [1], graph[3] = [1]."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "Adjacency list có trọng số",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n, m;\n    cin >> n >> m;\n    vector<vector<pair<int, int>>> graph(n + 1);\n    for (int i = 0; i < m; ++i) {\n        int u, v, weight;\n        cin >> u >> v >> weight;\n        graph[u].push_back({v, weight});\n        graph[v].push_back({u, weight});\n    }\n    for (int u = 1; u <= n; ++u) {\n        cout << u << \": \";\n        for (auto [v, w] : graph[u]) cout << '(' << v << ',' << w << \") \";\n        cout << '\\n';\n    }\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-977e",
+      "name": "977E - Cyclic Components",
+      "rating": 1300,
+      "tags": ["dfs", "graphs"],
+      "url": "post.html?editorial=editorial-cf-977e",
+      "originalUrl": "https://codeforces.com/problemset/problem/977/E"
+    }
+  ]
+}

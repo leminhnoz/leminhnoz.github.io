@@ -1,0 +1,112 @@
+{
+  "id": "number-theory",
+  "author": "Le Minh",
+  "title": "Modulo Arithmetic, Binary Exponentiation & Prime Factorization",
+  "description": "Số học modulo, lũy thừa nhanh, phân tích thừa số nguyên tố và sàng nguyên tố cho contest.",
+  "category": "Number Theory",
+  "tags": ["modulo arithmetic", "binary exponentiation", "prime factorization"],
+  "level": "Module 1",
+  "sections": [
+    {
+      "id": "modulo",
+      "title": "Số học modulo",
+      "summary": "Modulo giữ kết quả trong [0, MOD-1] và tuân theo đồng dư.",
+      "content": [
+        "(a + b) % MOD = ((a % MOD) + (b % MOD)) % MOD. Khi trừ, viết ((a % MOD) - (b % MOD) + MOD) % MOD để tránh số âm.",
+        "Nhân: (a % MOD) * (b % MOD) % MOD, nhưng phải nhân bằng long long nếu MOD ~ 1e9.",
+        "Chia modulo không phải / thông thường. Khi MOD nguyên tố, a / b ≡ a * b^(MOD-2) (mod MOD) theo Fermat.",
+        "MOD thường gặp: 1e9+7 và 998244353, đều là số nguyên tố."
+      ],
+      "examples": [
+        "(3 - 5) % 7 trong C++ ra -2, cần +7 thành 5",
+        "1LL * a * b % MOD"
+      ]
+    },
+    {
+      "id": "binpow",
+      "title": "Binary Exponentiation",
+      "summary": "Tính base^exp % MOD trong O(log exp) bằng cách bình phương cơ số.",
+      "content": [
+        "Nếu bit cuối của exp là 1 thì nhân result với base hiện tại.",
+        "Mỗi vòng: base = base * base, exp >>= 1. Số vòng bằng số bit của exp.",
+        "Có thể tính lũy thừa ma trận hoặc nhân modulo bằng cùng khuôn này."
+      ],
+      "examples": [
+        "2^13: 13 = 1101b, nhân các lũy thừa 2, 8"
+      ]
+    },
+    {
+      "id": "factor-sieve",
+      "title": "Phân tích thừa số và Sieve",
+      "summary": "Bóc ước từ 2 đến sqrt(n); sàng Eratosthenes cho nhiều truy vấn.",
+      "content": [
+        "Với một số n: thử chia từ 2 đến sqrt(n). Nếu còn n > 1 thì phần còn lại là một nguyên tố.",
+        "T-prime là bình phương của một số nguyên tố: n = p^2.",
+        "Sieve đánh dấu bội. Có thể lưu spf[i] = ước nguyên tố nhỏ nhất để factor O(log n) sau khi sàng O(N log log N)."
+      ],
+      "examples": [
+        "12 = 2^2 * 3",
+        "Almost prime: đúng hai ước nguyên tố phân biệt"
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "Phân tích 12",
+      "steps": [
+        "n = 12, i = 2 chia được: 12/2 = 6, ghi 2.",
+        "6/2 = 3, ghi 2 lần nữa.",
+        "i = 3, 3 chia 3 được 1, ghi 3.",
+        "Kết quả 12 = 2^2 * 3."
+      ]
+    },
+    {
+      "title": "pow(2, 13) modulo 1e9+7",
+      "steps": [
+        "result = 1, base = 2, exp = 13 = 1101b.",
+        "Bit 0 bật: result = 2, base = 4, exp = 6.",
+        "Bit 0 tắt: base = 16, exp = 3.",
+        "Bit 0 bật: result = 32, base = 256, exp = 1.",
+        "Bit 0 bật: result = 8192. Đúng 2^13 = 8192."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "Binary Exponentiation",
+      "language": "cpp",
+      "code": "#include <iostream>\nusing namespace std;\n\nlong long modPow(long long base, long long exp, long long mod) {\n    long long result = 1 % mod;\n    base %= mod;\n    while (exp > 0) {\n        if (exp & 1) result = result * base % mod;\n        base = base * base % mod;\n        exp >>= 1;\n    }\n    return result;\n}\n\nint main() {\n    cout << modPow(2, 13, 1000000007) << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Prime factorization và Sieve",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nvector<pair<long long, int>> factorize(long long n) {\n    vector<pair<long long, int>> factors;\n    for (long long i = 2; i * i <= n; ++i) {\n        if (n % i == 0) {\n            int cnt = 0;\n            while (n % i == 0) {\n                n /= i;\n                ++cnt;\n            }\n            factors.push_back({i, cnt});\n        }\n    }\n    if (n > 1) factors.push_back({n, 1});\n    return factors;\n}\n\nvector<int> sieve(int n) {\n    vector<int> isPrime(n + 1, 1);\n    isPrime[0] = isPrime[1] = 0;\n    for (int i = 2; i * i <= n; ++i) {\n        if (!isPrime[i]) continue;\n        for (int j = i * i; j <= n; j += i) isPrime[j] = 0;\n    }\n    return isPrime;\n}\n\nint main() {\n    auto f = factorize(12);\n    for (auto [p, e] : f) cout << p << '^' << e << ' ';\n    cout << '\\n';\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-26a",
+      "name": "26A - Almost Prime",
+      "rating": 1200,
+      "tags": ["number theory", "sieve"],
+      "url": "post.html?editorial=editorial-cf-26a",
+      "originalUrl": "https://codeforces.com/problemset/problem/26/A"
+    },
+    {
+      "id": "editorial-cf-230b",
+      "name": "230B - T-primes",
+      "rating": 1300,
+      "tags": ["number theory", "binary search"],
+      "url": "post.html?editorial=editorial-cf-230b",
+      "originalUrl": "https://codeforces.com/problemset/problem/230/B"
+    },
+    {
+      "id": "editorial-cf-776b",
+      "name": "776B - Sherlock and his girlfriend",
+      "rating": 1200,
+      "tags": ["number theory", "sieve"],
+      "url": "post.html?editorial=editorial-cf-776b",
+      "originalUrl": "https://codeforces.com/problemset/problem/776/B"
+    }
+  ]
+}

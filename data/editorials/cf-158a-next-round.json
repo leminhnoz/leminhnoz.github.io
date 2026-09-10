@@ -1,0 +1,18 @@
+{
+    "id": "editorial-cf-158a",
+    "problemCode": "158A",
+    "title": "Next Round",
+    "rating": 800,
+    "category": "Implementation",
+    "tags": ["implementation"],
+    "source": "Codeforces",
+    "link": "https://codeforces.com/problemset/problem/158/A",
+    "statement": "Cho dãy n điểm số giảm dần. Đếm số thí sinh có điểm lớn hơn 0 và lớn hơn hoặc bằng điểm của thí sinh xếp thứ k.",
+    "sampleInput": "8 5\n10 9 8 7 7 7 5 5",
+    "sampleOutput": "6",
+    "hint": "Lấy giá trị mốc score = a[k-1]. Đếm số phần tử a[i] > 0 và a[i] >= score.",
+    "analysis": "Lưu mảng a gồm n phần tử. Xác định ngưỡng score = a[k-1]. Duyệt từ đầu mảng đến cuối, nếu a[i] >= score và a[i] > 0 thì cộng biến đếm.",
+    "complexity": "O(n) Time, O(n) Space",
+    "dryRun": "n=8, k=5. Dãy: [10, 9, 8, 7, 7, 7, 5, 5].\nThí sinh thứ k (k=5) có điểm là a[4] = 7.\nCác phần tử >= 7 và > 0 là: 10, 9, 8, 7, 7, 7 (6 người).",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int n, k;\n    if (cin >> n >> k) {\n        vector<int> a(n);\n        for (int i = 0; i < n; ++i) cin >> a[i];\n        int target = a[k - 1];\n        int cnt = 0;\n        for (int i = 0; i < n; ++i) {\n            if (a[i] >= target && a[i] > 0) cnt++;\n        }\n        cout << cnt << \"\\n\";\n    }\n    return 0;\n}"
+}

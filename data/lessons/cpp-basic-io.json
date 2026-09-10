@@ -1,0 +1,85 @@
+{
+  "id": "cpp-basic-io",
+"author": [
+  "Le Minh - THPT Luong Dac Bang",
+  "Vo Van Nam - THPT chuyen Khoa Hoc Tu Nhien - DHQG Ha Noi"
+],
+  "title": "Basic I/O & Fast I/O",
+  "description": "Đọc dữ liệu bằng cin/cout, nhiều test, và tối ưu stream trong contest.",
+  "category": "Implementation",
+  "tags": ["c++", "fast io", "cin", "cout"],
+  "level": "Module -1",
+  "sections": [
+    {
+      "id": "cin-cout",
+      "title": "cin và cout",
+      "summary": "cin đọc theo token (bỏ qua khoảng trắng); cout in kết quả.",
+      "content": [
+        "cin >> x đọc số hoặc từ, dừng ở khoảng trắng. getline đọc cả dòng kể cả dấu cách.",
+        "Sau cin >> n, nếu cần getline, hãy cin.ignore() để bỏ '\\n' còn lại.",
+        "In số thực: cout << fixed << setprecision(9) << value;",
+        "Nhiều test: đọc t rồi while (t--) giải từng test. Một số bài đọc đến EOF: while (cin >> n)."
+      ],
+      "examples": [
+        "int n; cin >> n;",
+        "while (t--) { ... }"
+      ]
+    },
+    {
+      "id": "fast-io",
+      "title": "Fast I/O",
+      "summary": "Tắt đồng bộ iostream với stdio và untie cin khỏi cout.",
+      "content": [
+        "ios_base::sync_with_stdio(false) tách C++ stream khỏi printf/scanf. Đừng trộn cin với scanf sau đó.",
+        "cin.tie(nullptr) để cin không flush cout trước mỗi lần đọc. Quan trọng khi n = 1e6.",
+        "endl flush buffer; trong contest dùng '\\n'.",
+        "Fast I/O không thay thuật toán chậm. O(N^2) vẫn TLE dù I/O nhanh."
+      ],
+      "examples": [
+        "ios_base::sync_with_stdio(false);",
+        "cin.tie(nullptr);"
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "Đọc n = 3 rồi cộng 2 4 6",
+      "steps": [
+        "Bật fast I/O.",
+        "Đọc n = 3.",
+        "Đọc 2, sum = 2; đọc 4, sum = 6; đọc 6, sum = 12.",
+        "In 12 và xuống dòng."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "Fast I/O và cộng n số",
+      "language": "cpp",
+      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    long long sum = 0;\n    for (int i = 0; i < n; ++i) {\n        int x;\n        cin >> x;\n        sum += x;\n    }\n    cout << sum << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Nhiều test",
+      "language": "cpp",
+      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int tests;\n    cin >> tests;\n    while (tests--) {\n        int n;\n        cin >> n;\n        cout << n * 2 << '\\n';\n    }\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-158a",
+      "name": "158A - Next Round",
+      "rating": 800,
+      "tags": ["implementation"],
+      "url": "post.html?editorial=editorial-cf-158a",
+      "originalUrl": "https://codeforces.com/problemset/problem/158/A"
+    },
+    {
+      "id": "editorial-cf-1a",
+      "name": "1A - Theatre Square",
+      "rating": 1000,
+      "tags": ["math"],
+      "url": "post.html?editorial=editorial-cf-1a",
+      "originalUrl": "https://codeforces.com/problemset/problem/1/A"
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "id": "prefix-difference",
+  "author": "Le Minh",
+  "title": "Prefix Sum (1D/2D) & Difference Array",
+  "description": "Mảng cộng dồn trả lời tổng đoạn O(1); mảng hiệu biến cập nhật đoạn thành cập nhật điểm.",
+  "category": "Prefix Sum",
+  "tags": ["prefix sum", "difference array"],
+  "level": "Module 2",
+  "sections": [
+    {
+      "id": "prefix-1d",
+      "title": "Prefix Sum 1D",
+      "summary": "pref[i] = a[0] + ... + a[i-1]; tổng đoạn [l, r] = pref[r+1] - pref[l].",
+      "content": [
+        "Dùng long long vì tổng có thể vượt 32-bit.",
+        "pref size n+1 với pref[0] = 0 giúp công thức gọn, không lo l-1 âm.",
+        "Prefix cũng dùng cho đếm: pref[i] = số phần tử thỏa điều kiện trong prefix i.",
+        "Good subarrays thường kết hợp prefix với map: đếm số lần pref[r] - k đã xuất hiện."
+      ],
+      "examples": [
+        "a = [2, 3, 5], pref = [0, 2, 5, 10], sum[1..2] = 10 - 2 = 8"
+      ]
+    },
+    {
+      "id": "diff",
+      "title": "Difference Array",
+      "summary": "Cộng +x trên [l, r] thành diff[l] += x và diff[r+1] -= x, rồi prefix lại.",
+      "content": [
+        "Khi có Q cập nhật đoạn rồi mới hỏi mảng cuối, difference biến mỗi update thành O(1).",
+        "Sau mọi update, a[i] = a[i-1] + diff[i] (tùy cách đánh index).",
+        "Karen and Coffee: nhiều khoảng phủ, đếm điểm được phủ >= k lần rồi prefix lần nữa."
+      ],
+      "examples": [
+        "+3 trên [1, 3] => diff[1] += 3, diff[4] -= 3"
+      ]
+    },
+    {
+      "id": "prefix-2d",
+      "title": "Prefix Sum 2D",
+      "summary": "pref[i][j] = tổng hình chữ nhật (1,1)..(i,j); dùng inclusion-exclusion.",
+      "content": [
+        "pref[i][j] = a[i][j] + pref[i-1][j] + pref[i][j-1] - pref[i-1][j-1].",
+        "Tổng (r1,c1)-(r2,c2) = pref[r2][c2] - pref[r1-1][c2] - pref[r2][c1-1] + pref[r1-1][c1-1].",
+        "Index 1-based tránh r-1 = 0 đặc biệt."
+      ],
+      "examples": [
+        "sum của ô (2,2)-(3,3) lấy bốn góc prefix"
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "Tổng đoạn trên [2, 3, 5]",
+      "steps": [
+        "pref[0]=0, pref[1]=2, pref[2]=5, pref[3]=10.",
+        "sum index 0..0 = 2 - 0 = 2.",
+        "sum index 1..2 = 10 - 2 = 8."
+      ]
+    },
+    {
+      "title": "Difference: +2 trên [0,1] rồi +5 trên [1,2], n=3",
+      "steps": [
+        "diff = [0,0,0,0].",
+        "diff[0]+=2, diff[2]-=2 => [2,0,-2,0].",
+        "diff[1]+=5, diff[3]-=5 => [2,5,-2,-5].",
+        "Prefix: a = [2, 7, 5]."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "Prefix Sum 1D",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n, q;\n    cin >> n >> q;\n    vector<long long> a(n), prefix(n + 1);\n    for (int i = 0; i < n; ++i) {\n        cin >> a[i];\n        prefix[i + 1] = prefix[i] + a[i];\n    }\n    while (q--) {\n        int l, r;\n        cin >> l >> r;\n        --l; --r;\n        cout << prefix[r + 1] - prefix[l] << '\\n';\n    }\n    return 0;\n}"
+    },
+    {
+      "title": "Difference Array",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n, q;\n    cin >> n >> q;\n    vector<long long> diff(n + 1);\n    while (q--) {\n        int l, r, x;\n        cin >> l >> r >> x;\n        --l; --r;\n        diff[l] += x;\n        diff[r + 1] -= x;\n    }\n    long long cur = 0;\n    for (int i = 0; i < n; ++i) {\n        cur += diff[i];\n        cout << cur << \" \\n\"[i == n - 1];\n    }\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-363b",
+      "name": "363B - Fence",
+      "rating": 1100,
+      "tags": ["prefix sums", "implementation"],
+      "url": "post.html?editorial=editorial-cf-363b",
+      "originalUrl": "https://codeforces.com/problemset/problem/363/B"
+    },
+    {
+      "id": "editorial-cf-433b",
+      "name": "433B - Kuriyama Mirai's Stones",
+      "rating": 1100,
+      "tags": ["sortings", "prefix sums"],
+      "url": "post.html?editorial=editorial-cf-433b",
+      "originalUrl": "https://codeforces.com/problemset/problem/433/B"
+    },
+    {
+      "id": "editorial-cf-816b",
+      "name": "816B - Karen and Coffee",
+      "rating": 1600,
+      "tags": ["prefix sums", "difference array"],
+      "url": "post.html?editorial=editorial-cf-816b",
+      "originalUrl": "https://codeforces.com/problemset/problem/816/B"
+    },
+    {
+      "id": "editorial-cf-1398c",
+      "name": "1398C - Good Subarrays",
+      "rating": 1500,
+      "tags": ["prefix sums", "math"],
+      "url": "post.html?editorial=editorial-cf-1398c",
+      "originalUrl": "https://codeforces.com/problemset/problem/1398/C"
+    }
+  ]
+}

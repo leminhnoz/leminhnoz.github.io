@@ -1,0 +1,147 @@
+{
+  "id": "cpp-casting-ascii",
+  "author": "Le Minh",
+  "title": "C++ Type Casting, ASCII & Character Manipulation",
+  "description": "Nắm vững ép kiểu, phòng tránh Integer Overflow, hiểu ASCII và xử lý ký tự trong C++.",
+  "category": "Implementation",
+  "tags": ["type casting", "ascii", "char", "c++", "implementation"],
+  "level": "Module -1",
+  "sections": [
+    {
+      "id": "type-casting-overflow",
+      "title": "Ép kiểu và bẫy tràn số (Type Casting & Integer Overflow)",
+      "summary": "Phân biệt ép kiểu ngầm định, ép kiểu tường minh và lỗi tràn số khi nhân các biến int.",
+      "content": [
+        "Trong C++, dữ liệu có nhiều kiểu như int, long long, double và char. Ép kiểu là chuyển một giá trị từ kiểu này sang kiểu khác.",
+        "Ép kiểu ngầm định xảy ra khi C++ tự chuyển kiểu nhỏ hơn sang kiểu lớn hơn, ví dụ int + double cho ra double.",
+        "Ép kiểu tường minh có thể viết bằng (double)a hoặc static_cast<double>(a). Ví dụ (double)7 / 2 cho kết quả 3.5 thay vì 3.",
+        "Khi nhân hai biến int, phép nhân được tính bằng int trước rồi mới gán. Vì vậy long long ans = a * b vẫn có thể overflow.",
+        "Cách an toàn là dùng 1LL * a * b hoặc static_cast<long long>(a) * b."
+      ],
+      "examples": [
+        "double value = (double)7 / 2; // 3.5",
+        "long long answer = 1LL * a * b; // ép phép nhân sang long long"
+      ]
+    },
+    {
+      "id": "ascii-table",
+      "title": "Bảng mã ASCII và kiểu ký tự (char)",
+      "summary": "Kiểu char thực chất lưu một mã số đại diện cho ký tự.",
+      "content": [
+        "Các chữ số '0' đến '9' có mã ASCII từ 48 đến 57.",
+        "Các chữ cái in hoa 'A' đến 'Z' có mã ASCII từ 65 đến 90.",
+        "Các chữ cái in thường 'a' đến 'z' có mã ASCII từ 97 đến 122.",
+        "Chữ thường lớn hơn chữ hoa tương ứng đúng 32 đơn vị: 'a' - 'A' = 32."
+      ],
+      "examples": [
+        "int code = static_cast<int>('g'); // 103",
+        "char upper = 'g' - 'a' + 'A'; // 'G'"
+      ]
+    },
+    {
+      "id": "character-conversion",
+      "title": "Các phép biến đổi ký tự thường dùng",
+      "summary": "Đổi char thành int, int thành char và lấy vị trí chữ cái.",
+      "content": [
+        "Đổi ký tự số sang số nguyên: char c = '7'; int value = c - '0';",
+        "Đổi số nguyên sang ký tự số: int x = 7; char c = x + '0';",
+        "Đổi chữ thường sang chữ hoa: char upper = lower - 'a' + 'A';",
+        "Lấy vị trí chữ cái 0-indexed: char c = 'd'; int position = c - 'a';, kết quả là 3."
+      ],
+      "examples": [
+        "'8' - '0' = 8",
+        "'d' - 'a' = 3"
+      ]
+    },
+    {
+      "id": "cctype-functions",
+      "title": "Các hàm xử lý ký tự trong <cctype>",
+      "summary": "Dùng thư viện chuẩn để kiểm tra và chuyển đổi ký tự an toàn hơn.",
+      "content": [
+        "isdigit(c) kiểm tra c có phải ký tự số hay không.",
+        "isalpha(c) kiểm tra c có phải chữ cái hay không.",
+        "isalnum(c) kiểm tra c có phải chữ cái hoặc chữ số hay không.",
+        "tolower(c) và toupper(c) chuyển ký tự sang chữ thường hoặc chữ hoa."
+      ],
+      "examples": [
+        "isdigit('8') == true",
+        "toupper('g') == 'G'"
+      ]
+    }
+  ],
+  "asciiTable": [
+    ["Ký tự", "Mã ASCII"],
+    ["'0' đến '9'", "48 đến 57"],
+    ["'A' đến 'Z'", "65 đến 90"],
+    ["'a' đến 'z'", "97 đến 122"],
+    ["SPACE", "32"],
+    ["'\\n'", "10"],
+    ["'\\t'", "9"]
+  ],
+  "dryRun": [
+    {
+      "title": "Chạy tay: Integer Overflow",
+      "steps": [
+        "a = 1000000, b = 1000000.",
+        "Viết sai: long long ans = a * b; phép nhân diễn ra bằng int trước.",
+        "Viết đúng: long long ans = 1LL * a * b; 1LL ép toàn bộ phép nhân sang long long.",
+        "Kết quả đúng là 1000000000000."
+      ]
+    },
+    {
+      "title": "Chạy tay: Chia số thực",
+      "steps": [
+        "x = 7, y = 2.",
+        "double v1 = x / y; hai toán hạng là int nên kết quả là 3.",
+        "double v2 = (double)x / y; x được đổi thành 7.0 nên kết quả là 3.5."
+      ]
+    },
+    {
+      "title": "Chạy tay: ASCII với ký tự g",
+      "steps": [
+        "ch = 'g' có mã ASCII là 103.",
+        "ch - 'a' = 103 - 97 = 6, nên 'g' đứng vị trí 6 nếu đếm từ 0.",
+        "ch - 'a' + 'A' = 103 - 97 + 65 = 71, tương ứng ký tự 'G'.",
+        "'8' - '0' = 56 - 48 = 8."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "Code: Ép kiểu và Integer Overflow",
+      "language": "cpp",
+      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 1000000;\n    int b = 1000000;\n\n    long long wrongAnswer = a * b; // Có thể overflow trước khi gán.\n    long long correctAnswer = 1LL * a * b; // Ép phép nhân sang long long.\n\n    cout << wrongAnswer << '\\n';\n    cout << correctAnswer << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Code: ASCII và Character Manipulation",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    char character = 'g';\n    char digit = '8';\n\n    cout << static_cast<int>(character) << '\\n'; // Mã ASCII: 103.\n    cout << character - 'a' << '\\n'; // Vị trí chữ cái: 6.\n    cout << static_cast<char>(character - 'a' + 'A') << '\\n'; // G.\n    cout << digit - '0' << '\\n'; // 8.\n    cout << (isdigit(digit) ? \"YES\" : \"NO\") << '\\n';\n    cout << static_cast<char>(toupper(character)) << '\\n'; // G.\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-71a",
+      "name": "71A - Way Too Long Words",
+      "rating": 800,
+      "tags": ["strings", "implementation"],
+      "url": "post.html?editorial=editorial-cf-71a",
+      "originalUrl": "https://codeforces.com/problemset/problem/71/A"
+    },
+    {
+      "id": "editorial-cf-1772a",
+      "name": "A+B Again?",
+      "rating": 800,
+      "tags": ["implementation", "strings"],
+      "url": "post.html?editorial=editorial-cf-1772a",
+      "originalUrl": "https://codeforces.com/problemset/problem/1772/A"
+    },
+    {
+      "id": "",
+      "name": "c_p10 - Đếm chữ cái",
+      "rating": "",
+      "tags": ["ascii", "char"],
+      "url": "",
+      "originalUrl": ""
+    }
+  ]
+}

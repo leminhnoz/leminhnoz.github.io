@@ -1,0 +1,83 @@
+{
+  "id": "dsu",
+  "author": "Le Minh",
+  "title": "Disjoint Set Union (DSU)",
+  "description": "Quản lý thành phần liên thông với Find (path compression) và Union by size/rank.",
+  "category": "Disjoint Set Union",
+  "tags": ["dsu", "union find", "path compression"],
+  "level": "Module 3",
+  "sections": [
+    {
+      "id": "idea",
+      "title": "Tập hợp rời",
+      "summary": "Mỗi phần tử thuộc đúng một component; find trả về đại diện (root).",
+      "content": [
+        "Ban đầu parent[i] = i, mỗi đỉnh một nhóm.",
+        "find(v): nếu parent[v] != v thì parent[v] = find(parent[v]) (nén đường).",
+        "unite(a, b): gắn root nhỏ vào root lớn theo size để cây nông.",
+        "Không nén + không union-by-size có thể O(N) mỗi thao tác. Có cả hai gần O(α(N))."
+      ],
+      "examples": [
+        "unite(1,2), unite(2,3) => find(3) = find(1)"
+      ]
+    },
+    {
+      "id": "offline",
+      "title": "DSU trên đồ thị và offline",
+      "summary": "Thêm cạnh, kiểm tra cùng thành phần, đếm số nhóm.",
+      "content": [
+        "MST Kruskal: sort cạnh, unite nếu khác component.",
+        "0-1 Tree: thường DSU trên cạnh cùng màu, rồi đếm cặp đỉnh.",
+        "Rollback DSU (không path compression, union theo stack) cho chia để trị trên query.",
+        "DSU trên cây: lưu thành phần sau khi xóa cạnh theo thứ tự offline."
+      ],
+      "examples": [
+        "if (find(u) != find(v)) unite(u, v), --components"
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "Union 1-2, 2-3",
+      "steps": [
+        "parent = [_,1,2,3], size = [_,1,1,1].",
+        "unite(1,2): find=1 và 2, gắn 2 vào 1, size[1]=2.",
+        "unite(2,3): find(2)=1, find(3)=3, gắn 3 vào 1, size[1]=3.",
+        "find(3) nén parent[3]=1."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "DSU path compression + union by size",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <numeric>\nusing namespace std;\n\nstruct DSU {\n    vector<int> parent, sizeOf;\n    DSU(int n) : parent(n + 1), sizeOf(n + 1, 1) {\n        iota(parent.begin(), parent.end(), 0);\n    }\n    int find(int v) {\n        return parent[v] == v ? v : parent[v] = find(parent[v]);\n    }\n    bool unite(int a, int b) {\n        a = find(a);\n        b = find(b);\n        if (a == b) return false;\n        if (sizeOf[a] < sizeOf[b]) swap(a, b);\n        parent[b] = a;\n        sizeOf[a] += sizeOf[b];\n        return true;\n    }\n};\n\nint main() {\n    DSU dsu(3);\n    dsu.unite(1, 2);\n    dsu.unite(2, 3);\n    cout << (dsu.find(1) == dsu.find(3)) << '\\n';\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-1095f",
+      "name": "1095F - Make It Connected",
+      "rating": 1800,
+      "tags": ["dsu", "mst"],
+      "url": "post.html?editorial=editorial-cf-1095f",
+      "originalUrl": "https://codeforces.com/problemset/problem/1095/F"
+    },
+    {
+      "id": "editorial-cf-1242b",
+      "name": "1242B - 0-1-Tree",
+      "rating": 1800,
+      "tags": ["dsu", "graphs"],
+      "url": "post.html?editorial=editorial-cf-1242b",
+      "originalUrl": "https://codeforces.com/problemset/problem/1242/B"
+    },
+    {
+      "id": "editorial-cf-1156d",
+      "name": "1156D - 0-1-Tree",
+      "rating": 2200,
+      "tags": ["dsu", "trees"],
+      "url": "post.html?editorial=editorial-cf-1156d",
+      "originalUrl": "https://codeforces.com/problemset/problem/1156/D"
+    }
+  ]
+}

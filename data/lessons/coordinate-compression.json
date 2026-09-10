@@ -1,0 +1,77 @@
+{
+  "id": "coordinate-compression",
+  "author": [
+    "Le Minh - THPT Luong Dac Bang",
+    "Vo Van Nam - THPT chuyen Khoa Hoc Tu Nhien - DHQG Ha Noi"
+  ],
+  "title": "Coordinate Compression",
+  "description": "Nén các giá trị lớn về rank 0..N-1 để dùng mảng, Fenwick Tree hoặc Segment Tree.",
+  "category": "Coordinate Compression",
+  "tags": ["coordinate compression", "sorting"],
+  "level": "Module 1",
+  "sections": [
+    {
+      "id": "why",
+      "title": "Khi nào cần nén tọa độ",
+      "summary": "Giá trị lên tới 1e9 nhưng chỉ có N điểm; cấu trúc cây cần chỉ số nhỏ.",
+      "content": [
+        "Fenwick/Segment Tree đánh chỉ số 1..M. Nếu M = 1e9 thì không cấp được mảng.",
+        "Nếu bài chỉ quan tâm thứ tự (ai nhỏ hơn ai), có thể thay giá trị bằng rank trong tập unique đã sort.",
+        "Quan hệ <, =, > được bảo toàn. Khoảng cách số học thật thì mất, trừ khi bạn giữ thêm mảng gốc."
+      ],
+      "examples": [
+        "values = [100, 5, 100, 20] -> ranks = [2, 0, 2, 1]"
+      ]
+    },
+    {
+      "id": "how",
+      "title": "Ba bước chuẩn",
+      "summary": "Copy, sort, unique, rồi lower_bound từng phần tử.",
+      "content": [
+        "Copy mảng origin sang compressed.",
+        "sort rồi erase(unique(...), end) để còn giá trị tăng dần không trùng.",
+        "Rank của x là vị trí lower_bound(compressed, x). Rank thường 0-index; cộng 1 nếu Fenwick 1-index.",
+        "Có thể nén cặp (x, y) bằng cách pack hoặc nén từng chiều riêng."
+      ],
+      "examples": [
+        "idx = lower_bound(vals.begin(), vals.end(), x) - vals.begin()"
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "Nén [100, 5, 100, 20]",
+      "steps": [
+        "Sort: [5, 20, 100, 100].",
+        "Unique: [5, 20, 100].",
+        "100 -> 2, 5 -> 0, 100 -> 2, 20 -> 1.",
+        "Mảng nén: [2, 0, 2, 1]. Bây giờ Fenwick size 3 là đủ."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "Coordinate Compression",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    vector<int> values = {100, 5, 100, 20};\n    vector<int> compressed = values;\n    sort(compressed.begin(), compressed.end());\n    compressed.erase(unique(compressed.begin(), compressed.end()), compressed.end());\n    for (int& value : values) {\n        value = (int)(lower_bound(compressed.begin(), compressed.end(), value) - compressed.begin());\n    }\n    for (int value : values) cout << value << ' ';\n    cout << '\\n';\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-616d",
+      "name": "616D - Longest k-Good Segment",
+      "rating": 1500,
+      "tags": ["two pointers", "maps"],
+      "url": "post.html?editorial=editorial-cf-616d",
+      "originalUrl": "https://codeforces.com/problemset/problem/616/D"
+    },
+    {
+      "id": "editorial-cf-61e",
+      "name": "61E - Enemy is weak",
+      "rating": 2000,
+      "tags": ["fenwick tree", "inversions"],
+      "url": "post.html?editorial=editorial-cf-61e",
+      "originalUrl": "https://codeforces.com/problemset/problem/61/E"
+    }
+  ]
+}

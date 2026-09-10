@@ -1,0 +1,108 @@
+{
+  "id": "frequency-map-set",
+  "author": "Le Minh",
+  "title": "Frequency, Map, Set & STL Containers",
+  "description": "Đếm tần suất và chọn đúng vector, map, set, unordered_map, priority_queue.",
+  "category": "STL Data Structures",
+  "tags": ["map", "set", "frequency", "vector", "priority queue"],
+  "level": "Module 2",
+  "sections": [
+    {
+      "id": "vector",
+      "title": "vector",
+      "summary": "Mảng động: truy cập O(1), đẩy cuối O(1) amortized.",
+      "content": [
+        "Dùng khi biết thứ tự hoặc chỉ số 0..n-1. push_back, size, sort.",
+        "reserve(n) nếu biết trước kích thước để tránh realloc.",
+        "Không dùng vector<bool>; dùng vector<char> hoặc vector<int>."
+      ],
+      "examples": [
+        "vector<int> a(n); a.push_back(x);"
+      ]
+    },
+    {
+      "id": "map-set",
+      "title": "map, set, unordered_map",
+      "summary": "map/set là cây đỏ-đen O(log N); unordered_hash trung bình O(1).",
+      "content": [
+        "map<key, value> giống tủ có nhãn: freq[x]++ tự tạo khóa nếu chưa có.",
+        "set lưu phần tử phân biệt, ordered. multiset cho phép trùng.",
+        "unordered_map nhanh hơn khi không cần thứ tự, nhưng worst-case hash collision. Contest thường map an toàn hơn nếu N vừa.",
+        "lower_bound trên set/map tìm phần tử nhỏ nhất >= x."
+      ],
+      "examples": [
+        "a = [2,2,3] => freq[2]=2, freq[3]=1, set = {2,3}"
+      ]
+    },
+    {
+      "id": "pq",
+      "title": "priority_queue",
+      "summary": "Heap: mặc định max-heap, lấy phần tử lớn nhất O(log N).",
+      "content": [
+        "Min-heap: priority_queue<int, vector<int>, greater<int>>.",
+        "Dijkstra dùng min-heap cặp {distance, vertex}.",
+        "Không có decrease-key: đẩy bản ghi mới, bỏ bản cũ khi lấy ra."
+      ],
+      "examples": [
+        "pq.push(x); int best = pq.top(); pq.pop();"
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "Đếm tần suất [2, 2, 3]",
+      "steps": [
+        "freq rỗng, set rỗng.",
+        "2: freq[2]=1, set={2}.",
+        "2: freq[2]=2, set không đổi.",
+        "3: freq[3]=1, set={2,3}."
+      ]
+    },
+    {
+      "title": "Registration System",
+      "steps": [
+        "Lần đầu tên 'dmitry': chưa có, in OK, đếm = 1.",
+        "Lần hai 'dmitry': in dmitry1, đếm = 2.",
+        "Tên mới 'kalatoz': in OK."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "map tần suất và set",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <map>\n#include <set>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> values = {2, 2, 3};\n    map<int, int> frequency;\n    set<int> distinct;\n    for (int value : values) {\n        ++frequency[value];\n        distinct.insert(value);\n    }\n    for (auto [key, cnt] : frequency) cout << key << ' ' << cnt << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "priority_queue min-heap",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\n\nint main() {\n    priority_queue<int, vector<int>, greater<int>> minHeap;\n    minHeap.push(5);\n    minHeap.push(1);\n    minHeap.push(4);\n    while (!minHeap.empty()) {\n        cout << minHeap.top() << ' ';\n        minHeap.pop();\n    }\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-43a",
+      "name": "43A - Football",
+      "rating": 900,
+      "tags": ["strings", "implementation"],
+      "url": "post.html?editorial=editorial-cf-43a",
+      "originalUrl": "https://codeforces.com/problemset/problem/43/A"
+    },
+    {
+      "id": "editorial-cf-1490c",
+      "name": "1490C - Sum of Cubes",
+      "rating": 1200,
+      "tags": ["binary search", "math"],
+      "url": "post.html?editorial=editorial-cf-1490c",
+      "originalUrl": "https://codeforces.com/problemset/problem/1490/C"
+    },
+    {
+      "id": "editorial-cf-4c",
+      "name": "4C - Registration System",
+      "rating": 1300,
+      "tags": ["hashing", "strings"],
+      "url": "post.html?editorial=editorial-cf-4c",
+      "originalUrl": "https://codeforces.com/problemset/problem/4/C"
+    }
+  ]
+}

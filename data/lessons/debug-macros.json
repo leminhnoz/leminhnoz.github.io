@@ -1,0 +1,89 @@
+{
+  "id": "debug-macros",
+  "author": "Le Minh",
+  "title": "Custom Debug Macros & Common Bugs",
+  "description": "Debug có hệ thống: overflow, OOB, TLE, modulo âm và edge case.",
+  "category": "Debugging",
+  "tags": ["debug", "overflow", "oob", "tle"],
+  "level": "Module 0",
+  "sections": [
+    {
+      "id": "macro",
+      "title": "Macro debug chỉ chạy local",
+      "summary": "In biến khi compile với -DLOCAL, im lặng khi nộp.",
+      "content": [
+        "Bọc debug trong #ifdef LOCAL để không in ra trên judge.",
+        "Macro #x in tên biến; có thể overload operator<< cho vector.",
+        "In sau mỗi vòng lặp quan trọng: left, right, sum, dp[i]."
+      ],
+      "examples": [
+        "#define debug(x) cerr << #x << \" = \" << (x) << '\\n'"
+      ]
+    },
+    {
+      "id": "bugs",
+      "title": "Bốn lỗi kinh điển",
+      "summary": "Overflow, out of bound, TLE, và quên kiểu long long.",
+      "content": [
+        "int * int vẫn tính bằng int dù gán vào long long. Luôn 1LL * a * b.",
+        "vector size n có index 0..n-1. Đọc a[n] hoặc a[-1] là undefined.",
+        "Hai vòng lồng n = 1e5 là ~1e10 phép, TLE. Ước lượng trước khi code.",
+        "C++ % với số âm có thể ra âm. Công thức ((x % MOD) + MOD) % MOD."
+      ],
+      "examples": [
+        "long long value = 1LL * a * b;",
+        "for (int i = 0; i < n; ++i)"
+      ]
+    },
+    {
+      "id": "workflow",
+      "title": "Quy trình khi WA/TLE/RTE",
+      "summary": "Đừng sửa mò; khoanh vùng bằng test nhỏ.",
+      "content": [
+        "WA sample: chạy tay expected vs code, in mọi biến trên sample.",
+        "WA pretest: viết brute O(N^2) và so random n nhỏ.",
+        "RTE: nghi OOB, đệ quy sâu, chia 0. Bật sanitizer local nếu được.",
+        "TLE: đo complexity, cin chậm, hoặc vòng while không tiến."
+      ],
+      "examples": [
+        "assert(i >= 0 && i < n);",
+        "if (left > right) break;"
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "Overflow 1e9 * 1e9",
+      "steps": [
+        "a = b = 1000000000 kiểu int.",
+        "long long ans = a * b; phép nhân tràn int trước khi gán.",
+        "long long ans = 1LL * a * b; kết quả 10^18 đúng."
+      ]
+    },
+    {
+      "title": "OOB trên vector 3 phần tử",
+      "steps": [
+        "a = [4, 5, 6], size = 3, index hợp lệ 0, 1, 2.",
+        "Vòng for (int i = 1; i <= n; ++i) đọc a[3] => RTE/WA.",
+        "Sửa thành i = 0; i < n."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "Debug macro và nhân an toàn",
+      "language": "cpp",
+      "code": "#include <iostream>\nusing namespace std;\n\n#ifdef LOCAL\n#define debug(x) cerr << #x << \" = \" << (x) << '\\n'\n#else\n#define debug(x)\n#endif\n\nint main() {\n    int a = 1000000000, b = 1000000000;\n    long long safe = 1LL * a * b;\n    debug(safe);\n    cout << safe << '\\n';\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-550b",
+      "name": "550B - Preparing Olympiad",
+      "rating": 1400,
+      "tags": ["bitmasks", "brute force"],
+      "url": "post.html?editorial=editorial-cf-550b",
+      "originalUrl": "https://codeforces.com/problemset/problem/550/B"
+    }
+  ]
+}
