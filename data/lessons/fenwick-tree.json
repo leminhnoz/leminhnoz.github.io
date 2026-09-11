@@ -1,58 +1,221 @@
+
 {
   "id": "fenwick-tree",
   "author": "Le Minh",
   "title": "Fenwick Tree (Binary Indexed Tree)",
-  "description": "Point update và prefix sum O(log N) nhờ nhảy theo lowbit.",
+  "description": "Cấu trúc dữ liệu duy trì tổng đoạn với point update và prefix sum trong O(log N), dựa trên cách chia mảng thành các khối có độ dài lowbit(i).",
   "category": "Fenwick Tree",
-  "tags": ["fenwick tree", "binary indexed tree"],
+  "tags": ["fenwick tree", "binary indexed tree", "prefix sum", "data structures"],
   "level": "Module 3",
   "sections": [
     {
-      "id": "lowbit",
-      "title": "lowbit và khối trách nhiệm",
-      "summary": "bit[i] lưu tổng một đoạn kết thúc tại i, độ dài i & -i.",
+      "id": "motivation",
+      "title": "1. Vì sao cần Fenwick Tree?",
+      "summary": "Prefix sum thông thường trả lời truy vấn nhanh nhưng cập nhật một phần tử lại tốn O(N). Fenwick Tree cân bằng cả hai thao tác.",
       "content": [
-        "lowbit(i) = i & -i là bit 1 thấp nhất. Ví dụ 12 = 1100b, lowbit = 4.",
-        "add(i, x): đi lên i += lowbit(i) cho tới n. Mỗi node bao phủ đoạn dài hơn.",
-        "sum(i): đi xuống i -= lowbit(i) về 0, cộng các khối không giao nhau.",
-        "Tổng đoạn [l, r] = sum(r) - sum(l-1). Index Fenwick là 1-based."
+        "Giả sử có mảng a và ta cần thực hiện hai loại thao tác: thay đổi một phần tử a[i] và hỏi tổng trên một đoạn [l, r].",
+        "Nếu dùng prefix sum thông thường, ta có thể tính sum(l, r) trong O(1), nhưng mỗi lần thay đổi a[i], toàn bộ các prefix phía sau i có thể bị ảnh hưởng nên phải cập nhật O(N) phần tử.",
+        "Nếu mỗi truy vấn đều cộng trực tiếp các phần tử trong [l, r], cập nhật chỉ mất O(1) nhưng truy vấn có thể mất O(N).",
+        "Fenwick Tree chia thông tin của mảng thành các khối đặc biệt để cả update và query đều chỉ cần đi qua O(log N) node.",
+        "Fenwick Tree đặc biệt phù hợp khi bài toán có point update và prefix sum hoặc range sum."
       ],
       "examples": [
-        "sum(7): 7 -> 6 -> 4 -> 0",
-        "add(3, 5): 3 -> 4 -> 8"
+        "Mảng a = [2, 1, 3, 4]. Nếu đổi a[2] từ 1 thành 5, prefix sum từ vị trí 2 trở đi đều thay đổi.",
+        "Fenwick Tree không lưu toàn bộ prefix sum tại mỗi vị trí. Thay vào đó, mỗi bit[i] lưu tổng của một khối nhỏ kết thúc tại i."
       ]
     },
     {
-      "id": "uses",
-      "title": "Ứng dụng: inversion, tần suất, prefix",
-      "summary": "Nén tọa độ rồi Fenwick đếm số phần tử trong miền.",
+      "id": "lowbit",
+      "title": "2. lowbit(i) và cách Fenwick chia mảng",
+      "summary": "lowbit(i) = i & -i xác định độ dài khối mà bit[i] chịu trách nhiệm.",
       "content": [
-        "Inversion: duyệt trái sang phải, query số đã gặp > a[i] (hoặc ngược).",
-        "Enemy is weak: inversion 3 phần tử, hai Fenwick hoặc đếm prefix/suffix.",
-        "Range add + point query: cập nhật difference trên Fenwick.",
-        "Range add + range sum: cần hai Fenwick (công thức phụ)."
+        "Fenwick Tree sử dụng chỉ số 1-based. Với mỗi i > 0, định nghĩa lowbit(i) = i & -i.",
+        "lowbit(i) là giá trị của bit 1 thấp nhất trong biểu diễn nhị phân của i.",
+        "Ví dụ: 12 = 1100₂ nên lowbit(12) = 0100₂ = 4. Tương tự, lowbit(10) = 2 và lowbit(8) = 8.",
+        "Ý nghĩa quan trọng nhất: bit[i] lưu tổng của lowbit(i) phần tử cuối cùng kết thúc tại i.",
+        "Cụ thể, bit[i] lưu tổng trên đoạn [i - lowbit(i) + 1, i].",
+        "Ví dụ bit[12] có lowbit(12) = 4 nên bit[12] lưu tổng của các vị trí 9, 10, 11, 12.",
+        "Nhờ cách chia này, một prefix sum có thể được ghép từ một số ít các khối không giao nhau."
       ],
       "examples": [
-        "freq.add(rank, 1); cnt = freq.sum(rank)"
+        "i = 6 = 110₂, lowbit(6) = 2 => bit[6] lưu đoạn [5, 6].",
+        "i = 8 = 1000₂, lowbit(8) = 8 => bit[8] lưu đoạn [1, 8].",
+        "i = 12 = 1100₂, lowbit(12) = 4 => bit[12] lưu đoạn [9, 12]."
+      ]
+    },
+    {
+      "id": "query",
+      "title": "3. Prefix Sum: vì sao i -= lowbit(i)?",
+      "summary": "Mỗi bước lấy trọn một khối của Fenwick rồi nhảy sang khối tiếp theo bên trái.",
+      "content": [
+        "Để tính prefix sum từ 1 đến i, ta không cộng từng a[j]. Thay vào đó, lấy các khối đã được Fenwick lưu sẵn.",
+        "Tại vị trí i, bit[i] chứa tổng của một đoạn kết thúc tại i. Sau khi lấy đoạn này, phần còn thiếu nằm hoàn toàn bên trái nó.",
+        "Vì vậy ta thực hiện i -= lowbit(i) để chuyển đến điểm kết thúc của phần còn lại.",
+        "Quá trình tiếp tục cho tới khi i = 0.",
+        "Các đoạn lấy được không chồng lấn nên tổng của chúng chính xác bằng prefix sum cần tìm.",
+        "Ví dụ sumPrefix(7): 7 -> 6 -> 4 -> 0. Ta lần lượt lấy bit[7], bit[6], bit[4].",
+        "Điểm quan trọng: mỗi bước loại bỏ ít nhất một bit 1 trong biểu diễn nhị phân của i, vì vậy số bước là O(log N)."
+      ],
+      "examples": [
+        "sumPrefix(7): lấy khối kết thúc tại 7, sau đó chuyển 7 -> 6.",
+        "6 -> 4 vì lowbit(6) = 2.",
+        "4 -> 0 vì lowbit(4) = 4.",
+        "Các khối thu được ghép lại chính xác thành prefix [1, 7]."
+      ]
+    },
+    {
+      "id": "update",
+      "title": "4. Point Update: vì sao i += lowbit(i)?",
+      "summary": "Khi thay đổi a[i], ta cập nhật tất cả các node Fenwick có chứa vị trí i.",
+      "content": [
+        "Giả sử ta cộng thêm value vào a[i]. Những bit[j] bị ảnh hưởng chính là các node mà đoạn mà bit[j] quản lý chứa vị trí i.",
+        "Bắt đầu từ i, node đầu tiên chắc chắn bị ảnh hưởng là bit[i].",
+        "Để tìm node lớn hơn tiếp theo chứa i, ta thực hiện i += lowbit(i).",
+        "Quá trình này tiếp tục cho tới khi i > n.",
+        "Ví dụ n = 8 và update tại vị trí 3: 3 -> 4 -> 8.",
+        "Do đó ta cập nhật bit[3], bit[4] và bit[8].",
+        "Số node được cập nhật là O(log N)."
+      ],
+      "examples": [
+        "add(3, 5): bit[3] += 5, sau đó i = 4.",
+        "bit[4] += 5, sau đó i = 8.",
+        "bit[8] += 5, sau đó i = 16 > n nên dừng."
+      ]
+    },
+    {
+      "id": "range-sum",
+      "title": "5. Từ prefix sum đến tổng đoạn",
+      "summary": "Dùng hai prefix sum để tính tổng [l, r].",
+      "content": [
+        "Fenwick Tree trực tiếp tính prefix sum: sumPrefix(i) = a[1] + ... + a[i].",
+        "Từ đó tổng đoạn [l, r] được tính bằng nguyên lý trừ prefix.",
+        "sum(l, r) = sumPrefix(r) - sumPrefix(l - 1).",
+        "Hai lần query đều O(log N), nên một range sum cũng có độ phức tạp O(log N).",
+        "Nếu đề chỉ yêu cầu prefix sum, chỉ cần một lần query. Nếu cần range sum, dùng công thức trên."
+      ],
+      "examples": [
+        "sum(3, 7) = sumPrefix(7) - sumPrefix(2).",
+        "Nếu prefix(7) = 25 và prefix(2) = 6 thì tổng đoạn [3, 7] là 19."
+      ]
+    },
+    {
+      "id": "correctness",
+      "title": "6. Vì sao Fenwick Tree đúng?",
+      "summary": "Mỗi bit[i] lưu đúng một đoạn liên tiếp, còn query ghép các đoạn đó thành một partition của prefix.",
+      "content": [
+        "Theo định nghĩa, bit[i] lưu tổng đoạn [i - lowbit(i) + 1, i].",
+        "Khi thực hiện sumPrefix(i), ta lấy bit[i] rồi chuyển i về i - lowbit(i). Đoạn vừa lấy kết thúc tại i mới trước đó và đoạn tiếp theo nằm hoàn toàn bên trái.",
+        "Vì vậy các đoạn được lấy không giao nhau.",
+        "Quá trình kết thúc tại 0, nên toàn bộ các vị trí từ 1 đến chỉ số ban đầu đều được phủ đúng một lần.",
+        "Do đó tổng các bit đã lấy chính là prefix sum cần tìm.",
+        "Với update, mỗi node được đi qua đều là một node có đoạn quản lý chứa vị trí được thay đổi. Vì vậy cộng value vào tất cả các node đó sẽ duy trì đúng giá trị của Fenwick Tree."
+      ],
+      "examples": [
+        "Prefix [1, 7] có thể được tách thành các khối mà Fenwick lấy lần lượt khi chạy 7 -> 6 -> 4 -> 0.",
+        "Các khối này không chồng lấn và hợp lại đúng toàn bộ [1, 7]."
+      ]
+    },
+    {
+      "id": "applications",
+      "title": "7. Ứng dụng trong Competitive Programming",
+      "summary": "Fenwick Tree thường xuất hiện khi cần đếm số phần tử trong một miền và dữ liệu thay đổi động.",
+      "content": [
+        "Đếm inversion: duyệt mảng và dùng Fenwick lưu tần suất các giá trị đã xuất hiện. Query số phần tử lớn hơn hoặc nhỏ hơn giá trị hiện tại.",
+        "Đếm tần suất động: bit[i] có thể lưu số lần giá trị hoặc chỉ số i xuất hiện.",
+        "Coordinate compression + Fenwick: khi giá trị a[i] rất lớn nhưng chỉ có N giá trị khác nhau, nén chúng về rank 1..N rồi dùng Fenwick.",
+        "Range add + point query: dùng Fenwick trên mảng hiệu. Khi cộng x vào [l, r], update(l, x) và update(r + 1, -x); giá trị tại i chính là prefix sum tại i.",
+        "Các bài toán đếm số phần tử trong prefix/suffix hoặc số phần tử nằm trong một miền cũng thường có thể chuyển thành Fenwick.",
+        "Range add + range sum có thể giải bằng hai Fenwick Tree với một công thức mở rộng."
+      ],
+      "examples": [
+        "freq.add(rank, 1); số phần tử có rank <= rank được tính bằng freq.sumPrefix(rank).",
+        "Số phần tử lớn hơn x = tổng số phần tử đã thêm - số phần tử có rank <= rank(x)."
+      ]
+    },
+    {
+      "id": "comparison",
+      "title": "8. Fenwick Tree hay Segment Tree?",
+      "summary": "Fenwick đơn giản và nhẹ hơn khi bài toán chỉ cần những phép toán phù hợp với prefix.",
+      "content": [
+        "Fenwick Tree thường có code ngắn hơn, bộ nhớ O(N) với hằng số nhỏ và thao tác update/query O(log N).",
+        "Segment Tree linh hoạt hơn: có thể lưu min, max, gcd, tổng, hoặc kết hợp nhiều thông tin trên một đoạn.",
+        "Nếu bài chỉ cần point update + prefix/range sum, Fenwick thường là lựa chọn rất tự nhiên.",
+        "Nếu cần range query phức tạp, range update bằng lazy propagation, hoặc thông tin không dễ suy ra từ prefix, Segment Tree thường phù hợp hơn.",
+        "Một quy tắc thực chiến: nếu nhìn thấy 'cập nhật một điểm + hỏi tổng/tần suất trên một đoạn', hãy nghĩ đến Fenwick trước."
+      ],
+      "examples": [
+        "Point add + range sum => Fenwick là ứng viên rất tốt.",
+        "Point update + range minimum => Segment Tree thường phù hợp hơn.",
+        "Range update + range sum => Fenwick với hai cây hoặc Segment Tree lazy."
+      ]
+    },
+    {
+      "id": "pitfalls",
+      "title": "9. Những lỗi thường gặp",
+      "summary": "Phần lớn lỗi Fenwick đến từ indexing và nhầm giữa assignment với addition.",
+      "content": [
+        "Fenwick Tree chuẩn sử dụng index từ 1 đến n. Nếu mảng ban đầu đánh số từ 0, thường phải chuyển sang i + 1.",
+        "lowbit(i) chỉ có ý nghĩa với i > 0. Nếu vòng lặp query không giảm về 0 đúng cách, chương trình có thể lặp vô hạn.",
+        "add(i, value) là cộng thêm value, không phải gán a[i] = value.",
+        "Nếu muốn đổi a[i] từ old thành new, phải add(i, new - old).",
+        "Khi dùng coordinate compression, phải bảo đảm rank bắt đầu từ 1 vì Fenwick không dùng index 0.",
+        "Nếu tổng có thể vượt int, dùng long long cho bit và kết quả.",
+        "Đừng nhầm i += lowbit(i) của update với i -= lowbit(i) của query: update đi lên, query đi xuống."
+      ],
+      "examples": [
+        "Đổi a[5] từ 10 thành 17 => add(5, 7), không phải add(5, 17).",
+        "Giá trị có rank 0 phải được chuyển thành rank 1 trước khi đưa vào Fenwick."
       ]
     }
   ],
   "dryRun": [
     {
-      "title": "add(3,5) rồi sum(7) trên n=8",
+      "title": "1. add(3, 5) rồi sumPrefix(7)",
       "steps": [
-        "bit ban đầu 0.",
-        "add(3,5): bit[3]+=5, i=3+1=4; bit[4]+=5, i=4+4=8; bit[8]+=5.",
-        "sum(7): i=7 lấy bit[7]=0, i=6 lấy bit[6]=0, i=4 lấy 5, i=0. Tổng 5.",
-        "sum(2)=0 vì 3 chưa nằm trong prefix 2."
+        "Ban đầu toàn bộ bit = 0.",
+        "add(3, 5): cập nhật bit[3] += 5.",
+        "Từ 3, lowbit(3) = 1 nên nhảy lên 4.",
+        "Cập nhật bit[4] += 5.",
+        "lowbit(4) = 4 nên nhảy lên 8.",
+        "Cập nhật bit[8] += 5 rồi dừng vì 8 + lowbit(8) = 16 > n.",
+        "sumPrefix(7): bắt đầu i = 7, cộng bit[7].",
+        "7 -> 6 vì lowbit(7) = 1.",
+        "Cộng bit[6], sau đó 6 -> 4 vì lowbit(6) = 2.",
+        "Cộng bit[4] = 5, sau đó 4 -> 0.",
+        "Kết quả là 5."
+      ]
+    },
+    {
+      "title": "2. Vì sao bit[8] chứa tổng cả [1,8]?",
+      "steps": [
+        "8 = 1000₂.",
+        "lowbit(8) = 8.",
+        "Theo định nghĩa, bit[8] lưu lowbit(8) = 8 phần tử cuối kết thúc tại 8.",
+        "Đó chính là đoạn [1,8].",
+        "Vì vậy khi update một vị trí bất kỳ trong [1,8], bit[8] đều phải được cập nhật."
+      ]
+    },
+    {
+      "title": "3. Đổi giá trị một phần tử",
+      "steps": [
+        "Giả sử a[3] đang bằng 5 và muốn đổi thành 9.",
+        "Độ thay đổi là 9 - 5 = 4.",
+        "Không gọi add(3, 9), vì Fenwick đang lưu tổng và cần cộng phần thay đổi.",
+        "Gọi add(3, 4).",
+        "Các node bị ảnh hưởng là 3 -> 4 -> 8."
       ]
     }
   ],
   "codeBlocks": [
     {
-      "title": "Fenwick Tree",
+      "title": "Fenwick Tree cơ bản",
       "language": "cpp",
-      "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nstruct Fenwick {\n    int n;\n    vector<long long> bit;\n    Fenwick(int n) : n(n), bit(n + 1, 0) {}\n    void add(int i, long long value) {\n        for (; i <= n; i += i & -i) bit[i] += value;\n    }\n    long long sumPrefix(int i) {\n        long long result = 0;\n        for (; i > 0; i -= i & -i) result += bit[i];\n        return result;\n    }\n    long long rangeSum(int l, int r) {\n        return sumPrefix(r) - sumPrefix(l - 1);\n    }\n};\n\nint main() {\n    Fenwick fenwick(8);\n    fenwick.add(3, 5);\n    cout << fenwick.rangeSum(1, 7) << '\\n';\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Fenwick {\n    int n;\n    vector<long long> bit;\n\n    Fenwick(int n) {\n        this->n = n;\n        bit.assign(n + 1, 0);\n    }\n\n    void add(int i, long long value) {\n        for (; i <= n; i += i & -i)\n            bit[i] += value;\n    }\n\n    long long sumPrefix(int i) {\n        long long result = 0;\n        for (; i > 0; i -= i & -i)\n            result += bit[i];\n        return result;\n    }\n\n    long long rangeSum(int l, int r) {\n        return sumPrefix(r) - sumPrefix(l - 1);\n    }\n};\n\nint main() {\n    Fenwick fenwick(8);\n\n    fenwick.add(3, 5);\n\n    cout << fenwick.sumPrefix(7) << '\\n';\n    cout << fenwick.rangeSum(1, 7) << '\\n';\n\n    return 0;\n}"
+    },
+    {
+      "title": "Đếm inversion bằng Fenwick Tree",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Fenwick {\n    int n;\n    vector<int> bit;\n\n    Fenwick(int n) {\n        this->n = n;\n        bit.assign(n + 1, 0);\n    }\n\n    void add(int i, int value) {\n        for (; i <= n; i += i & -i)\n            bit[i] += value;\n    }\n\n    int sumPrefix(int i) {\n        int result = 0;\n        for (; i > 0; i -= i & -i)\n            result += bit[i];\n        return result;\n    }\n};\n\nint main() {\n    int n;\n    cin >> n;\n\n    vector<long long> a(n), compressed;\n    for (long long &x : a) {\n        cin >> x;\n        compressed.push_back(x);\n    }\n\n    sort(compressed.begin(), compressed.end());\n    compressed.erase(unique(compressed.begin(), compressed.end()), compressed.end());\n\n    Fenwick fenwick(compressed.size());\n    long long inversions = 0;\n\n    for (int i = 0; i < n; ++i) {\n        int rank = lower_bound(compressed.begin(), compressed.end(), a[i]) - compressed.begin() + 1;\n        long long smallerOrEqual = fenwick.sumPrefix(rank);\n        inversions += i - smallerOrEqual;\n        fenwick.add(rank, 1);\n    }\n\n    cout << inversions << '\\n';\n    return 0;\n}"
     }
   ],
   "exercises": [

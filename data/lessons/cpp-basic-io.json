@@ -1,43 +1,308 @@
 {
   "id": "cpp-basic-io",
-"author": [
-  "Le Minh - THPT Luong Dac Bang",
-  "Vo Van Nam - THPT chuyen Khoa Hoc Tu Nhien - DHQG Ha Noi"
-],
+  "author": [
+    "Le Minh - THPT Luong Dac Bang",
+    "Vo Van Nam - THPT chuyen Khoa Hoc Tu Nhien - DHQG Ha Noi"
+  ],
   "title": "Basic I/O & Fast I/O",
-  "description": "Đọc dữ liệu bằng cin/cout, nhiều test, và tối ưu stream trong contest.",
+  "description": "Hiểu cách C++ đọc, ghi dữ liệu và tối ưu I/O trong Competitive Programming; từ cin/cout, getline, nhiều test đến fast I/O và các lỗi thường gặp.",
   "category": "Implementation",
-  "tags": ["c++", "fast io", "cin", "cout"],
+  "tags": [
+    "c++",
+    "input output",
+    "fast io",
+    "cin",
+    "cout",
+    "getline"
+  ],
   "level": "Module -1",
   "sections": [
     {
-      "id": "cin-cout",
-      "title": "cin và cout",
-      "summary": "cin đọc theo token (bỏ qua khoảng trắng); cout in kết quả.",
+      "id": "io-overview",
+      "title": "1. Input / Output trong Competitive Programming",
+      "summary": "Mọi bài lập trình thi đấu đều xoay quanh việc đọc đúng dữ liệu đầu vào, xử lý và in đúng kết quả đầu ra.",
       "content": [
-        "cin >> x đọc số hoặc từ, dừng ở khoảng trắng. getline đọc cả dòng kể cả dấu cách.",
-        "Sau cin >> n, nếu cần getline, hãy cin.ignore() để bỏ '\\n' còn lại.",
-        "In số thực: cout << fixed << setprecision(9) << value;",
-        "Nhiều test: đọc t rồi while (t--) giải từng test. Một số bài đọc đến EOF: while (cin >> n)."
+        "Trong Competitive Programming, chương trình thường nhận toàn bộ dữ liệu từ standard input (stdin) và ghi đáp án ra standard output (stdout). Ta không giao tiếp với người dùng bằng cách hỏi từng giá trị như một chương trình thông thường.",
+        "Một bài có thể yêu cầu đọc một số nguyên, một mảng, một ma trận, nhiều test case hoặc dữ liệu cho tới khi hết file (EOF). Vì vậy, hiểu cách input được tổ chức quan trọng không kém việc biết syntax của cin và cout.",
+        "C++ cung cấp iostream với hai đối tượng quen thuộc là cin để đọc và cout để ghi. Hai đối tượng này hoạt động dựa trên stream: dữ liệu được đọc từ luồng input hoặc ghi vào luồng output theo thứ tự.",
+        "Trong contest, phần I/O thường rất đơn giản về mặt thuật toán nhưng một lỗi nhỏ như đọc sai thứ tự n, m, quên đọc t hoặc xử lý sai newline cũng có thể khiến toàn bộ lời giải Wrong Answer.",
+        "Một nguyên tắc quan trọng: trước khi code, hãy nhìn kỹ format Input và xác định chính xác thứ tự các biến cần đọc."
+      ],
+      "examples": [
+        "Input: 5 10 -> cin >> a >> b; với a = 5, b = 10.",
+        "Input: 3\\n2 4 6 -> đọc n = 3 rồi đọc lần lượt 2, 4, 6.",
+        "Input có nhiều test: dòng đầu thường chứa t, sau đó mỗi test có một cấu trúc dữ liệu riêng."
+      ]
+    },
+    {
+      "id": "cin",
+      "title": "2. cin — Đọc dữ liệu theo token",
+      "summary": "cin >> x đọc một token và tự bỏ qua khoảng trắng ở phía trước.",
+      "content": [
+        "Toán tử >> của cin đọc dữ liệu theo kiểu của biến. Với int, long long, double,... nó sẽ cố gắng chuyển token tiếp theo thành kiểu tương ứng.",
+        "Khoảng trắng bao gồm space, tab và newline. Khi dùng cin >> x, C++ tự bỏ qua các khoảng trắng ở đầu trước khi đọc token.",
+        "Vì vậy, nếu Input là '10 20 30', '10\\n20\\n30' hoặc thậm chí có nhiều khoảng trắng giữa các số thì cách đọc bằng cin >> vẫn giống nhau.",
+        "Sau khi đọc xong một token, vị trí đọc dừng ngay sau token đó. Lần cin tiếp theo sẽ tiếp tục từ vị trí hiện tại.",
+        "Đây là lý do cin >> thường cực kỳ tiện trong contest: ta không cần quan tâm dữ liệu nằm trên dòng nào nếu đề chỉ quan tâm đến thứ tự các token.",
+        "Nếu đề yêu cầu đọc một chuỗi không có khoảng trắng, string s; cin >> s; là đủ.",
+        "Nếu chuỗi có thể chứa khoảng trắng và cần lấy nguyên dòng, phải dùng getline thay vì cin >> string."
       ],
       "examples": [
         "int n; cin >> n;",
-        "while (t--) { ... }"
+        "long long x; cin >> x;",
+        "string s; cin >> s;",
+        "int a, b, c; cin >> a >> b >> c;"
+      ]
+    },
+    {
+      "id": "cin-whitespace",
+      "title": "3. Khoảng trắng và cách cin thực sự di chuyển",
+      "summary": "Hiểu token giúp tránh nhầm lẫn giữa space, newline và dữ liệu thực tế.",
+      "content": [
+        "Giả sử Input là '12   34\\n56'. Khi thực hiện cin >> a >> b >> c, a nhận 12, b nhận 34 và c nhận 56.",
+        "Ba dấu cách giữa 12 và 34 không tạo ra dữ liệu. Newline sau 34 cũng chỉ là một khoảng trắng đối với operator >>.",
+        "Điều này đặc biệt hữu ích khi Input được trình bày thành nhiều dòng nhưng cấu trúc thực tế chỉ là một dãy token.",
+        "Tuy nhiên, newline vẫn tồn tại trong stream. Điều này trở nên quan trọng khi chuyển từ cin >> sang getline, bởi getline xử lý newline khác với operator >>."
+      ],
+      "examples": [
+        "Input: 1 2 3 -> đọc được 1, 2, 3.",
+        "Input: 1\\n2\\n3 -> cũng đọc được 1, 2, 3.",
+        "Input: 1     2\\t3 -> cũng đọc được 1, 2, 3."
+      ]
+    },
+    {
+      "id": "getline",
+      "title": "4. getline — Đọc cả dòng",
+      "summary": "getline đọc toàn bộ phần còn lại của một dòng, bao gồm cả khoảng trắng.",
+      "content": [
+        "Khác với cin >> s, getline(cin, s) không đọc theo token. Nó đọc cho tới khi gặp newline và lưu toàn bộ phần trước newline vào string.",
+        "Ví dụ Input là 'Hello World'. Nếu dùng cin >> s thì s chỉ nhận 'Hello'. Nếu dùng getline thì s nhận toàn bộ 'Hello World'.",
+        "Một lỗi rất phổ biến xảy ra khi dùng cin >> n rồi ngay lập tức getline(cin, s). Sau cin >> n, ký tự newline sau số vẫn còn trong stream. getline nhìn thấy newline đó và kết thúc ngay, khiến s trở thành chuỗi rỗng.",
+        "Cách xử lý phổ biến là cin.ignore(...) trước getline để loại bỏ phần newline còn lại.",
+        "Trong contest, nếu Input chỉ gồm số và các từ không chứa khoảng trắng, ưu tiên cin >> vì đơn giản hơn. Chỉ dùng getline khi đề thực sự cần đọc nguyên dòng."
+      ],
+      "examples": [
+        "string name; getline(cin, name);",
+        "int n; cin >> n; cin.ignore(); getline(cin, s);",
+        "Input: 'Le Minh CP' -> cin >> s chỉ lấy 'Le', còn getline lấy cả 'Le Minh CP'."
+      ]
+    },
+    {
+      "id": "getline-safe",
+      "title": "5. cin.ignore() và lỗi newline",
+      "summary": "Sau cin >> số, cần xử lý newline còn lại nếu chuyển sang getline.",
+      "content": [
+        "Giả sử Input là: 5\\nHello World. Sau cin >> n, biến n nhận 5 nhưng newline sau số 5 vẫn còn trong stream.",
+        "Nếu gọi getline(cin, s) ngay sau đó, getline gặp newline ngay lập tức nên s = ''.",
+        "Với trường hợp đơn giản, cin.ignore() thường đủ để bỏ một ký tự newline.",
+        "Nếu trước đó có thể còn nhiều ký tự trong dòng, cách an toàn hơn là cin.ignore(numeric_limits<streamsize>::max(), '\\n');.",
+        "Trong contest, không nên dùng ignore một cách máy móc. Hãy xác định rõ format Input rồi chọn cách đọc phù hợp."
+      ],
+      "examples": [
+        "int n; cin >> n; cin.ignore(); getline(cin, s);",
+        "cin.ignore(numeric_limits<streamsize>::max(), '\\n');"
+      ]
+    },
+    {
+      "id": "cout",
+      "title": "6. cout — Xuất kết quả",
+      "summary": "cout ghi dữ liệu ra stdout và có thể nối nhiều phần tử trong cùng một câu lệnh.",
+      "content": [
+        "cout << x dùng để in giá trị của x. Có thể nối nhiều toán tử << để in nhiều phần liên tiếp.",
+        "cout không tự thêm khoảng trắng giữa các giá trị. Nếu muốn cách nhau bằng space, phải tự viết ' '.",
+        "cout cũng không tự thêm newline sau mỗi lần in. Nếu cần xuống dòng, dùng '\\n'.",
+        "Trong contest, nên ưu tiên '\\n' thay cho endl vì endl vừa xuống dòng vừa flush output buffer.",
+        "Có thể dùng cout << fixed << setprecision(k) để điều khiển cách hiển thị số thực."
+      ],
+      "examples": [
+        "cout << a << ' ' << b << '\\n';",
+        "cout << fixed << setprecision(9) << answer << '\\n';",
+        "cout << \"YES\\n\";"
+      ]
+    },
+    {
+      "id": "number-format",
+      "title": "7. In số thực và setprecision",
+      "summary": "Khi đề yêu cầu sai số, cần kiểm soát số chữ số sau dấu phẩy.",
+      "content": [
+        "Mặc định, cout không nhất thiết in đủ số chữ số thập phân mà đề yêu cầu.",
+        "fixed yêu cầu hiển thị theo dạng thập phân cố định. setprecision(k) khi kết hợp với fixed sẽ in k chữ số sau dấu phẩy.",
+        "Ví dụ cout << fixed << setprecision(9) << x; sẽ in đúng 9 chữ số sau dấu thập phân.",
+        "Muốn dùng setprecision cần include <iomanip>.",
+        "Trong các bài yêu cầu đáp án thực với sai số, thường in nhiều chữ số hơn mức tối thiểu là cách an toàn, miễn là format của đề cho phép."
+      ],
+      "examples": [
+        "double x = 1.0 / 3.0;",
+        "cout << fixed << setprecision(9) << x << '\\n';",
+        "Kết quả có dạng 0.333333333."
+      ]
+    },
+    {
+      "id": "multiple-tests",
+      "title": "8. Nhiều test case",
+      "summary": "Dạng t test là format cực kỳ phổ biến: đọc t rồi xử lý từng test độc lập.",
+      "content": [
+        "Nếu dòng đầu của Input chứa t, ta thường viết cin >> t rồi lặp while (t--) để xử lý từng test.",
+        "Biến và dữ liệu của mỗi test nên được khởi tạo lại bên trong vòng lặp nếu chúng không cần dùng giữa các test.",
+        "Một lỗi phổ biến là đọc thiếu một biến trong một test. Khi đó toàn bộ các token của test sau sẽ bị lệch và chương trình có thể cho kết quả sai hoàn toàn.",
+        "Hãy đối chiếu code với format Input: nếu mỗi test gồm n rồi n số, vòng lặp của test phải đọc đúng n số trước khi chuyển sang test tiếp theo."
+      ],
+      "examples": [
+        "int t; cin >> t; while (t--) solve();",
+        "for (int tc = 1; tc <= t; ++tc) { ... }"
+      ]
+    },
+    {
+      "id": "eof",
+      "title": "9. Đọc tới EOF",
+      "summary": "Không phải bài nào cũng cho sẵn số lượng test; đôi khi dữ liệu kết thúc khi cin không đọc được nữa.",
+      "content": [
+        "EOF (End Of File) nghĩa là đã đi tới cuối dữ liệu đầu vào.",
+        "Nếu đề không cho t mà yêu cầu xử lý mọi số cho tới hết Input, có thể dùng while (cin >> x).",
+        "Điều kiện cin >> x vừa thực hiện thao tác đọc vừa kiểm tra việc đọc có thành công hay không.",
+        "Đây là một pattern rất hữu ích cho các bài có số lượng dữ liệu không biết trước.",
+        "Không nên dùng while (!cin.eof()) để đọc dữ liệu. eofbit chỉ được thiết lập sau khi một thao tác đọc cố gắng vượt qua EOF, nên pattern đó dễ xử lý thừa một vòng."
+      ],
+      "examples": [
+        "int x; while (cin >> x) { ... }",
+        "long long x; while (cin >> x) sum += x;"
       ]
     },
     {
       "id": "fast-io",
-      "title": "Fast I/O",
-      "summary": "Tắt đồng bộ iostream với stdio và untie cin khỏi cout.",
+      "title": "10. Fast I/O — Vì sao cần tối ưu?",
+      "summary": "Khi lượng dữ liệu rất lớn, chi phí đọc và ghi có thể trở thành bottleneck dù thuật toán đã đủ nhanh.",
       "content": [
-        "ios_base::sync_with_stdio(false) tách C++ stream khỏi printf/scanf. Đừng trộn cin với scanf sau đó.",
-        "cin.tie(nullptr) để cin không flush cout trước mỗi lần đọc. Quan trọng khi n = 1e6.",
-        "endl flush buffer; trong contest dùng '\\n'.",
-        "Fast I/O không thay thuật toán chậm. O(N^2) vẫn TLE dù I/O nhanh."
+        "iostream của C++ có cơ chế đồng bộ với C stdio. Điều này giúp việc sử dụng cin/cout và scanf/printf cùng nhau có hành vi tương thích hơn, nhưng có thêm overhead.",
+        "Trong Competitive Programming, nếu chỉ dùng cin/cout, ta thường có thể tắt synchronization để giảm overhead bằng ios_base::sync_with_stdio(false);.",
+        "Dòng cin.tie(nullptr); tách cin khỏi cout. Bình thường cin có thể flush cout trước khi đọc để hỗ trợ các chương trình tương tác; trong bài non-interactive, việc này thường không cần thiết.",
+        "Hai dòng thường xuất hiện ở đầu main là ios_base::sync_with_stdio(false); và cin.tie(nullptr);.",
+        "Fast I/O chỉ giảm thời gian đọc ghi. Nó không biến một thuật toán O(N^2) thành O(N). Nếu thuật toán sai về độ phức tạp thì tối ưu I/O không cứu được."
       ],
       "examples": [
         "ios_base::sync_with_stdio(false);",
         "cin.tie(nullptr);"
+      ]
+    },
+    {
+      "id": "sync-warning",
+      "title": "11. Không trộn cin/cout với scanf/printf một cách tùy tiện",
+      "summary": "Sau khi tắt synchronization, không nên trộn C stdio và C++ iostream trong cùng chương trình.",
+      "content": [
+        "Khi gọi ios_base::sync_with_stdio(false), cin/cout không còn được đồng bộ với scanf/printf như trước.",
+        "Vì vậy, nếu đã chọn cin/cout thì nên dùng nhất quán cin/cout trong toàn bộ chương trình.",
+        "Tương tự, nếu chọn scanf/printf thì có thể dùng cặp đó xuyên suốt.",
+        "Trong contest hiện đại, cin/cout với fast I/O thường đủ nhanh cho phần lớn bài nên không có lý do phải trộn hai hệ thống."
+      ],
+      "examples": [
+        "Tốt: cin/cout + sync_with_stdio(false).",
+        "Tốt: scanf/printf xuyên suốt.",
+        "Nên tránh: cin sau đó scanf rồi lại cout khi đã tắt synchronization."
+      ]
+    },
+    {
+      "id": "endl",
+      "title": "12. '\\n' và endl khác nhau thế nào?",
+      "summary": "endl xuống dòng và flush buffer; '\\n' chỉ thêm newline.",
+      "content": [
+        "Khi viết cout << endl, C++ không chỉ thêm newline mà còn yêu cầu flush output buffer.",
+        "Flush có nghĩa là đẩy dữ liệu đang nằm trong buffer ra output ngay lập tức. Việc này hữu ích trong một số chương trình tương tác nhưng thường không cần thiết trong bài thông thường.",
+        "Nếu một chương trình in hàng triệu dòng và dùng endl ở mọi dòng, số lần flush lớn có thể làm chương trình chậm đáng kể.",
+        "Trong bài non-interactive, thói quen tốt là dùng '\\n'.",
+        "Trong bài interactive, việc flush đúng thời điểm lại rất quan trọng; khi đó có thể cần endl hoặc cout.flush() tùy protocol của đề."
+      ],
+      "examples": [
+        "cout << answer << '\\n';",
+        "cout << answer << endl;",
+        "cout << answer << '\\n' << flush;"
+      ]
+    },
+    {
+      "id": "interactive-io",
+      "title": "13. I/O trong bài Interactive",
+      "summary": "Interactive khác bài thông thường vì chương trình phải trao đổi dữ liệu theo từng bước với judge.",
+      "content": [
+        "Trong bài interactive, chương trình không nhận toàn bộ Input ngay từ đầu. Sau khi in một query, chương trình phải flush output để judge nhận được query và trả lời.",
+        "Đây là trường hợp mà cin.tie(nullptr) và buffering cần được hiểu rõ thay vì copy máy móc fast I/O.",
+        "Sau khi in query, có thể dùng endl hoặc cout << flush để đảm bảo dữ liệu được gửi đi.",
+        "Bài interactive thường có Idleness Limit Exceeded nếu chương trình chờ dữ liệu trong khi query chưa được flush.",
+        "Với bài non-interactive thông thường, không cần flush thủ công sau mỗi dòng."
+      ],
+      "examples": [
+        "cout << \"? \" << x << endl;",
+        "cout << \"? \" << x << '\\n' << flush;",
+        "cin >> response;"
+      ]
+    },
+    {
+      "id": "io-templates",
+      "title": "14. Template I/O nên dùng trong contest",
+      "summary": "Một template nhỏ, ổn định giúp giảm lỗi và không phải suy nghĩ về I/O trong mỗi bài.",
+      "content": [
+        "Với bài C++ thông thường, có thể bắt đầu main bằng ios_base::sync_with_stdio(false); và cin.tie(nullptr);.",
+        "Nếu có nhiều test, có thể tách phần xử lý thành hàm solve() để main chỉ đọc t và gọi solve.",
+        "Không cần thêm các thủ thuật I/O phức tạp nếu giới hạn Input không lớn.",
+        "Đừng coi fast I/O là một thuật toán. Nó chỉ là một tối ưu hệ thống ở tầng đọc ghi."
+      ],
+      "examples": [
+        "int main() { ios_base::sync_with_stdio(false); cin.tie(nullptr); ... }",
+        "int t; cin >> t; while (t--) solve();"
+      ]
+    },
+    {
+      "id": "input-debugging",
+      "title": "15. Debug Input — Khi code đúng nhưng vẫn WA",
+      "summary": "Nhiều lỗi I/O thực chất là lỗi đọc sai format chứ không phải lỗi thuật toán.",
+      "content": [
+        "Nếu bài cho n, m nhưng code đọc m, n, toàn bộ kích thước ma trận hoặc số lượng vòng lặp có thể bị đảo.",
+        "Nếu bài cho t nhưng quên đọc t, chương trình sẽ coi t như dữ liệu của test đầu tiên.",
+        "Nếu mỗi test có n phần tử mà chỉ đọc n - 1 phần tử, token còn lại sẽ trở thành dữ liệu của test tiếp theo.",
+        "Nếu Input có string chứa khoảng trắng mà dùng cin >> s, dữ liệu sẽ bị cắt tại khoảng trắng đầu tiên.",
+        "Nếu dùng getline ngay sau cin >> thì cần kiểm tra newline còn lại.",
+        "Một kỹ thuật debug đơn giản là in tạm các biến vừa đọc ra stderr hoặc kiểm tra bằng tay một test nhỏ để xác nhận chương trình đang đọc đúng thứ tự."
+      ],
+      "examples": [
+        "Đề: n m -> phải viết cin >> n >> m, không tự suy đoán thứ tự.",
+        "Đề: t test -> đọc t trước khi xử lý test.",
+        "Đề: mỗi test có n số -> phải đọc đủ n số."
+      ]
+    },
+    {
+      "id": "io-complexity",
+      "title": "16. Độ phức tạp của I/O",
+      "summary": "Chi phí đọc ghi phụ thuộc vào lượng dữ liệu; fast I/O chủ yếu giảm hằng số thời gian.",
+      "content": [
+        "Nếu phải đọc N phần tử, riêng việc đọc dữ liệu đã cần xử lý Ω(N) token hoặc ký tự tương ứng. Không có fast I/O nào biến việc phải đọc toàn bộ Input thành O(1).",
+        "Fast I/O giúp giảm constant factor của quá trình đọc ghi.",
+        "Nếu N nhỏ, sự khác biệt thường không đáng kể. Nếu N lên tới hàng triệu hoặc hàng chục triệu token, I/O có thể trở thành một phần đáng kể của runtime.",
+        "Khi tối ưu contest, hãy ưu tiên đúng thứ tự: chọn thuật toán đúng trước, sau đó mới quan tâm đến constant factor như I/O nếu cần."
+      ],
+      "examples": [
+        "Đọc N số bằng cin có chi phí tăng theo N.",
+        "sync_with_stdio(false) giảm overhead của iostream.",
+        "Thay endl bằng '\\n' tránh flush không cần thiết."
+      ]
+    },
+    {
+      "id": "io-checklist",
+      "title": "17. Checklist I/O trước khi nộp",
+      "summary": "Một checklist ngắn giúp tránh các lỗi I/O rất cơ bản nhưng dễ mất bài.",
+      "content": [
+        "Đã đọc đúng số lượng test chưa?",
+        "Đã đọc đúng thứ tự n, m, k,... theo statement chưa?",
+        "Mỗi test đã đọc đủ số phần tử chưa?",
+        "String có chứa khoảng trắng không? Nếu có, cin >> hay getline mới đúng?",
+        "Có chuyển từ cin >> sang getline không? Nếu có, newline đã được xử lý chưa?",
+        "Có cần fast I/O vì Input rất lớn không?",
+        "Có đang dùng endl hàng loạt không?",
+        "Có vô tình trộn scanf/printf với cin/cout sau khi tắt synchronization không?",
+        "Output có thừa space, thiếu newline hoặc sai format không?",
+        "Nếu là interactive, sau query đã flush chưa?"
+      ],
+      "examples": [
+        "Bài bình thường: sync_with_stdio(false), cin.tie(nullptr), dùng '\\n'.",
+        "Bài nhiều test: cin >> t; while (t--) solve();",
+        "Bài EOF: while (cin >> x) { ... }"
       ]
     }
   ],
@@ -45,23 +310,99 @@
     {
       "title": "Đọc n = 3 rồi cộng 2 4 6",
       "steps": [
+        "Input: 3\\n2 4 6.",
         "Bật fast I/O.",
-        "Đọc n = 3.",
-        "Đọc 2, sum = 2; đọc 4, sum = 6; đọc 6, sum = 12.",
-        "In 12 và xuống dòng."
+        "cin >> n đọc token đầu tiên: n = 3.",
+        "Vòng lặp lần 1 đọc x = 2, sum = 2.",
+        "Vòng lặp lần 2 đọc x = 4, sum = 6.",
+        "Vòng lặp lần 3 đọc x = 6, sum = 12.",
+        "cout << sum << '\\n' in 12 và kết thúc dòng."
+      ]
+    },
+    {
+      "title": "cin >> string và getline",
+      "steps": [
+        "Input: Hello World.",
+        "Nếu dùng cin >> s, s nhận 'Hello' vì cin dừng token tại space.",
+        "Nếu dùng getline(cin, s), s nhận toàn bộ 'Hello World'.",
+        "Vì vậy cần chọn cách đọc dựa trên format của đề chứ không phải thói quen."
+      ]
+    },
+    {
+      "title": "cin >> n rồi getline",
+      "steps": [
+        "Input: 5\\nHello World.",
+        "cin >> n đọc 5 và dừng trước newline.",
+        "newline vẫn còn trong stream.",
+        "getline(cin, s) gặp newline ngay lập tức nên s = ''.",
+        "Gọi cin.ignore() trước getline để bỏ newline.",
+        "Sau đó getline đọc được 'Hello World'."
+      ]
+    },
+    {
+      "title": "Nhiều test case",
+      "steps": [
+        "Input: 3\\n2\\n4\\n6.",
+        "Đọc t = 3.",
+        "Test 1: đọc n = 2, xử lý xong.",
+        "Test 2: đọc n = 4, xử lý xong.",
+        "Test 3: đọc n = 6, xử lý xong.",
+        "Sau while (t--) kết thúc, chương trình không còn test nào."
+      ]
+    },
+    {
+      "title": "Đọc tới EOF",
+      "steps": [
+        "Input: 5 8 2 10.",
+        "while (cin >> x) đọc x = 5.",
+        "Tiếp tục đọc x = 8.",
+        "Tiếp tục đọc x = 2.",
+        "Tiếp tục đọc x = 10.",
+        "Lần đọc tiếp theo không còn dữ liệu nên cin >> x thất bại.",
+        "Vòng while kết thúc."
+      ]
+    },
+    {
+      "title": "Vì sao endl có thể chậm",
+      "steps": [
+        "Giả sử chương trình cần in 1.000.000 dòng.",
+        "Nếu mỗi dòng dùng endl, mỗi lần đều yêu cầu flush buffer.",
+        "Số lần flush rất lớn và có thể tạo overhead đáng kể.",
+        "Nếu dùng '\\n', các dòng có thể tiếp tục nằm trong buffer và được ghi theo từng đợt.",
+        "Với bài non-interactive, '\\n' thường là lựa chọn phù hợp hơn."
       ]
     }
   ],
   "codeBlocks": [
     {
-      "title": "Fast I/O và cộng n số",
+      "title": "Fast I/O cơ bản và cộng n số",
       "language": "cpp",
-      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    long long sum = 0;\n    for (int i = 0; i < n; ++i) {\n        int x;\n        cin >> x;\n        sum += x;\n    }\n    cout << sum << '\\n';\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n\n    long long sum = 0;\n    for (int i = 0; i < n; ++i) {\n        int x;\n        cin >> x;\n        sum += x;\n    }\n\n    cout << sum << '\\n';\n    return 0;\n}"
     },
     {
-      "title": "Nhiều test",
+      "title": "Nhiều test case với solve()",
       "language": "cpp",
-      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int tests;\n    cin >> tests;\n    while (tests--) {\n        int n;\n        cin >> n;\n        cout << n * 2 << '\\n';\n    }\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve() {\n    int n;\n    cin >> n;\n\n    long long sum = 0;\n    for (int i = 0; i < n; ++i) {\n        int x;\n        cin >> x;\n        sum += x;\n    }\n\n    cout << sum << '\\n';\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int t;\n    cin >> t;\n\n    while (t--) solve();\n\n    return 0;\n}"
+    },
+    {
+      "title": "Đọc tới EOF",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    long long sum = 0;\n    long long x;\n\n    while (cin >> x) {\n        sum += x;\n    }\n\n    cout << sum << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "cin >> n rồi getline",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    string s;\n\n    cin >> n;\n    cin.ignore(numeric_limits<streamsize>::max(), '\\n');\n    getline(cin, s);\n\n    cout << n << '\\n';\n    cout << s << '\\n';\n\n    return 0;\n}"
+    },
+    {
+      "title": "In số thực với độ chính xác cố định",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    double x;\n    cin >> x;\n\n    cout << fixed << setprecision(9) << x << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Interactive I/O cơ bản",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int x;\n    cin >> x;\n\n    cout << \"? \" << x << endl;\n\n    int response;\n    cin >> response;\n\n    cout << \"! \" << response << endl;\n    return 0;\n}"
     }
   ],
   "exercises": [
@@ -69,7 +410,9 @@
       "id": "editorial-cf-158a",
       "name": "158A - Next Round",
       "rating": 800,
-      "tags": ["implementation"],
+      "tags": [
+        "implementation"
+      ],
       "url": "post.html?editorial=editorial-cf-158a",
       "originalUrl": "https://codeforces.com/problemset/problem/158/A"
     },
@@ -77,7 +420,9 @@
       "id": "editorial-cf-1a",
       "name": "1A - Theatre Square",
       "rating": 1000,
-      "tags": ["math"],
+      "tags": [
+        "math"
+      ],
       "url": "post.html?editorial=editorial-cf-1a",
       "originalUrl": "https://codeforces.com/problemset/problem/1/A"
     }

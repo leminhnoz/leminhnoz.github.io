@@ -1,83 +1,445 @@
+
 {
   "id": "binary-search",
   "author": "Le Minh",
   "title": "Binary Search & Binary Search on Answer",
-  "description": "Tìm vị trí hoặc giá trị nhỏ nhất/lớn nhất thỏa điều kiện đơn điệu bằng cách loại một nửa ứng viên mỗi bước.",
+  "description": "Hiểu bản chất của Binary Search: khai thác tính đơn điệu để loại bỏ một nửa không gian tìm kiếm sau mỗi bước. Từ tìm kiếm trên mảng đã sắp xếp đến Binary Search on Answer với hàm check.",
   "category": "Binary Search",
-  "tags": ["binary search", "binary search on answer", "sortings"],
+  "tags": ["binary search", "binary search on answer", "lower bound", "upper bound", "sortings"],
   "level": "Module 1",
   "sections": [
     {
+      "id": "motivation",
+      "title": "1. Vì sao Binary Search mạnh?",
+      "summary": "Binary Search biến một không gian có thứ tự thành bài toán O(log N) bằng cách loại bỏ một nửa ứng viên sau mỗi lần kiểm tra.",
+      "content": [
+        "Giả sử ta có một mảng đã sắp xếp và cần tìm một giá trị. Nếu kiểm tra lần lượt từ trái sang phải, trường hợp xấu nhất phải xem O(N) phần tử.",
+        "Binary Search khai thác việc mảng đã có thứ tự. Sau khi kiểm tra phần tử ở giữa, ta biết toàn bộ một nửa chắc chắn không chứa đáp án và có thể bỏ qua.",
+        "Với N phần tử, sau một bước còn khoảng N/2 ứng viên, sau hai bước còn N/4, rồi N/8,... Sau khoảng log2(N) bước chỉ còn một ứng viên.",
+        "Đó là lý do Binary Search có độ phức tạp O(log N).",
+        "Điểm quan trọng hơn công thức vòng lặp là: Binary Search chỉ hoạt động khi ta có thể chứng minh rằng sau mỗi lần kiểm tra, một nửa không gian tìm kiếm chắc chắn không còn cần xét.",
+        "Trong mảng đã sắp xếp, thứ tự của phần tử tạo ra tính chất này. Trong Binary Search on Answer, tính chất đó đến từ một hàm check đơn điệu."
+      ],
+      "examples": [
+        "Tìm 7 trong [1, 3, 5, 7, 9]: khi thấy 5 < 7, mọi phần tử bên trái 5 cũng < 7 nên có thể bỏ toàn bộ nửa trái.",
+        "Nếu có 1e9 giá trị ứng viên thì Binary Search chỉ cần khoảng 30 lần kiểm tra."
+      ]
+    },
+    {
       "id": "monotonic",
-      "title": "Điều kiện đơn điệu",
-      "summary": "Binary Search chỉ đúng khi không gian tìm kiếm có dạng sai-sai-đúng-đúng hoặc ngược lại.",
+      "title": "2. Điều kiện cốt lõi: tính đơn điệu",
+      "summary": "Muốn Binary Search đúng, kết quả kiểm tra phải có dạng một đoạn false rồi một đoạn true, hoặc ngược lại.",
       "content": [
-        "Mỗi lần lấy mid, so sánh rồi bỏ hẳn một nửa. Vì vậy số bước là O(log N).",
-        "Tìm vị trí trên mảng: mảng phải đã sắp. Tìm phần tử đầu tiên >= x chính là lower_bound.",
-        "Binary Search on Answer: không tìm index mà tìm giá trị đáp án. Viết hàm check(x) trả true/false đơn điệu.",
-        "Dùng mid = left + (right - left) / 2 để tránh overflow khi left + right vượt int."
+        "Tính đơn điệu là điều kiện quan trọng nhất của Binary Search.",
+        "Với một hàm check(x), dạng phổ biến nhất là: false, false, ..., false, true, true, ..., true.",
+        "Khi đó tồn tại một ngưỡng. Mọi x nhỏ hơn ngưỡng đều sai, mọi x từ ngưỡng trở đi đều đúng.",
+        "Ta có thể tìm giá trị true đầu tiên bằng Binary Search.",
+        "Dạng ngược lại cũng có thể xảy ra: true, true, ..., true, false, false, ..., false. Khi đó ta thường tìm true cuối cùng.",
+        "Nếu kết quả có dạng false, true, false, true hoặc true, false, true thì Binary Search không thể đơn giản áp dụng vì không có một ngưỡng duy nhất để thu hẹp.",
+        "Đừng bắt đầu bằng việc nhớ template. Hãy bắt đầu bằng câu hỏi: 'Nếu check(mid) đúng/sai thì điều gì chắc chắn xảy ra với các giá trị bên trái hoặc bên phải mid?'"
       ],
       "examples": [
-        "check(x) = (có thể đạt median >= x)",
-        "nếu check(mid) thì right = mid, else left = mid + 1"
+        "check(x) = 'Có thể đạt đáp án ít nhất x không?' thường có dạng false -> true khi x tăng.",
+        "check(x) = 'Có thể hoàn thành trong thời gian x không?' thường có dạng false -> true: thời gian quá ít thì không thể, đủ lớn thì có thể.",
+        "Một hàm ngẫu nhiên như check(x) = 'x có phải số nguyên tố không?' không đơn điệu nên không thể Binary Search trực tiếp trên x."
       ]
     },
     {
-      "id": "templates",
-      "title": "Hai khuôn while thường dùng",
-      "summary": "Chọn khuôn theo việc bạn tìm vị trí đầu tiên đúng hay vị trí cuối cùng đúng.",
+      "id": "search-array",
+      "title": "3. Binary Search trên mảng đã sắp xếp",
+      "summary": "Tìm một giá trị trong mảng sorted bằng cách liên tục giữ lại nửa có khả năng chứa đáp án.",
       "content": [
-        "Khuôn left <= right: khi tìm thấy có thể ghi nhận rồi thu hẹp tiếp. Kết thúc khi left > right.",
-        "Khuôn left < right với right = mid: tìm giá trị nhỏ nhất thỏa check. Invariant: đáp án nằm trong [left, right].",
-        "Khi left và right kề nhau, phải bảo đảm mid tiến lên, tránh vòng lặp vô hạn. Nếu mid = left khi dùng (left+right)/2, hãy viết left = mid + 1."
+        "Với mảng tăng dần, nếu a[mid] < target thì target chắc chắn nằm bên phải mid nếu nó tồn tại.",
+        "Nếu a[mid] > target thì target chắc chắn nằm bên trái mid.",
+        "Nếu a[mid] == target thì ta đã tìm thấy một vị trí của target.",
+        "Đây là dạng Binary Search cơ bản nhất.",
+        "Với mảng giảm dần, hướng cập nhật left/right phải đảo lại.",
+        "Trong C++, thư viện algorithm cung cấp lower_bound và upper_bound cho mảng hoặc range đã sắp xếp."
       ],
       "examples": [
-        "while (left < right) { int mid = (left + right) / 2; if (check(mid)) right = mid; else left = mid + 1; }"
+        "a = [1, 3, 5, 7, 9], target = 7.",
+        "mid = 2, a[2] = 5 < 7 nên loại [0, 2].",
+        "mid = 3, a[3] = 7 nên tìm thấy target tại index 3."
       ]
     },
     {
-      "id": "bs-answer",
-      "title": "Binary Search on Answer",
-      "summary": "Chốt một ứng viên mid rồi kiểm tra tham lam hoặc mô phỏng.",
+      "id": "lower-upper",
+      "title": "4. lower_bound và upper_bound",
+      "summary": "Hai biến thể cực kỳ quan trọng: lower_bound tìm phần tử đầu tiên >= x, upper_bound tìm phần tử đầu tiên > x.",
       "content": [
-        "Đặt miền [low, high] đủ rộng: thường 0 .. 1e18 hoặc min(a)..max(a)+k.",
-        "check(x) phải chạy đủ nhanh, thường O(N) hoặc O(N log N), vì sẽ gọi O(log MAX) lần.",
-        "Sau vòng lặp, left (hoặc right tùy khuôn) là đáp án. Hãy chứng minh check đơn điệu trước khi code."
+        "lower_bound(x) là vị trí đầu tiên i sao cho a[i] >= x.",
+        "upper_bound(x) là vị trí đầu tiên i sao cho a[i] > x.",
+        "Nếu x xuất hiện nhiều lần, lower_bound trỏ vào phần tử x đầu tiên.",
+        "Nếu x xuất hiện nhiều lần, upper_bound trỏ vào vị trí ngay sau phần tử x cuối cùng.",
+        "Số phần tử bằng x có thể tính bằng upper_bound(x) - lower_bound(x).",
+        "Số phần tử nhỏ hơn x chính là lower_bound(x).",
+        "Số phần tử nhỏ hơn hoặc bằng x chính là upper_bound(x).",
+        "Nếu cả hai iterator đều trỏ về end(), nghĩa là không có phần tử nào đủ lớn theo điều kiện tương ứng.",
+        "Các hàm này chạy O(log N) trên random-access iterator của vector."
       ],
       "examples": [
-        "1201C Maximum Median: check(mid) = số phép tăng cần thiết <= k"
+        "a = [1, 2, 2, 2, 5, 7]. lower_bound(2) = index 1.",
+        "upper_bound(2) = index 4.",
+        "Có 4 - 1 = 3 phần tử bằng 2.",
+        "lower_bound(4) = index 4 vì a[4] = 5 là phần tử đầu tiên >= 4.",
+        "upper_bound(5) = index 5 vì a[5] = 7 là phần tử đầu tiên > 5."
+      ]
+    },
+    {
+      "id": "invariant",
+      "title": "5. Invariant: cách hiểu Binary Search một cách chắc chắn",
+      "summary": "Invariant mô tả điều luôn đúng trong suốt vòng lặp và giúp tránh lỗi cập nhật left/right.",
+      "content": [
+        "Một Binary Search tốt không chỉ có code chạy được mà còn có một invariant rõ ràng.",
+        "Invariant đơn giản nhất: đáp án chắc chắn nằm trong đoạn [left, right].",
+        "Mỗi vòng lặp ta chọn mid nằm trong đoạn hiện tại, kiểm tra mid, rồi loại một phần mà ta biết chắc không chứa đáp án.",
+        "Nếu check(mid) cho biết mid và toàn bộ bên phải đều hợp lệ, ta có thể giữ mid và bỏ phần bên phải trong bài toán tìm minimum: right = mid.",
+        "Nếu check(mid) không hợp lệ và ta biết mọi giá trị <= mid đều không hợp lệ, ta bỏ chúng: left = mid + 1.",
+        "Việc dùng right = mid thay vì right = mid - 1 phụ thuộc vào việc mid còn có thể là đáp án hay không.",
+        "Đây là nguyên nhân nhiều Binary Search sai: người viết không xác định rõ mid có còn là ứng viên hay không."
+      ],
+      "examples": [
+        "Tìm true đầu tiên: nếu check(mid) = true thì mid vẫn có thể là đáp án, nên right = mid.",
+        "Nếu check(mid) = false thì mid chắc chắn không phải đáp án, nên left = mid + 1."
+      ]
+    },
+    {
+      "id": "first-true",
+      "title": "6. Template: tìm giá trị đúng đầu tiên",
+      "summary": "Dùng khi check(x) có dạng false -> true và cần giá trị nhỏ nhất thỏa điều kiện.",
+      "content": [
+        "Đây là template quan trọng nhất của Binary Search on Answer.",
+        "Ta duy trì đáp án trong [left, right].",
+        "Nếu check(mid) đúng, mid có thể chính là đáp án hoặc vẫn còn một đáp án nhỏ hơn, nên right = mid.",
+        "Nếu check(mid) sai, mid chắc chắn không phải đáp án và mọi giá trị nhỏ hơn mid cũng sai, nên left = mid + 1.",
+        "Khi left == right, đoạn ứng viên chỉ còn một giá trị. Vì invariant đảm bảo đáp án nằm trong đoạn, left chính là đáp án.",
+        "Template: while (left < right) { mid = left + (right - left) / 2; if (check(mid)) right = mid; else left = mid + 1; }",
+        "Template này thường dễ chứng minh hơn kiểu left <= right vì nó trực tiếp duy trì đoạn chứa đáp án."
+      ],
+      "examples": [
+        "Tìm thời gian nhỏ nhất để hoàn thành công việc.",
+        "Tìm capacity nhỏ nhất để vận chuyển toàn bộ hàng.",
+        "Tìm giá trị nhỏ nhất x sao cho có thể đạt được x."
+      ]
+    },
+    {
+      "id": "last-true",
+      "title": "7. Template: tìm giá trị đúng cuối cùng",
+      "summary": "Dùng khi check(x) có dạng true -> false và cần giá trị lớn nhất vẫn thỏa điều kiện.",
+      "content": [
+        "Nếu check(x) đúng với các giá trị nhỏ và sai với các giá trị lớn, ta có thể tìm true cuối cùng.",
+        "Ta duy trì đáp án trong [left, right].",
+        "Nếu check(mid) đúng, mid vẫn có thể là đáp án và có thể còn giá trị lớn hơn cũng đúng, nên left = mid.",
+        "Nếu check(mid) sai, mid và các giá trị bên phải không thể là đáp án, nên right = mid - 1.",
+        "Có một vấn đề: nếu dùng mid = (left + right) / 2 và left, right kề nhau, mid có thể bằng left. Khi check(mid) đúng rồi gán left = mid, vòng lặp không tiến.",
+        "Vì vậy với template này nên dùng mid = left + (right - left + 1) / 2 để mid nghiêng về bên phải.",
+        "Template: while (left < right) { mid = left + (right - left + 1) / 2; if (check(mid)) left = mid; else right = mid - 1; }"
+      ],
+      "examples": [
+        "Tìm số tiền lớn nhất vẫn có thể chi trả.",
+        "Tìm giá trị lớn nhất x sao cho chi phí cần thiết <= k.",
+        "Tìm vị trí cuối cùng mà điều kiện vẫn đúng."
+      ]
+    },
+    {
+      "id": "answer-space",
+      "title": "8. Binary Search on Answer là gì?",
+      "summary": "Không tìm trực tiếp vị trí trong dữ liệu mà tìm giá trị của đáp án bằng cách kiểm tra từng ứng viên.",
+      "content": [
+        "Binary Search on Answer xuất hiện khi đáp án là một số nguyên hoặc một giá trị có thứ tự, nhưng không dễ tìm trực tiếp.",
+        "Ta đặt một ứng viên x và xây dựng hàm check(x) trả lời câu hỏi: 'Có thể đạt được đáp án x hay không?'",
+        "Nếu check(x) có tính đơn điệu, ta có thể Binary Search trên x thay vì duyệt tất cả giá trị.",
+        "Quy trình gồm bốn bước: xác định miền đáp án, chứng minh tính đơn điệu, viết check(x), sau đó Binary Search.",
+        "Đây là kỹ thuật cực kỳ quan trọng trong các bài có dạng 'giá trị lớn nhất có thể', 'giá trị nhỏ nhất cần thiết', 'thời gian tối thiểu', 'capacity tối thiểu', 'kích thước lớn nhất có thể'.",
+        "Phần khó nhất thường không phải Binary Search mà là nghĩ ra đúng check(x)."
+      ],
+      "examples": [
+        "1201C Maximum Median: tìm median lớn nhất có thể đạt được sau tối đa k phép tăng.",
+        "Một bài chia mảng thành các đoạn: tìm tổng lớn nhất của một đoạn sao cho vẫn chia được thành không quá k phần.",
+        "Một bài vận chuyển: tìm capacity nhỏ nhất để hoàn thành toàn bộ hàng trong giới hạn số ngày."
+      ]
+    },
+    {
+      "id": "check",
+      "title": "9. Cách xây dựng hàm check(x)",
+      "summary": "Hãy coi x là đáp án giả định và kiểm tra xem việc đạt x có khả thi hay không.",
+      "content": [
+        "Bước đầu tiên là giả sử đáp án bằng x.",
+        "Sau đó hỏi: để đạt x, ta phải làm gì? Tính số thao tác, số ngày, số đoạn, tổng chi phí hoặc một đại lượng tương tự.",
+        "Nếu đại lượng cần thiết <= giới hạn cho phép thì check(x) = true.",
+        "Nếu đại lượng cần thiết > giới hạn thì check(x) = false.",
+        "Sau đó phải chứng minh tính đơn điệu: nếu x khả thi thì mọi giá trị nhỏ hơn x có khả thi không, hoặc ngược lại.",
+        "Ví dụ nếu check(x) nghĩa là 'có thể đạt giá trị ít nhất x', khi x tăng thì yêu cầu thường không giảm. Vì vậy một khi x không thể đạt thì các giá trị lớn hơn cũng không thể đạt.",
+        "check(x) phải đủ nhanh. Nếu check O(N) và Binary Search O(log M) lần thì tổng là O(N log M)."
+      ],
+      "examples": [
+        "Nếu cần tăng các phần tử lên ít nhất x và tổng số phép tăng không vượt k, ta tính need = tổng max(0, x - a[i]) trên những phần tử cần tăng.",
+        "Nếu need <= k thì x khả thi.",
+        "Khi x tăng, need không giảm, nên check có dạng true -> false."
+      ]
+    },
+    {
+      "id": "maximum-median",
+      "title": "10. Ví dụ kinh điển: Maximum Median",
+      "summary": "Binary Search trên giá trị median và dùng check để tính số phép tăng tối thiểu.",
+      "content": [
+        "Sau khi sort mảng, median của mảng có thể được xét tại vị trí n / 2.",
+        "Ta muốn tìm median lớn nhất có thể đạt được bằng cách tăng tổng cộng không quá k đơn vị.",
+        "Giả sử muốn median ít nhất mid. Các phần tử từ vị trí n / 2 trở đi nếu nhỏ hơn mid phải được tăng lên mid.",
+        "Số phép tăng cần thiết là need = tổng max(0, mid - a[i]) với i từ n / 2 đến n - 1.",
+        "Nếu need <= k thì mid khả thi.",
+        "Nếu need > k thì mid không khả thi.",
+        "Khi mid tăng, need không giảm. Vì vậy check(mid) có dạng true -> false.",
+        "Ta cần tìm mid lớn nhất vẫn true, nên sử dụng template last true.",
+        "Trong code, miền tìm kiếm có thể bắt đầu từ a[n / 2] và kết thúc ở a[n / 2] + k vì không thể tăng median quá k đơn vị."
+      ],
+      "examples": [
+        "a = [1, 3, 5], k = 2.",
+        "Median hiện tại là 3.",
+        "Thử mid = 4: cần tăng 3 -> 4, tốn 1 <= 2 nên check(4) = true.",
+        "Thử mid = 5: cần tăng 3 -> 5, tốn 2 <= 2 nên check(5) = true.",
+        "Thử mid = 6: cần tăng 3 -> 6, tốn 3 > 2 nên check(6) = false.",
+        "Vậy đáp án là 5."
+      ]
+    },
+    {
+      "id": "bounds",
+      "title": "11. Chọn miền Binary Search",
+      "summary": "Miền [left, right] phải chứa chắc chắn đáp án; miền quá nhỏ có thể làm mất đáp án, quá rộng chỉ làm tăng số lần check.",
+      "content": [
+        "Trước khi code, phải xác định cận dưới và cận trên của đáp án.",
+        "Nếu tìm giá trị nhỏ nhất thỏa điều kiện, left có thể là 0 hoặc một giá trị hiển nhiên nhỏ nhất.",
+        "Nếu tìm giá trị lớn nhất, right có thể là một giới hạn từ đề bài hoặc một cận được suy ra.",
+        "Không nên tùy tiện dùng 1e18 nếu không cần thiết, nhưng dùng một cận an toàn là hoàn toàn được nếu kiểu dữ liệu đủ lớn.",
+        "Một kỹ thuật phổ biến là dùng exponential search để tìm cận trên khi chưa biết right: bắt đầu từ 1 rồi nhân đôi cho tới khi check(right) đúng hoặc sai theo yêu cầu.",
+        "Trong nhiều bài, cận có thể suy ra trực tiếp từ dữ liệu: ví dụ Maximum Median có right = median + k.",
+        "Luôn kiểm tra nguy cơ overflow khi tính mid hoặc các biểu thức trong check."
+      ],
+      "examples": [
+        "Maximum Median: left = a[n / 2], right = a[n / 2] + k.",
+        "Tìm capacity tối thiểu: left có thể là max(a[i]), right có thể là tổng toàn bộ phần tử.",
+        "Tìm thời gian tối thiểu: left = 0, right có thể là một cận lớn đủ an toàn."
+      ]
+    },
+    {
+      "id": "complexity",
+      "title": "12. Độ phức tạp",
+      "summary": "Binary Search cần O(log M) lần kiểm tra trên miền có M giá trị.",
+      "content": [
+        "Nếu không gian tìm kiếm có M giá trị, Binary Search cần O(log M) bước.",
+        "Nếu mỗi check(x) có độ phức tạp O(N), tổng độ phức tạp là O(N log M).",
+        "Nếu check(x) có độ phức tạp O(N log N), tổng là O(N log N log M).",
+        "Binary Search trên mảng đã sort có O(log N) cho mỗi truy vấn.",
+        "Nếu phải sort trước, tổng chi phí thường là O(N log N) + O(Q log N).",
+        "Bộ nhớ của Binary Search tự thân là O(1), không tính dữ liệu mà check cần dùng."
+      ],
+      "examples": [
+        "N = 2 * 10^5, check = O(N), miền đáp án khoảng 1e18 => khoảng 60 lần check, tổng khoảng O(60N).",
+        "Tìm kiếm trực tiếp trong mảng sorted => O(log N) mỗi query."
+      ]
+    },
+    {
+      "id": "overflow",
+      "title": "13. Overflow và cách viết mid an toàn",
+      "summary": "left + right có thể overflow nếu hai đầu mút lớn, vì vậy nên tính mid theo khoảng cách.",
+      "content": [
+        "Không nên viết mid = (left + right) / 2 nếu left và right có thể lớn đến gần giới hạn kiểu dữ liệu.",
+        "Cách an toàn hơn là mid = left + (right - left) / 2.",
+        "Khi tìm last true, dùng mid = left + (right - left + 1) / 2 để mid nghiêng phải.",
+        "Ngoài mid, các phép cộng trong check cũng có thể overflow. Ví dụ need += mid - a[i] có thể vượt long long nếu dữ liệu rất lớn.",
+        "Có thể dừng sớm khi need vượt k để tránh tính tiếp và đồng thời hạn chế overflow.",
+        "Chọn kiểu dữ liệu dựa trên giá trị trung gian, không chỉ dựa trên giá trị cuối cùng."
+      ],
+      "examples": [
+        "left = 4e18, right = 8e18: left + right có thể vượt long long, trong khi right - left vẫn an toàn nếu miền hợp lệ.",
+        "Trong check, nếu need > k thì return false ngay thay vì tiếp tục cộng thêm."
+      ]
+    },
+    {
+      "id": "pitfalls",
+      "title": "14. Những lỗi Binary Search thường gặp",
+      "summary": "Phần lớn WA đến từ sai invariant, sai điều kiện biên hoặc dùng Binary Search khi không có tính đơn điệu.",
+      "content": [
+        "Dùng Binary Search trên dữ liệu chưa có thứ tự mà không có một tính chất đơn điệu khác.",
+        "Không chứng minh check đơn điệu nhưng vẫn code Binary Search on Answer.",
+        "Nhầm giữa tìm first true và last true.",
+        "Dùng right = mid - 1 trong bài tìm first true, làm mất trường hợp mid chính là đáp án.",
+        "Dùng left = mid trong template last true nhưng lại dùng mid nghiêng trái, gây vòng lặp vô hạn khi left + 1 = right.",
+        "Quên xử lý trường hợp không tồn tại đáp án.",
+        "Đặt miền tìm kiếm không chứa đáp án.",
+        "Dùng int trong khi đáp án hoặc tổng trung gian cần long long.",
+        "Nhầm lower_bound với upper_bound.",
+        "Quên rằng vector index bắt đầu từ 0 trong khi một số bài hoặc cấu trúc dữ liệu khác dùng 1-based.",
+        "Trong Binary Search on Answer, viết check quá chậm khiến O(N log M) trở thành không đủ nhanh."
+      ],
+      "examples": [
+        "while (left < right) với right = mid phải đi cùng việc mid có thể là đáp án.",
+        "Nếu dùng left = mid thì nên dùng mid = left + (right - left + 1) / 2.",
+        "Nếu không tồn tại first true, template vẫn có thể trả right ban đầu; cần kiểm tra kết quả sau Binary Search tùy bài."
+      ]
+    },
+    {
+      "id": "when-not",
+      "title": "15. Khi nào không nên dùng Binary Search?",
+      "summary": "Không phải bài nào có số lớn cũng cần Binary Search.",
+      "content": [
+        "Không dùng Binary Search chỉ vì N lớn hoặc đáp án là số.",
+        "Nếu check(x) không đơn điệu, Binary Search không có cơ sở để loại một nửa ứng viên.",
+        "Nếu có công thức O(1) trực tiếp thì công thức thường tốt hơn Binary Search.",
+        "Nếu cần tìm trên dữ liệu không có thứ tự và cũng không có tính đơn điệu, có thể cần hash, sort, two pointers, graph, dynamic programming hoặc cấu trúc dữ liệu khác.",
+        "Nếu mỗi lần check cần O(N^2), Binary Search có thể vẫn quá chậm dù số lần check chỉ O(log M).",
+        "Luôn xét tổng độ phức tạp: số lần check × chi phí một check."
+      ],
+      "examples": [
+        "Tìm phần tử xuất hiện trong unordered set không cần Binary Search.",
+        "Kiểm tra một số có nguyên tố hay không không tạo ra hàm đơn điệu theo giá trị số, nên không thể Binary Search trên đáp án theo cách thông thường.",
+        "Tìm minimum của mảng không cần Binary Search nếu chỉ cần duyệt O(N)."
+      ]
+    },
+    {
+      "id": "advanced-patterns",
+      "title": "16. Các pattern Binary Search cần nhận ra trong đề",
+      "summary": "Nhìn vào cách đề hỏi để đoán hướng Binary Search.",
+      "content": [
+        "Pattern 1: 'Tìm phần tử đầu tiên >= x' -> lower_bound.",
+        "Pattern 2: 'Tìm phần tử đầu tiên > x' -> upper_bound.",
+        "Pattern 3: 'Tìm giá trị nhỏ nhất thỏa điều kiện' -> first true.",
+        "Pattern 4: 'Tìm giá trị lớn nhất thỏa điều kiện' -> last true.",
+        "Pattern 5: 'Có thể hoàn thành trong X ngày không?' -> Binary Search thời gian hoặc capacity.",
+        "Pattern 6: 'Chia thành không quá k đoạn, tối ưu giá trị lớn nhất/nhỏ nhất' -> thường kiểm tra một đáp án giả định rồi Binary Search.",
+        "Pattern 7: 'Tìm k-th theo thứ tự' -> có thể Binary Search trên giá trị nếu có cách đếm số phần tử <= x đủ nhanh.",
+        "Pattern 8: 'Tìm local minimum trong mảng đặc biệt' -> có thể Binary Search dựa trên hướng giảm thay vì giá trị đơn điệu toàn cục."
+      ],
+      "examples": [
+        "706B - Interesting drink: sort giá tiền rồi dùng upper_bound để đếm số đồ uống có giá <= tiền.",
+        "474B - Worms: prefix sum + lower_bound để tìm viên đạn thuộc đống nào.",
+        "1201C - Maximum Median: Binary Search on Answer.",
+        "1480C - Searching Local Minimum: Binary Search dựa trên việc so sánh hàng xóm."
+      ]
+    },
+    {
+      "id": "proof",
+      "title": "17. Cách chứng minh Binary Search trong bài thi",
+      "summary": "Một lời giải Binary Search tốt cần chứng minh miền tìm kiếm, tính đơn điệu và ý nghĩa của kết quả.",
+      "content": [
+        "Bước 1: Chứng minh đáp án nằm trong [left, right].",
+        "Bước 2: Định nghĩa chính xác check(x). Ví dụ: check(x) = 'có thể đạt ít nhất x'.",
+        "Bước 3: Chứng minh tính đơn điệu. Ví dụ nếu đạt được x thì chắc chắn đạt được mọi y < x.",
+        "Bước 4: Chọn first true hoặc last true tùy dạng đơn điệu.",
+        "Bước 5: Chứng minh mỗi lần cập nhật đều giữ invariant rằng đáp án vẫn nằm trong miền còn lại.",
+        "Bước 6: Khi vòng lặp kết thúc, miền chỉ còn một giá trị hoặc left/right nằm ở ranh giới cần tìm.",
+        "Nếu không thể giải thích được tại sao một nửa có thể bị loại, khả năng cao Binary Search chưa được áp dụng đúng."
+      ],
+      "examples": [
+        "Maximum Median: nếu median >= x có thể đạt được thì mọi y <= x cũng có thể đạt được bằng cách thực hiện ít phép tăng hơn hoặc bằng.",
+        "Do đó check(x) là true -> false khi x tăng và cần tìm true cuối cùng."
       ]
     }
   ],
   "dryRun": [
     {
-      "title": "Tìm 7 trong [1, 3, 5, 7, 9]",
+      "title": "1. Tìm 7 trong [1, 3, 5, 7, 9]",
       "steps": [
-        "left = 0, right = 4, mid = 2, a[2] = 5 < 7 nên left = 3.",
-        "mid = 3, a[3] = 7. Tìm thấy tại index 3.",
-        "Nếu tìm first occurrence, vẫn gán answer = 3 rồi right = 2 để xem còn phần tử 7 bên trái không."
+        "left = 0, right = 4.",
+        "mid = 2, a[2] = 5.",
+        "5 < 7 nên mọi vị trí <= 2 đều không thể là 7. Gán left = 3.",
+        "mid = 3, a[3] = 7.",
+        "Đã tìm thấy 7 tại index 3.",
+        "Nếu cần tìm first occurrence của 7 và có thể có nhiều số 7, không dừng ngay. Ghi nhận answer = 3 rồi tiếp tục tìm bên trái bằng right = mid - 1."
       ]
     },
     {
-      "title": "Binary Search on Answer: median tối thiểu",
+      "title": "2. lower_bound(4) trên [1, 2, 2, 2, 5, 7]",
       "steps": [
-        "Giả sử a = [1, 3, 5], k = 2 phép tăng +1.",
-        "check(5): cần tăng 5 lên 5 (0) và không đụng hai số nhỏ hơn median vị trí giữa. Tùy đề, với 3 phần tử median là phần tử thứ 2 sau sort.",
-        "Nếu check(6) cần nhiều hơn k phép thì 6 quá lớn: thu hẹp high.",
-        "Kết thúc tại giá trị lớn nhất còn check = true."
+        "left = 0, right = 5.",
+        "mid = 2, a[2] = 2 < 4 nên bỏ nửa trái và left = 3.",
+        "mid = 4, a[4] = 5 >= 4 nên vị trí 4 có thể là đáp án. Ghi nhận 4 và right = 3.",
+        "mid = 3, a[3] = 2 < 4 nên left = 4.",
+        "Kết thúc với left = 4.",
+        "a[4] = 5 là phần tử đầu tiên >= 4."
+      ]
+    },
+    {
+      "title": "3. Maximum Median: a = [1, 3, 5], k = 2",
+      "steps": [
+        "Mảng đã sort: [1, 3, 5]. Median hiện tại là a[1] = 3.",
+        "Miền đáp án: left = 3, right = 5 vì median không thể tăng quá 3 + 2.",
+        "Thử mid = 4.",
+        "Để median >= 4, cần tăng a[1] từ 3 lên 4, tốn 1.",
+        "need = 1 <= k = 2 nên check(4) = true.",
+        "Vì đang tìm giá trị lớn nhất còn đúng, left = mid = 4.",
+        "Thử mid = 5.",
+        "Cần tăng 3 lên 5, tốn 2.",
+        "need = 2 <= 2 nên check(5) = true. Gán left = 5.",
+        "Khi left = right = 5, kết luận median lớn nhất là 5."
+      ]
+    },
+    {
+      "title": "4. Maximum Median: thử giá trị không thể",
+      "steps": [
+        "Vẫn với a = [1, 3, 5], k = 2.",
+        "Thử mid = 6.",
+        "Chỉ cần xét phần tử từ median trở đi: a[1] = 3 và a[2] = 5.",
+        "Cần tăng 3 -> 6 tốn 3 và 5 -> 6 tốn 1.",
+        "Tổng need = 4 > k = 2.",
+        "Vì mid = 6 không thể đạt, mọi giá trị lớn hơn 6 cũng không thể đạt.",
+        "Do đó check(6) = false và ta phải giảm right."
+      ]
+    },
+    {
+      "title": "5. First true",
+      "steps": [
+        "Giả sử check(x): x >= 6.",
+        "Ta có dạng false false false false false true true true.",
+        "Mục tiêu là tìm 6.",
+        "Nếu check(mid) = true, mid có thể là đáp án nên giữ mid bằng right = mid.",
+        "Nếu check(mid) = false, mid chắc chắn nhỏ hơn đáp án nên left = mid + 1.",
+        "Cuối cùng left = right = 6."
+      ]
+    },
+    {
+      "title": "6. Last true",
+      "steps": [
+        "Giả sử check(x): x <= 6.",
+        "Ta có dạng true true true true true true false false.",
+        "Mục tiêu là tìm 6.",
+        "Nếu check(mid) = true, có thể còn đáp án lớn hơn nên left = mid.",
+        "Nếu check(mid) = false, mid quá lớn nên right = mid - 1.",
+        "Dùng mid nghiêng phải để tránh trường hợp left không tăng.",
+        "Cuối cùng left = right = 6."
       ]
     }
   ],
   "codeBlocks": [
     {
-      "title": "Lower bound tự viết",
+      "title": "Binary Search cơ bản",
       "language": "cpp",
-      "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint lowerBound(const vector<int>& a, int target) {\n    int left = 0, right = (int)a.size() - 1, answer = (int)a.size();\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        if (a[mid] >= target) {\n            answer = mid;\n            right = mid - 1;\n        } else {\n            left = mid + 1;\n        }\n    }\n    return answer;\n}\n\nint main() {\n    vector<int> a = {1, 3, 5, 7, 9};\n    cout << lowerBound(a, 7) << '\\n';\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint binarySearch(const vector<int>& a, int target) {\n    int left = 0;\n    int right = (int)a.size() - 1;\n\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n\n        if (a[mid] == target)\n            return mid;\n\n        if (a[mid] < target)\n            left = mid + 1;\n        else\n            right = mid - 1;\n    }\n\n    return -1;\n}\n\nint main() {\n    vector<int> a = {1, 3, 5, 7, 9};\n\n    cout << binarySearch(a, 7) << '\\n';\n    cout << binarySearch(a, 6) << '\\n';\n\n    return 0;\n}"
     },
     {
-      "title": "Binary Search on Answer",
+      "title": "Tự viết lower_bound",
       "language": "cpp",
-      "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nbool check(long long mid, const vector<int>& a, long long k) {\n    // Ví dụ: có thể biến mảng thành median >= mid bằng tối đa k phép +1.\n    long long need = 0;\n    int n = (int)a.size();\n    for (int i = n / 2; i < n; ++i) {\n        if (a[i] < mid) need += mid - a[i];\n        if (need > k) return false;\n    }\n    return need <= k;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    long long k;\n    cin >> n >> k;\n    vector<int> a(n);\n    for (int i = 0; i < n; ++i) cin >> a[i];\n    sort(a.begin(), a.end());\n\n    long long left = a[n / 2], right = a[n / 2] + k, answer = left;\n    while (left <= right) {\n        long long mid = left + (right - left) / 2;\n        if (check(mid, a, k)) {\n            answer = mid;\n            left = mid + 1;\n        } else {\n            right = mid - 1;\n        }\n    }\n    cout << answer << '\\n';\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint lowerBound(const vector<int>& a, int target) {\n    int left = 0;\n    int right = (int)a.size();\n\n    while (left < right) {\n        int mid = left + (right - left) / 2;\n\n        if (a[mid] >= target)\n            right = mid;\n        else\n            left = mid + 1;\n    }\n\n    return left;\n}\n\nint main() {\n    vector<int> a = {1, 2, 2, 2, 5, 7};\n\n    cout << lowerBound(a, 2) << '\\n';\n    cout << lowerBound(a, 4) << '\\n';\n    cout << lowerBound(a, 8) << '\\n';\n\n    return 0;\n}"
+    },
+    {
+      "title": "First true",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool check(long long x) {\n    return x >= 6;\n}\n\nint main() {\n    long long left = 0;\n    long long right = 20;\n\n    while (left < right) {\n        long long mid = left + (right - left) / 2;\n\n        if (check(mid))\n            right = mid;\n        else\n            left = mid + 1;\n    }\n\n    cout << left << '\\n';\n\n    return 0;\n}"
+    },
+    {
+      "title": "Last true",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool check(long long x) {\n    return x <= 6;\n}\n\nint main() {\n    long long left = 0;\n    long long right = 20;\n\n    while (left < right) {\n        long long mid = left + (right - left + 1) / 2;\n\n        if (check(mid))\n            left = mid;\n        else\n            right = mid - 1;\n    }\n\n    cout << left << '\\n';\n\n    return 0;\n}"
+    },
+    {
+      "title": "Binary Search on Answer - Maximum Median",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool check(long long mid, const vector<long long>& a, long long k) {\n    long long need = 0;\n    int n = (int)a.size();\n\n    for (int i = n / 2; i < n; ++i) {\n        if (a[i] < mid) {\n            need += mid - a[i];\n            if (need > k)\n                return false;\n        }\n    }\n\n    return true;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    long long k;\n    cin >> n >> k;\n\n    vector<long long> a(n);\n    for (long long& x : a)\n        cin >> x;\n\n    sort(a.begin(), a.end());\n\n    long long left = a[n / 2];\n    long long right = a[n / 2] + k;\n\n    while (left < right) {\n        long long mid = left + (right - left + 1) / 2;\n\n        if (check(mid, a, k))\n            left = mid;\n        else\n            right = mid - 1;\n    }\n\n    cout << left << '\\n';\n\n    return 0;\n}"
+    },
+    {
+      "title": "lower_bound / upper_bound của STL",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    vector<int> a = {1, 2, 2, 2, 5, 7};\n\n    int x = 2;\n\n    int first = lower_bound(a.begin(), a.end(), x) - a.begin();\n    int after = upper_bound(a.begin(), a.end(), x) - a.begin();\n\n    cout << \"first = \" << first << '\\n';\n    cout << \"after = \" << after << '\\n';\n    cout << \"count = \" << after - first << '\\n';\n\n    return 0;\n}"
     }
   ],
   "exercises": [

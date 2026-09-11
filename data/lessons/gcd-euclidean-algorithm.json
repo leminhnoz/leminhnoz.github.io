@@ -1,0 +1,160 @@
+{
+  "id": "gcd-euclidean-algorithm",
+  "moduleId": 1,
+  "author": "Le Minh",
+  "title": "Greatest Common Divisor (GCD) & Euclidean Algorithm",
+  "description": "Từ khái niệm ước chung lớn nhất đến thuật toán Euclid. Hiểu vì sao có thể thay bài toán gcd(a, b) bằng gcd(b, a mod b) và cách tự xây dựng thuật toán thay vì chỉ gọi std::gcd.",
+  "category": "Number Theory",
+  "tags": [
+    "gcd",
+    "euclidean algorithm",
+    "number theory"
+  ],
+  "level": "Module 1",
+  "sections": [
+    {
+      "id": "definition",
+      "title": "1. GCD là gì?",
+      "summary": "GCD của hai số là ước chung lớn nhất của chúng.",
+      "content": [
+        "Với hai số nguyên không âm a và b, gcd(a, b) là số nguyên dương lớn nhất chia hết cả a và b.",
+        "Ví dụ, các ước chung của 48 và 18 là 1, 2, 3 và 6. Vì 6 là số lớn nhất trong đó nên gcd(48, 18) = 6.",
+        "Điều quan trọng trong lập trình thi đấu không chỉ là biết định nghĩa, mà là nhận ra khi nào một bài toán có thể được biến đổi về GCD.",
+        "GCD xuất hiện rất thường xuyên trong các bài toán về chia hết, phân số, tỉ lệ, dãy số, bước di chuyển và các bài toán cần tìm đơn vị lớn nhất có thể dùng chung.",
+        "Một tính chất cơ bản là gcd(a, 0) = |a|. Trường hợp này chính là điểm dừng của thuật toán Euclid."
+      ],
+      "examples": [
+        "gcd(48, 18) = 6 vì 6 là ước chung lớn nhất của 48 và 18.",
+        "gcd(15, 10) = 5.",
+        "gcd(17, 0) = 17."
+      ]
+    },
+    {
+      "id": "euclidean-theorem",
+      "title": "2. Định lý Euclid",
+      "summary": "Phép chia lấy dư cho phép giảm hai số lớn thành một cặp số nhỏ hơn mà không làm thay đổi GCD.",
+      "content": [
+        "Tính chất quan trọng nhất của GCD là gcd(a, b) = gcd(b, a mod b), với b khác 0.",
+        "Đây không phải là một mẹo lập trình. Nó xuất phát trực tiếp từ phép chia có dư: a = qb + r, trong đó r = a mod b.",
+        "Giả sử một số d chia hết cả a và b. Khi đó d cũng chia hết a - qb. Vì a - qb = r nên d chia hết r.",
+        "Ngược lại, nếu d chia hết b và r thì d cũng chia hết qb + r = a.",
+        "Như vậy, các ước chung của (a, b) và (b, r) là như nhau. Do đó hai cặp có cùng GCD.",
+        "Mỗi lần áp dụng công thức, số thứ hai được thay bằng phần dư nhỏ hơn nó. Vì vậy bài toán liên tục nhỏ lại và cuối cùng phần dư trở thành 0.",
+        "Khi đó gcd(a, 0) = a, và giá trị này chính là đáp án."
+      ],
+      "examples": [
+        "gcd(48, 18) = gcd(18, 48 mod 18) = gcd(18, 12).",
+        "gcd(18, 12) = gcd(12, 6).",
+        "gcd(12, 6) = gcd(6, 0) = 6.",
+        "Vậy gcd(48, 18) = 6."
+      ]
+    },
+    {
+      "id": "manual-run",
+      "title": "3. Chạy tay thuật toán Euclid",
+      "summary": "Theo dõi cặp (a, b) sau từng vòng lặp để nhìn thấy bài toán giảm dần.",
+      "content": [
+        "Giả sử cần tính gcd(48, 18). Ta bắt đầu với cặp (48, 18).",
+        "Lấy 48 chia 18 được thương 2 và dư 12. Thay cặp hiện tại bằng (18, 12).",
+        "Tiếp tục lấy 18 chia 12 được dư 6. Ta chuyển thành (12, 6).",
+        "Lấy 12 chia 6 được dư 0. Ta chuyển thành (6, 0).",
+        "Khi số thứ hai bằng 0, số thứ nhất chính là GCD.",
+        "Có thể viết toàn bộ quá trình dưới dạng: (48, 18) → (18, 12) → (12, 6) → (6, 0)."
+      ],
+      "examples": [
+        "48 = 2 × 18 + 12.",
+        "18 = 1 × 12 + 6.",
+        "12 = 2 × 6 + 0.",
+        "Kết luận: gcd(48, 18) = 6."
+      ]
+    },
+    {
+      "id": "implementation",
+      "title": "4. Cài đặt thuật toán",
+      "summary": "Chuyển trực tiếp công thức Euclid thành một vòng lặp đơn giản.",
+      "content": [
+        "Sau mỗi bước, ta chỉ cần giữ lại hai giá trị hiện tại a và b.",
+        "Nếu b khác 0, phép biến đổi a = b và b = a mod b đưa bài toán về trạng thái nhỏ hơn.",
+        "Khi b bằng 0, vòng lặp kết thúc và a là GCD.",
+        "Cách cài đặt này không cần đệ quy và chỉ sử dụng một vài biến số nguyên.",
+        "Trong C++, có thể dùng std::gcd từ thư viện numeric khi đề bài cho phép. Tuy nhiên, tự viết hàm GCD là một bài tập cơ bản đáng nắm chắc vì rất nhiều thuật toán khác sử dụng nó như một thành phần."
+      ],
+      "examples": [
+        "long long gcd(long long a, long long b) { while (b) { a %= b; swap(a, b); } return a; }"
+      ]
+    },
+    {
+      "id": "complexity",
+      "title": "5. Độ phức tạp",
+      "summary": "Thuật toán Euclid giảm kích thước bài toán rất nhanh và chạy trong thời gian O(log min(a, b)).",
+      "content": [
+        "Sau mỗi vài bước, kích thước của các số giảm đáng kể. Trường hợp chậm nhất có liên quan đến dãy Fibonacci.",
+        "Số lần lặp của thuật toán Euclid là O(log min(a, b)). Đây là lý do thuật toán có thể xử lý các số rất lớn một cách hiệu quả.",
+        "So với cách thử tất cả các ước từ 1 đến min(a, b), thuật toán Euclid nhanh hơn rất nhiều."
+      ],
+      "examples": [
+        "Nếu a và b có kích thước khoảng 10^18, thuật toán Euclid vẫn chỉ cần một số lượng vòng lặp rất nhỏ so với việc thử từng ước."
+      ]
+    },
+    {
+      "id": "use-cases",
+      "title": "6. GCD trong bài toán lập trình thi đấu",
+      "summary": "Nhận ra GCD thường quan trọng hơn việc chỉ biết cài đặt hàm gcd.",
+      "content": [
+        "Nếu một bài toán hỏi đơn vị lớn nhất có thể chia đều nhiều số, hãy nghĩ tới GCD.",
+        "Với nhiều số a1, a2, ..., an, GCD của toàn bộ dãy có thể được tính bằng cách gộp từng phần tử: gcd(gcd(a1, a2), a3), rồi tiếp tục.",
+        "GCD cũng xuất hiện khi rút gọn phân số. Với phân số a/b, chia cả tử và mẫu cho gcd(a, b) để đưa về dạng tối giản.",
+        "Trong các bài toán về khoảng cách hoặc vị trí trên một trục số, GCD thường cho biết bước nhảy lớn nhất có thể sử dụng để đi qua các vị trí cần thiết.",
+        "Một số bài toán không yêu cầu tính GCD trực tiếp mà chỉ chứa một điều kiện chia hết. Khi đó, biến đổi điều kiện về GCD có thể làm giảm đáng kể độ phức tạp của lời giải."
+      ],
+      "examples": [
+        "GCD của [12, 18, 30] là gcd(gcd(12, 18), 30) = gcd(6, 30) = 6.",
+        "Phân số 84/126 được rút gọn bằng gcd(84, 126) = 42, nên kết quả là 2/3."
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "gcd(48, 18)",
+      "steps": [
+        "Bắt đầu: a = 48, b = 18.",
+        "48 mod 18 = 12 → chuyển thành (18, 12).",
+        "18 mod 12 = 6 → chuyển thành (12, 6).",
+        "12 mod 6 = 0 → chuyển thành (6, 0).",
+        "b = 0 nên dừng. Kết quả là a = 6."
+      ]
+    },
+    {
+      "title": "gcd(17, 5)",
+      "steps": [
+        "Bắt đầu: (17, 5).",
+        "17 mod 5 = 2 → (5, 2).",
+        "5 mod 2 = 1 → (2, 1).",
+        "2 mod 1 = 0 → (1, 0).",
+        "Kết quả: gcd(17, 5) = 1."
+      ]
+    },
+    {
+      "title": "gcd(a, 0)",
+      "steps": [
+        "Không cần thực hiện phép chia lấy dư.",
+        "Theo định nghĩa, mọi số khác 0 đều chia hết 0.",
+        "Ước chung lớn nhất của a và 0 chính là |a|.",
+        "Với a không âm, gcd(a, 0) = a."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "Tự cài đặt Euclidean Algorithm",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long gcd(long long a, long long b) {\n    while (b) {\n        a %= b;\n        swap(a, b);\n    }\n    return a;\n}\n\nint main() {\n    cout << gcd(48, 18) << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Tính GCD của cả một dãy",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long gcd(long long a, long long b) {\n    while (b) {\n        a %= b;\n        swap(a, b);\n    }\n    return a;\n}\n\nint main() {\n    vector<long long> a = {12, 18, 30};\n    long long g = 0;\n\n    for (long long x : a) {\n        g = gcd(g, x);\n    }\n\n    cout << g << '\\n';\n    return 0;\n}"
+    }
+  ],
+  "exercises": []
+}

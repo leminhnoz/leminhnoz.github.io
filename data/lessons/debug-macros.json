@@ -2,78 +2,496 @@
   "id": "debug-macros",
   "author": "Le Minh",
   "title": "Custom Debug Macros & Common Bugs",
-  "description": "Debug có hệ thống: overflow, OOB, TLE, modulo âm và edge case.",
+  "description": "Debug có hệ thống: overflow, OOB, TLE, modulo âm, edge case và cách khoanh vùng WA/RTE/TLE thay vì sửa mò.",
   "category": "Debugging",
   "tags": ["debug", "overflow", "oob", "tle"],
   "level": "Module 0",
   "sections": [
     {
+      "id": "why-debug",
+      "title": "1. Debugging trong Competitive Programming",
+      "summary": "Debug không phải là in thật nhiều thứ; mục tiêu là tìm chính xác nơi chương trình bắt đầu sai.",
+      "content": [
+        "Một chương trình sai thường không sai ở dòng cuối cùng. Kết quả sai có thể bắt nguồn từ một biến đã sai từ vài chục dòng trước.",
+        "Vì vậy debugging hiệu quả là quá trình thu hẹp phạm vi lỗi: xác định verdict, tìm test nhỏ làm chương trình sai, kiểm tra invariant và quan sát những biến quan trọng.",
+        "Trong contest, ba verdict cần phân biệt rõ là WA (Wrong Answer), RTE (Runtime Error) và TLE (Time Limit Exceeded). Mỗi loại có nhóm nguyên nhân thường gặp khác nhau.",
+        "WA thường liên quan đến sai logic, thiếu edge case, off-by-one, công thức sai hoặc overflow làm kết quả sai.",
+        "RTE thường liên quan đến truy cập ngoài mảng, chia cho 0, dereference con trỏ hoặc iterator không hợp lệ, đệ quy quá sâu và một số lỗi runtime khác.",
+        "TLE thường liên quan đến độ phức tạp quá lớn, vòng lặp vô hạn, thao tác STL đắt hơn dự kiến hoặc I/O quá chậm.",
+        "Một nguyên tắc quan trọng: đừng sửa code ngẫu nhiên. Hãy tạo một test nhỏ chứng minh chương trình sai, sau đó tìm dòng đầu tiên khiến trạng thái chương trình khác với điều ta mong đợi."
+      ],
+      "examples": [
+        "WA -> kiểm tra logic, edge case, overflow, off-by-one.",
+        "RTE -> kiểm tra index, iterator, division by zero, recursion.",
+        "TLE -> kiểm tra complexity, vòng lặp, cấu trúc dữ liệu và I/O."
+      ]
+    },
+    {
       "id": "macro",
-      "title": "Macro debug chỉ chạy local",
-      "summary": "In biến khi compile với -DLOCAL, im lặng khi nộp.",
+      "title": "2. Debug Macro chỉ chạy local",
+      "summary": "Dùng cerr và #ifdef LOCAL để debug mà không làm bẩn output khi submit.",
       "content": [
-        "Bọc debug trong #ifdef LOCAL để không in ra trên judge.",
-        "Macro #x in tên biến; có thể overload operator<< cho vector.",
-        "In sau mỗi vòng lặp quan trọng: left, right, sum, dp[i]."
+        "Trong competitive programming, cout dùng để tạo output mà Online Judge sẽ chấm. Vì vậy không nên dùng cout để in thông tin debug.",
+        "cerr là standard error stream và thường được dùng để debug. Output từ cerr không được xem là output chính mà judge cần so sánh.",
+        "Ta có thể định nghĩa một macro debug(x) để in cả tên biến và giá trị của nó.",
+        "Toán tử # trong macro biến tên đối số thành chuỗi. Vì vậy debug(ans) có thể in ra ans = 42 thay vì chỉ in 42.",
+        "Tuy nhiên khi submit, tốt nhất là loại bỏ hoàn toàn debug bằng #ifdef LOCAL. Như vậy code debug có thể giữ nguyên trong source nhưng không ảnh hưởng đến judge.",
+        "Một debug tốt nên được đặt ở những điểm có ý nghĩa: sau khi cập nhật dp, sau mỗi bước binary search, sau khi thêm phần tử vào stack hoặc khi một invariant quan trọng thay đổi.",
+        "Không nên in toàn bộ mảng kích thước 10^5 sau mỗi vòng lặp. Debug quá nhiều cũng có thể làm chương trình chậm đáng kể."
       ],
       "examples": [
-        "#define debug(x) cerr << #x << \" = \" << (x) << '\\n'"
+        "#ifdef LOCAL",
+        "#define debug(x) cerr << #x << \" = \" << (x) << '\\n'",
+        "#else",
+        "#define debug(x)",
+        "#endif",
+        "debug(left);",
+        "debug(right);",
+        "debug(ans);"
       ]
     },
     {
-      "id": "bugs",
-      "title": "Bốn lỗi kinh điển",
-      "summary": "Overflow, out of bound, TLE, và quên kiểu long long.",
+      "id": "debug-multiple",
+      "title": "3. Debug nhiều biến và container",
+      "summary": "In nhiều biến cùng lúc và xây macro cho vector để quan sát trạng thái chương trình.",
       "content": [
-        "int * int vẫn tính bằng int dù gán vào long long. Luôn 1LL * a * b.",
-        "vector size n có index 0..n-1. Đọc a[n] hoặc a[-1] là undefined.",
-        "Hai vòng lồng n = 1e5 là ~1e10 phép, TLE. Ước lượng trước khi code.",
-        "C++ % với số âm có thể ra âm. Công thức ((x % MOD) + MOD) % MOD."
+        "Khi debug một thuật toán, thường cần quan sát nhiều biến liên quan với nhau như left, right, mid hoặc i, sum, dp[i].",
+        "Có thể tạo macro debug2(a, b) hoặc debug3(a, b, c), nhưng với code contest đơn giản, nhiều macro riêng đôi khi làm code khó đọc.",
+        "Một kỹ thuật phổ biến là viết hàm hoặc operator<< cho vector để có thể dùng cerr << vector.",
+        "Khi debug container, nên giới hạn kích thước được in nếu vector rất lớn. Thường chỉ cần xem vài phần tử đầu hoặc một đoạn nhỏ có vấn đề.",
+        "Đối với map, set hoặc priority_queue, có thể copy ra một container tạm nếu cần quan sát toàn bộ trạng thái, nhưng không nên làm điều này trong vòng lặp lớn vì có thể thay đổi complexity.",
+        "Debug nên trả lời một câu hỏi cụ thể. Ví dụ trong binary search, câu hỏi có thể là 'mid nào đầu tiên thỏa check?', thay vì in tất cả biến trong toàn bộ chương trình."
       ],
       "examples": [
-        "long long value = 1LL * a * b;",
-        "for (int i = 0; i < n; ++i)"
+        "#define debug2(a, b) cerr << #a << \" = \" << (a) << \", \" << #b << \" = \" << (b) << '\\n'",
+        "debug2(left, right);",
+        "debug2(mid, ok);"
       ]
     },
     {
-      "id": "workflow",
-      "title": "Quy trình khi WA/TLE/RTE",
-      "summary": "Đừng sửa mò; khoanh vùng bằng test nhỏ.",
+      "id": "overflow",
+      "title": "4. Integer Overflow và Type Promotion",
+      "summary": "Hiểu tại sao long long vẫn có thể nhận một kết quả overflow nếu phép tính được thực hiện bằng int trước.",
       "content": [
-        "WA sample: chạy tay expected vs code, in mọi biến trên sample.",
-        "WA pretest: viết brute O(N^2) và so random n nhỏ.",
-        "RTE: nghi OOB, đệ quy sâu, chia 0. Bật sanitizer local nếu được.",
-        "TLE: đo complexity, cin chậm, hoặc vòng while không tiến."
+        "Một lỗi cực kỳ phổ biến là nghĩ rằng chỉ cần gán kết quả vào long long thì phép tính tự động trở thành long long.",
+        "Điều đó không đúng. Kiểu của phép toán được xác định từ các toán hạng trước khi kết quả được gán.",
+        "Nếu a và b đều là int, biểu thức a * b được tính bằng int. Nếu tích vượt giới hạn int, overflow xảy ra ngay trong phép nhân.",
+        "Sau đó kết quả sai mới được chuyển sang long long. Việc dùng long long cho biến nhận kết quả không thể sửa phép tính đã overflow.",
+        "Cách an toàn là ép ít nhất một toán hạng sang long long trước phép tính, thường dùng 1LL * a * b.",
+        "Ngoài phép nhân, cần chú ý cả cộng, bình phương, tích trong công thức tổ hợp và các phép tính với n có thể lên đến 10^9 hoặc lớn hơn.",
+        "Khi giới hạn của đề lớn, hãy kiểm tra miền giá trị của từng biến trước khi chọn kiểu dữ liệu."
+      ],
+      "examples": [
+        "long long value = a * b; // nguy hiểm nếu a, b là int",
+        "long long value = 1LL * a * b; // phép nhân được thực hiện bằng long long",
+        "long long square = 1LL * x * x;"
+      ]
+    },
+    {
+      "id": "signed-overflow",
+      "title": "5. Các lỗi kiểu dữ liệu khác",
+      "summary": "Không chỉ overflow: division, unsigned và giá trị biên cũng có thể phá code.",
+      "content": [
+        "Ngoài overflow, một lỗi phổ biến là chia nguyên. Nếu a và b đều là int, a / b là phép chia nguyên dù kết quả được gán vào double.",
+        "Ví dụ double x = 5 / 2 sẽ cho 2 chứ không phải 2.5. Cần viết 5.0 / 2 hoặc ép kiểu một toán hạng.",
+        "Khi dùng unsigned, các giá trị âm có thể biến thành số rất lớn. Vì vậy không nên dùng unsigned một cách máy móc chỉ vì index không âm.",
+        "Một lỗi kinh điển là viết for (int i = n - 1; i >= 0; --i) nhưng i là unsigned. Khi i giảm từ 0, nó không trở thành -1 mà quay về một giá trị rất lớn.",
+        "Các phép toán với giá trị biên như INT_MAX, LLONG_MAX cũng cần được kiểm tra. Thậm chí việc cộng thêm 1 vào giá trị lớn nhất của kiểu signed cũng có thể gây undefined behavior.",
+        "Nếu không có lý do rõ ràng, int và long long thường dễ kiểm soát hơn unsigned trong competitive programming."
+      ],
+      "examples": [
+        "double x = 5 / 2; // x = 2",
+        "double y = 5.0 / 2; // y = 2.5",
+        "double z = (double)a / b;",
+        "for (int i = n - 1; i >= 0; --i)"
+      ]
+    },
+    {
+      "id": "oob",
+      "title": "6. Out of Bounds và Off-by-One",
+      "summary": "Index của vector và mảng thường là nơi đầu tiên cần kiểm tra khi gặp RTE.",
+      "content": [
+        "Một vector có size n có các index hợp lệ từ 0 đến n - 1.",
+        "a[n] là phần tử nằm ngay sau phần tử cuối cùng và không thuộc vector. Truy cập nó là lỗi.",
+        "Tương tự, a[-1] cũng không phải index hợp lệ.",
+        "Một lỗi rất phổ biến là nhầm giữa vòng lặp <= n và < n. Với container 0-based, duyệt toàn bộ phần tử thường phải dùng i < n.",
+        "Off-by-one không phải lúc nào cũng gây RTE. Nếu bộ nhớ ngoài phạm vi tình cờ vẫn đọc được, chương trình có thể chạy nhưng cho kết quả sai, khiến bug khó phát hiện hơn.",
+        "Khi dùng prefix sum, difference array hoặc các mảng phụ, cần xác định rõ mảng có size n, n + 1 hay n + 2.",
+        "Khi truy cập i + 1 hoặc i - 1 trong vòng lặp, phải kiểm tra biên trước. Đây là nguồn lỗi rất phổ biến trong DP, two pointers và graph."
+      ],
+      "examples": [
+        "vector<int> a(n);",
+        "for (int i = 0; i < n; ++i) cout << a[i];",
+        "a[n]; // sai",
+        "a[-1]; // sai"
+      ]
+    },
+    {
+      "id": "iterator",
+      "title": "7. Iterator và Container Invalidation",
+      "summary": "Không phải chỉ index mới có thể invalid; iterator và reference cũng có thể trở nên không hợp lệ.",
+      "content": [
+        "Một iterator hoặc reference có thể trở nên không hợp lệ sau một số thao tác thay đổi container.",
+        "Ví dụ khi vector reallocate vì push_back, các iterator và reference trỏ vào vùng nhớ cũ có thể không còn sử dụng được.",
+        "Một lỗi khác là xóa phần tử khỏi vector hoặc set rồi tiếp tục dùng iterator đã bị invalid.",
+        "Khi xóa phần tử trong vòng lặp, cần hiểu rõ iterator nào được trả về sau erase và container đó có quy tắc invalidation như thế nào.",
+        "Nếu không chắc chắn, cách debug đơn giản là tách thao tác lấy dữ liệu và thao tác thay đổi container, thay vì giữ iterator quá lâu.",
+        "Các lỗi iterator thường khó nhìn thấy bằng mắt vì code có thể chạy đúng trên một số test rồi crash trên test khác."
+      ],
+      "examples": [
+        "vector<int> a;",
+        "a.push_back(1);",
+        "a.push_back(2);",
+        "auto it = a.begin();",
+        "a.push_back(3);",
+        "it có thể không còn hợp lệ nếu push_back gây reallocation."
+      ]
+    },
+    {
+      "id": "modulo",
+      "title": "8. Modulo âm",
+      "summary": "Trong C++, x % MOD có thể âm nếu x âm.",
+      "content": [
+        "Nhiều bài yêu cầu lấy kết quả modulo MOD, nhưng trong quá trình tính toán có thể xuất hiện số âm.",
+        "Trong C++, toán tử % giữ dấu của số chia hoặc biểu thức theo quy tắc của phép chia nguyên, vì vậy (-3) % 5 cho kết quả -3.",
+        "Nếu muốn đưa một số về đoạn [0, MOD - 1], có thể dùng ((x % MOD) + MOD) % MOD.",
+        "Trong code CP, một pattern thường gặp hơn là x %= MOD; if (x < 0) x += MOD; nếu x đã được kiểm soát để chỉ nhỏ hơn MOD về độ lớn.",
+        "Lỗi modulo âm thường xuất hiện trong prefix sum, công thức cộng trừ, inverse modulo hoặc DP có phép trừ.",
+        "Không nên chỉ kiểm tra sample vì sample thường không tạo ra trường hợp trung gian âm."
+      ],
+      "examples": [
+        "int x = -3;",
+        "cout << x % 5; // -3",
+        "x = ((x % MOD) + MOD) % MOD;"
+      ]
+    },
+    {
+      "id": "tle",
+      "title": "9. TLE và Ước lượng Complexity",
+      "summary": "Trước khi tối ưu code, hãy ước lượng số phép toán mà thuật toán thực hiện.",
+      "content": [
+        "Một vòng lặp O(n) với n = 10^5 thường ổn. Hai vòng lặp lồng nhau với n = 10^5 tạo ra khoảng 10^10 lần lặp và gần như chắc chắn quá chậm.",
+        "Tuy nhiên không nên chỉ nhìn số vòng for. Một vòng lặp có thể chứa map, set hoặc một thao tác O(log n), khiến complexity lớn hơn.",
+        "Ngược lại, hai vòng lặp không phải lúc nào cũng là O(n^2). Nếu hai con trỏ cùng chỉ tăng và mỗi phần tử được đi qua một số lần giới hạn, tổng complexity có thể là O(n).",
+        "Hãy tính complexity theo tổng số lần mỗi phần tử được xử lý thay vì chỉ đếm số dòng for.",
+        "TLE cũng có thể đến từ I/O quá chậm, tạo object không cần thiết, copy vector lớn hoặc dùng erase giữa vector quá nhiều lần.",
+        "Một dấu hiệu đặc biệt nguy hiểm là vòng while mà biến điều khiển không chắc chắn tiến về điều kiện kết thúc."
+      ],
+      "examples": [
+        "for (int i = 0; i < n; ++i) {} // O(n)",
+        "for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j) {} // O(n^2)",
+        "while (right < n) { if (condition) ++right; } // phải đảm bảo right luôn tiến"
+      ]
+    },
+    {
+      "id": "infinite-loop",
+      "title": "10. Vòng lặp vô hạn",
+      "summary": "TLE không phải lúc nào cũng do complexity; có thể chương trình không bao giờ kết thúc.",
+      "content": [
+        "Một vòng while có thể có complexity tốt trên giấy nhưng vẫn TLE nếu điều kiện kết thúc không bao giờ xảy ra.",
+        "Ví dụ while (left <= right) nhưng trong một nhánh code lại quên thay đổi left hoặc right.",
+        "Binary search là nơi lỗi này đặc biệt nguy hiểm. Sau mỗi lần kiểm tra, phải loại bỏ ít nhất một phần tử khỏi khoảng tìm kiếm.",
+        "Khi debug vòng lặp, hãy in biến trạng thái sau mỗi vài bước. Nếu cùng một trạng thái lặp lại, rất có thể ta đang mắc infinite loop.",
+        "Có thể dùng một biến đếm số vòng lặp trong lúc debug để phát hiện trường hợp vòng lặp chạy bất thường.",
+        "Không nên giữ debug loop counter trong code submit nếu nó không cần thiết cho thuật toán."
+      ],
+      "examples": [
+        "while (left <= right) {",
+        "    int mid = (left + right) / 2;",
+        "    if (check(mid)) right = mid - 1;",
+        "    else left = mid + 1;",
+        "}"
+      ]
+    },
+    {
+      "id": "wa-logic",
+      "title": "11. WA do Logic và Invariant",
+      "summary": "Tìm điểm mà trạng thái chương trình lần đầu tiên vi phạm điều kiện mà thuật toán yêu cầu.",
+      "content": [
+        "Không phải WA nào cũng sửa được bằng cách thêm một if. Cần xác định invariant của thuật toán.",
+        "Invariant là một điều kiện phải luôn đúng trong suốt quá trình chạy. Ví dụ trong two pointers, một đoạn có thể luôn phải thỏa một điều kiện; trong Dijkstra, khi lấy đỉnh có khoảng cách nhỏ nhất hợp lệ, giá trị dist phải đại diện cho khoảng cách ngắn nhất đã xác nhận.",
+        "Nếu invariant đúng ở đầu vòng lặp nhưng sai sau một thao tác update, bug nằm ở thao tác đó.",
+        "Đây là cách debug mạnh hơn việc chỉ so sánh answer cuối cùng.",
+        "Với binary search, hãy kiểm tra ý nghĩa của left, right và mid sau mỗi bước. Với DP, kiểm tra chính xác dp[i] đại diện cho trạng thái nào.",
+        "Nếu không thể mô tả bằng một câu dp[i] nghĩa là gì hoặc left/right đang đại diện cho cái gì, rất khó debug thuật toán."
+      ],
+      "examples": [
+        "Binary search: mọi đáp án hợp lệ nằm trong [left, right].",
+        "Prefix sum: pref[i] là tổng của một prefix được định nghĩa rõ ràng.",
+        "DP: dp[i] phải có một ý nghĩa chính xác trước khi viết transition."
+      ]
+    },
+    {
+      "id": "bruteforce",
+      "title": "12. Brute Force để tìm WA",
+      "summary": "Với bài có N nhỏ, brute force là một công cụ debug cực mạnh.",
+      "content": [
+        "Khi có một thuật toán tối ưu nhưng không chắc đúng, hãy viết thêm một lời giải brute force thật đơn giản cho N nhỏ.",
+        "Sau đó sinh nhiều test ngẫu nhiên và so sánh answer của hai chương trình.",
+        "Nếu hai kết quả khác nhau, in toàn bộ test đó ra. Đây chính là counterexample giúp khoanh vùng bug.",
+        "Brute force không cần nhanh. Nó chỉ cần đơn giản đến mức gần như không thể sai.",
+        "Kỹ thuật này đặc biệt hữu ích cho greedy, two pointers, DP, combinatorics và các bài có nhiều edge case.",
+        "Có thể bắt đầu với n <= 8 hoặc n <= 10, nơi brute force hoặc enumerate toàn bộ trạng thái vẫn chạy rất nhanh.",
+        "Sau khi tìm được counterexample, bỏ random test và debug trực tiếp trên test nhỏ đó. Một counterexample tốt thường tiết lộ ngay giả định sai trong thuật toán."
+      ],
+      "examples": [
+        "for (int tc = 1; tc <= 100000; ++tc) {",
+        "    // sinh test nhỏ",
+        "    // chạy solution tối ưu",
+        "    // chạy brute force",
+        "    // nếu khác nhau thì in test và dừng",
+        "}"
+      ]
+    },
+    {
+      "id": "random-test",
+      "title": "13. Random Testing và Differential Testing",
+      "summary": "Tự động tìm test phá code bằng cách so sánh hai implementation.",
+      "content": [
+        "Differential testing là việc chạy cùng một input qua hai chương trình hoặc hai implementation rồi so sánh output.",
+        "Một implementation có thể là lời giải tối ưu, implementation còn lại là brute force.",
+        "Test ngẫu nhiên nên tập trung vào những trường hợp dễ phá giả định: số nhỏ, phần tử trùng nhau, giá trị bằng 0, mảng đã sort, mảng giảm dần và các giá trị sát giới hạn.",
+        "Không nên chỉ random hoàn toàn. Random có chiến lược thường tìm bug nhanh hơn.",
+        "Khi tìm được counterexample, lưu test đó lại. Đây là regression test: sau khi sửa code, chạy lại để đảm bảo bug cũ không quay trở lại.",
+        "Một bộ test debug tốt thường gồm sample, edge cases, counterexamples từng gặp và random tests."
+      ],
+      "examples": [
+        "Test 1: n = 1.",
+        "Test 2: tất cả phần tử bằng nhau.",
+        "Test 3: mảng tăng dần.",
+        "Test 4: mảng giảm dần.",
+        "Test 5: có nhiều giá trị 0 hoặc âm nếu đề cho phép."
+      ]
+    },
+    {
+      "id": "assert",
+      "title": "14. assert — Bắt invariant ngay khi nó sai",
+      "summary": "Dùng assert để biến giả định của thuật toán thành điều kiện được kiểm tra tự động.",
+      "content": [
+        "assert(condition) kiểm tra một điều kiện. Nếu điều kiện sai trong môi trường debug, chương trình sẽ dừng và báo vị trí lỗi.",
+        "assert rất hữu ích khi ta biết một invariant phải luôn đúng.",
+        "Ví dụ nếu i phải luôn nằm trong [0, n - 1], có thể dùng assert(0 <= i && i < n).",
+        "Nếu một DP yêu cầu giá trị không âm hoặc một binary search yêu cầu left <= right ở một thời điểm nhất định, assert có thể phát hiện bug ngay tại thời điểm invariant bị phá.",
+        "assert nên dùng cho những điều kiện mà programmer tin chắc phải đúng, không phải cho điều kiện có thể hợp lệ là false trong input bình thường.",
+        "Trong code submit, có thể giữ assert nếu muốn, nhưng cần nhớ rằng assert thất bại sẽ làm chương trình dừng. Khi debug contest, thường chỉ bật assert trong local."
       ],
       "examples": [
         "assert(i >= 0 && i < n);",
-        "if (left > right) break;"
+        "assert(left <= right);",
+        "assert(dp[i] >= 0);"
+      ]
+    },
+    {
+      "id": "sanitizer",
+      "title": "15. Sanitizer — Công cụ bắt lỗi runtime",
+      "summary": "Dùng AddressSanitizer và UndefinedBehaviorSanitizer để phát hiện nhiều lỗi khó thấy.",
+      "content": [
+        "Compiler có thể cung cấp sanitizer để phát hiện một số lỗi runtime như out-of-bounds, use-after-free và nhiều dạng undefined behavior.",
+        "AddressSanitizer thường được bật bằng -fsanitize=address.",
+        "UndefinedBehaviorSanitizer thường được bật bằng -fsanitize=undefined.",
+        "Khi debug local, có thể compile với -fsanitize=address,undefined -g để nhận thông tin chi tiết hơn về vị trí lỗi.",
+        "Sanitizer không chứng minh chương trình hoàn toàn đúng. Nó chỉ giúp phát hiện một nhóm lỗi mà test thực tế chạm tới.",
+        "Sanitizer có overhead nên không nên xem nó là một cách tối ưu hoặc công cụ chạy production. Nó chủ yếu dành cho debug local."
+      ],
+      "examples": [
+        "g++ main.cpp -std=c++14 -O0 -g -fsanitize=address,undefined -o main",
+        "./main"
+      ]
+    },
+    {
+      "id": "verdict-workflow",
+      "title": "16. Quy trình xử lý WA, RTE, TLE",
+      "summary": "Một checklist có hệ thống để không sửa mò.",
+      "content": [
+        "Bước đầu tiên là xác định verdict. WA, RTE và TLE có hướng debug khác nhau.",
+        "Nếu WA sample: chạy tay sample, xác định output mong muốn ở từng bước và in các biến quan trọng.",
+        "Nếu WA pretest hoặc hidden test: tìm edge case, kiểm tra boundary, overflow và dùng brute force/random testing nếu có thể.",
+        "Nếu RTE: kiểm tra index, iterator, division by zero, recursion depth, stack và các thao tác trên container.",
+        "Nếu TLE: tính complexity, kiểm tra vòng lặp vô hạn, kiểm tra thao tác STL bên trong loop và xem I/O có phải vấn đề hay không.",
+        "Nếu code chỉ sai ở một vài test rất nhỏ, hãy giảm test xuống mức nhỏ nhất vẫn sai. Test càng nhỏ thì càng dễ nhìn thấy bug.",
+        "Sau khi sửa, chạy lại cả counterexample cũ lẫn sample và một số edge case. Đừng chỉ chạy đúng test vừa sửa.",
+        "Mục tiêu cuối cùng không phải là làm một test AC. Mục tiêu là sửa nguyên nhân khiến cả nhóm test sai."
+      ],
+      "examples": [
+        "WA -> tìm counterexample.",
+        "RTE -> tìm thao tác không hợp lệ.",
+        "TLE -> tìm phần code có complexity hoặc số lần lặp bất thường."
+      ]
+    },
+    {
+      "id": "common-bugs",
+      "title": "17. Những lỗi kinh điển cần tự kiểm tra",
+      "summary": "Checklist nhanh trước khi submit.",
+      "content": [
+        "Quên reset biến giữa các test case.",
+        "Dùng <= thay vì < trong vòng lặp.",
+        "Nhầm 0-based với 1-based indexing.",
+        "Quên xử lý n = 0 hoặc n = 1 khi đề cho phép.",
+        "Quên sort trước khi dùng lower_bound hoặc logic yêu cầu thứ tự.",
+        "Dùng int cho tích hoặc tổng có thể vượt 2 * 10^9.",
+        "Chia nguyên trong khi cần số thực.",
+        "Modulo âm sau phép trừ.",
+        "Không clear vector, map hoặc global state giữa các test.",
+        "Binary search không tiến left/right.",
+        "Đệ quy quá sâu.",
+        "Xóa phần tử khỏi container rồi tiếp tục dùng iterator cũ.",
+        "Dùng O(n^2) khi n lên đến 10^5.",
+        "In debug bằng cout khiến output bị WA.",
+        "Đọc input sai thứ tự biến hoặc hiểu sai statement."
+      ],
+      "examples": [
+        "for (int tc = 0; tc < T; ++tc) {",
+        "    // reset toàn bộ state phụ thuộc test case",
+        "}",
+        "long long sum = 0;",
+        "sum += 1LL * a[i] * b[i];"
+      ]
+    },
+    {
+      "id": "contest-mindset",
+      "title": "18. Tư duy Debug trong Contest",
+      "summary": "Debug nhanh nhất là debug theo giả thuyết, không phải theo cảm giác.",
+      "content": [
+        "Khi code sai, đừng bắt đầu bằng việc đọc lại toàn bộ 300 dòng code. Hãy đặt một giả thuyết: overflow? OOB? transition sai? boundary sai?",
+        "Sau đó tạo một test hoặc debug output có khả năng xác nhận hoặc bác bỏ giả thuyết đó.",
+        "Ví dụ nghi overflow thì thử các giá trị gần giới hạn. Nghi off-by-one thì thử n = 1, n = 2 và đoạn có độ dài 1. Nghi binary search thì thử toàn bộ giá trị answer nhỏ.",
+        "Nếu một giả thuyết bị bác bỏ, chuyển sang giả thuyết khác. Đây là cách debug có hệ thống.",
+        "Trong contest, kỹ năng debug thường quyết định việc biến một ý tưởng gần đúng thành AC. Một thuật toán tốt nhưng không debug được vẫn không có giá trị.",
+        "Sau mỗi bug khó, nên ghi lại counterexample và nguyên nhân. Sau một thời gian, các lỗi lặp đi lặp lại sẽ biến thành checklist mà ta có thể kiểm tra trước khi submit."
+      ],
+      "examples": [
+        "Giả thuyết: tích bị overflow -> test với a = b = 10^9.",
+        "Giả thuyết: OOB -> test n = 1 và kiểm tra mọi i + 1, i - 1.",
+        "Giả thuyết: infinite loop -> in left, right, mid qua từng bước."
+      ]
+    },
+    {
+      "id": "complexity",
+      "title": "19. Độ phức tạp của Debug Code",
+      "summary": "Debug cũng có thể làm chương trình chậm nếu in quá nhiều hoặc copy container lớn.",
+      "content": [
+        "Bản thân macro debug gần như không có chi phí khi LOCAL không được định nghĩa vì compiler loại bỏ phần code đó.",
+        "Khi LOCAL được định nghĩa, cerr có thể rất chậm nếu in hàng triệu dòng.",
+        "In một vector kích thước n trong mỗi vòng lặp có thể biến một thuật toán O(n) thành một chương trình thực tế cực kỳ chậm.",
+        "Copy một vector hoặc map lớn chỉ để debug cũng có thể tạo thêm O(n) hoặc O(n log n) chi phí tùy thao tác.",
+        "Vì vậy debug nên có mục tiêu và giới hạn output.",
+        "Một cách đơn giản là chỉ debug khi n nhỏ hoặc chỉ in khi một điều kiện đặc biệt xảy ra."
+      ],
+      "examples": [
+        "#ifdef LOCAL",
+        "if (n <= 20) debug(ans);",
+        "#endif"
       ]
     }
   ],
   "dryRun": [
     {
-      "title": "Overflow 1e9 * 1e9",
+      "title": "1. Overflow 10^9 * 10^9",
       "steps": [
-        "a = b = 1000000000 kiểu int.",
-        "long long ans = a * b; phép nhân tràn int trước khi gán.",
-        "long long ans = 1LL * a * b; kết quả 10^18 đúng."
+        "a = b = 1000000000 và cả hai đều là int.",
+        "Biểu thức a * b được tính bằng int trước khi gán vào biến đích.",
+        "Tích thực sự cần giá trị 10^18, vượt xa giới hạn int khoảng 2.1 * 10^9.",
+        "Vì vậy phép nhân đã overflow trước khi long long nhận kết quả.",
+        "Viết long long ans = 1LL * a * b khiến phép nhân được thực hiện bằng long long.",
+        "Kết quả khi đó là 1000000000000000000."
       ]
     },
     {
-      "title": "OOB trên vector 3 phần tử",
+      "title": "2. OOB trên vector 3 phần tử",
       "steps": [
-        "a = [4, 5, 6], size = 3, index hợp lệ 0, 1, 2.",
-        "Vòng for (int i = 1; i <= n; ++i) đọc a[3] => RTE/WA.",
-        "Sửa thành i = 0; i < n."
+        "a = [4, 5, 6] và size = 3.",
+        "Các index hợp lệ là 0, 1 và 2.",
+        "Vòng lặp for (int i = 1; i <= n; ++i) sẽ có lần lặp i = 3.",
+        "Lệnh a[3] truy cập ngoài vector.",
+        "Sửa vòng lặp thành for (int i = 0; i < n; ++i) nếu mục tiêu là duyệt toàn bộ vector.",
+        "Nếu bài dùng 1-based indexing, hãy cấp phát thêm phần tử và thống nhất quy ước từ đầu."
+      ]
+    },
+    {
+      "title": "3. Modulo âm",
+      "steps": [
+        "Cho x = -3 và MOD = 5.",
+        "Trong C++, x % MOD cho kết quả -3.",
+        "Nếu code cần một residue trong [0, MOD - 1], giá trị này chưa đúng.",
+        "Tính ((x % MOD) + MOD) % MOD.",
+        "Ta có ((-3 % 5) + 5) % 5 = (-3 + 5) % 5 = 2.",
+        "Kết quả cuối cùng là 2."
+      ]
+    },
+    {
+      "title": "4. Binary Search bị infinite loop",
+      "steps": [
+        "Giả sử left = 1 và right = 2.",
+        "mid = (left + right) / 2 = 1.",
+        "Nếu check(mid) sai nhưng code không thay đổi left hoặc right, trạng thái vẫn là left = 1, right = 2.",
+        "Lần lặp tiếp theo lại có mid = 1.",
+        "Chương trình tiếp tục lặp mãi và dẫn đến TLE.",
+        "Mỗi vòng lặp binary search phải làm khoảng [left, right] nhỏ đi."
+      ]
+    },
+    {
+      "title": "5. Brute Force tìm counterexample",
+      "steps": [
+        "Có một solution tối ưu và một brute force đều giải cùng bài.",
+        "Sinh test nhỏ ngẫu nhiên với n <= 8.",
+        "Chạy cả hai chương trình trên cùng test.",
+        "Nếu answer giống nhau, tiếp tục test khác.",
+        "Nếu answer khác nhau, in test đó ra và dừng.",
+        "Test này chính là counterexample.",
+        "Sau đó chạy tay trên counterexample để tìm bước đầu tiên mà solution tối ưu khác brute force."
+      ]
+    },
+    {
+      "title": "6. assert bắt invariant",
+      "steps": [
+        "Giả sử trong một vòng lặp ta luôn yêu cầu 0 <= i < n.",
+        "Sau một phép update, chương trình tạo ra i = n.",
+        "assert(i >= 0 && i < n) được kiểm tra.",
+        "Điều kiện sai nên chương trình dừng ngay tại vị trí đó.",
+        "Nhờ vậy ta không cần chờ đến khi a[i] gây lỗi ở một dòng hoàn toàn khác."
       ]
     }
   ],
   "codeBlocks": [
     {
-      "title": "Debug macro và nhân an toàn",
+      "title": "Code 1: Debug macro an toàn khi submit",
       "language": "cpp",
-      "code": "#include <iostream>\nusing namespace std;\n\n#ifdef LOCAL\n#define debug(x) cerr << #x << \" = \" << (x) << '\\n'\n#else\n#define debug(x)\n#endif\n\nint main() {\n    int a = 1000000000, b = 1000000000;\n    long long safe = 1LL * a * b;\n    debug(safe);\n    cout << safe << '\\n';\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n#ifdef LOCAL\n#define debug(x) cerr << #x << \" = \" << (x) << '\\n'\n#else\n#define debug(x)\n#endif\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int a = 10, b = 20;\n    long long ans = 1LL * a * b;\n\n    debug(a);\n    debug(b);\n    debug(ans);\n\n    cout << ans << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Code 2: Debug nhiều biến",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n#ifdef LOCAL\n#define debug2(a, b) cerr << #a << \" = \" << (a) << \", \" << #b << \" = \" << (b) << '\\n'\n#else\n#define debug2(a, b)\n#endif\n\nint main() {\n    int left = 1;\n    int right = 10;\n\n    while (left <= right) {\n        int mid = (left + right) / 2;\n        debug2(left, right);\n\n        if (mid < 7) left = mid + 1;\n        else right = mid - 1;\n    }\n\n    return 0;\n}"
+    },
+    {
+      "title": "Code 3: In vector khi debug",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n#ifdef LOCAL\nvoid debug_vector(const vector<int>& a, const string& name) {\n    cerr << name << \" = [\";\n    for (int i = 0; i < (int)a.size(); ++i) {\n        if (i) cerr << \", \";\n        cerr << a[i];\n    }\n    cerr << \"]\\n\";\n}\n#else\nvoid debug_vector(const vector<int>&, const string&) {}\n#endif\n\nint main() {\n    vector<int> a = {4, 1, 7, 3};\n\n    debug_vector(a, \"a\");\n\n    sort(a.begin(), a.end());\n    debug_vector(a, \"a after sort\");\n\n    return 0;\n}"
+    },
+    {
+      "title": "Code 4: Kiểm tra overflow",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int a = 1000000000;\n    int b = 1000000000;\n\n    long long bad = a * b;\n    long long good = 1LL * a * b;\n\n    cout << bad << '\\n';\n    cout << good << '\\n';\n\n    return 0;\n}"
+    },
+    {
+      "title": "Code 5: Kiểm tra index bằng assert",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n = 5;\n    vector<int> a(n, 0);\n\n    for (int i = 0; i <= n; ++i) {\n        assert(i >= 0 && i < n);\n        a[i] = i;\n    }\n\n    return 0;\n}"
+    },
+    {
+      "title": "Code 6: Chuẩn hóa modulo âm",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nconst long long MOD = 1000000007;\n\nlong long norm(long long x) {\n    x %= MOD;\n    if (x < 0) x += MOD;\n    return x;\n}\n\nint main() {\n    long long x = -25;\n    cout << norm(x) << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Code 7: Brute Force và Solution để tìm bug",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint brute(const vector<int>& a) {\n    int n = (int)a.size();\n    int ans = 0;\n\n    for (int l = 0; l < n; ++l) {\n        int sum = 0;\n        for (int r = l; r < n; ++r) {\n            sum += a[r];\n            ans = max(ans, sum);\n        }\n    }\n\n    return ans;\n}\n\nint fast(const vector<int>& a) {\n    int cur = 0;\n    int ans = INT_MIN;\n\n    for (int x : a) {\n        cur = max(x, cur + x);\n        ans = max(ans, cur);\n    }\n\n    return ans;\n}\n\nint main() {\n    mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());\n\n    for (int tc = 1; tc <= 100000; ++tc) {\n        int n = rng() % 8 + 1;\n        vector<int> a(n);\n\n        for (int i = 0; i < n; ++i) {\n            a[i] = (int)(rng() % 21) - 10;\n        }\n\n        int x = brute(a);\n        int y = fast(a);\n\n        if (x != y) {\n            cerr << \"Found counterexample!\\n\";\n            for (int v : a) cerr << v << ' ';\n            cerr << '\\n';\n            cerr << \"brute = \" << x << '\\n';\n            cerr << \"fast = \" << y << '\\n';\n            return 0;\n        }\n    }\n\n    cerr << \"No counterexample found.\\n\";\n    return 0;\n}"
+    },
+    {
+      "title": "Code 8: Sanitizer khi debug local",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    vector<int> a(3);\n\n    a[3] = 10;\n\n    return 0;\n}"
     }
   ],
   "exercises": [

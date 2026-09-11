@@ -23,5 +23,11 @@
     "shortest-path.json",
     "tree-algorithms.json",
     "graph-representation.json"
+    ,"gcd-euclidean-algorithm.json"
+    ,"lcm-gcd-relation.json"
+    ,"sieve-eratosthenes.json"
+    ,"prime-factorization.json"
+    ,"modular-exponentiation.json"
+    ,"modular-inverse.json"
   ]
 }

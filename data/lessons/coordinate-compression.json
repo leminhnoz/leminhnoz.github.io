@@ -1,3 +1,4 @@
+
 {
   "id": "coordinate-compression",
   "author": [
@@ -5,55 +6,414 @@
     "Vo Van Nam - THPT chuyen Khoa Hoc Tu Nhien - DHQG Ha Noi"
   ],
   "title": "Coordinate Compression",
-  "description": "Nén các giá trị lớn về rank 0..N-1 để dùng mảng, Fenwick Tree hoặc Segment Tree.",
+  "description": "Nén các giá trị lớn về rank nhỏ nhưng vẫn bảo toàn thứ tự, giúp thay thế miền giá trị khổng lồ bằng một tập chỉ số có kích thước O(N).",
   "category": "Coordinate Compression",
-  "tags": ["coordinate compression", "sorting"],
+  "tags": ["coordinate compression", "sorting", "lower bound", "fenwick tree", "segment tree"],
   "level": "Module 1",
   "sections": [
     {
-      "id": "why",
-      "title": "Khi nào cần nén tọa độ",
-      "summary": "Giá trị lên tới 1e9 nhưng chỉ có N điểm; cấu trúc cây cần chỉ số nhỏ.",
+      "id": "motivation",
+      "title": "1. Coordinate Compression là gì?",
+      "summary": "Thay mỗi giá trị bằng thứ hạng của nó trong tập các giá trị xuất hiện.",
       "content": [
-        "Fenwick/Segment Tree đánh chỉ số 1..M. Nếu M = 1e9 thì không cấp được mảng.",
-        "Nếu bài chỉ quan tâm thứ tự (ai nhỏ hơn ai), có thể thay giá trị bằng rank trong tập unique đã sort.",
-        "Quan hệ <, =, > được bảo toàn. Khoảng cách số học thật thì mất, trừ khi bạn giữ thêm mảng gốc."
+        "Coordinate Compression, hay nén tọa độ, là kỹ thuật thay các giá trị lớn bằng những chỉ số nhỏ hơn nhưng vẫn giữ được thứ tự giữa chúng.",
+        "Ví dụ các giá trị [1000000000, 5, 1000000000, 20] có thể được đổi thành [2, 0, 2, 1].",
+        "Ta không còn quan tâm giá trị thật là 5, 20 hay 1e9 mà chỉ quan tâm 5 < 20 < 1e9.",
+        "Mục tiêu của nén tọa độ không phải làm cho con số nhỏ hơn về mặt số học, mà là biến miền giá trị lớn thành miền rank liên tiếp 0..M-1.",
+        "Kỹ thuật này đặc biệt hữu ích khi giá trị a[i] có thể lên tới 1e9, 1e18 hoặc rất lớn nhưng số lượng giá trị thực sự xuất hiện chỉ là N.",
+        "Sau khi nén, ta có thể dùng vector, Fenwick Tree hoặc Segment Tree có kích thước O(M) thay vì cố cấp phát theo giá trị lớn nhất."
       ],
       "examples": [
-        "values = [100, 5, 100, 20] -> ranks = [2, 0, 2, 1]"
+        "values = [100, 5, 100, 20]. Các giá trị phân biệt theo thứ tự là [5, 20, 100].",
+        "5 có rank 0, 20 có rank 1, 100 có rank 2.",
+        "Vì vậy [100, 5, 100, 20] -> [2, 0, 2, 1]."
       ]
     },
     {
-      "id": "how",
-      "title": "Ba bước chuẩn",
-      "summary": "Copy, sort, unique, rồi lower_bound từng phần tử.",
+      "id": "what-preserved",
+      "title": "2. Nén tọa độ bảo toàn gì và làm mất gì?",
+      "summary": "Quan hệ thứ tự và bằng nhau được bảo toàn, nhưng khoảng cách số học giữa các giá trị không còn được giữ nguyên.",
       "content": [
-        "Copy mảng origin sang compressed.",
-        "sort rồi erase(unique(...), end) để còn giá trị tăng dần không trùng.",
-        "Rank của x là vị trí lower_bound(compressed, x). Rank thường 0-index; cộng 1 nếu Fenwick 1-index.",
-        "Có thể nén cặp (x, y) bằng cách pack hoặc nén từng chiều riêng."
+        "Nếu x < y trước khi nén thì rank(x) < rank(y) sau khi nén.",
+        "Nếu x = y thì chúng nhận cùng một rank.",
+        "Nếu x > y thì rank(x) > rank(y).",
+        "Do đó các phép so sánh <, <=, =, >=, > vẫn có thể được thực hiện thông qua rank.",
+        "Tuy nhiên khoảng cách số học không được bảo toàn.",
+        "Ví dụ 5 và 20 cách nhau 15, nhưng rank của chúng có thể là 0 và 1.",
+        "Vì vậy không thể dùng rank(y) - rank(x) để thay cho y - x.",
+        "Nếu bài toán cần khoảng cách thật, tổng, hiệu, diện tích hoặc độ dài theo giá trị gốc thì phải giữ lại mảng compressed chứa các giá trị thật hoặc xử lý riêng phần khoảng cách."
       ],
       "examples": [
-        "idx = lower_bound(vals.begin(), vals.end(), x) - vals.begin()"
+        "5 < 20 < 100 nên rank(5) < rank(20) < rank(100).",
+        "rank(20) - rank(5) = 1 nhưng 20 - 5 = 15.",
+        "Không được thay một phép tính số học trên giá trị thật bằng phép tính tương ứng trên rank nếu chưa chứng minh điều đó hợp lệ."
+      ]
+    },
+    {
+      "id": "when",
+      "title": "3. Khi nào cần Coordinate Compression?",
+      "summary": "Dùng khi miền giá trị rất lớn nhưng số giá trị cần quan tâm nhỏ.",
+      "content": [
+        "Trường hợp điển hình: N <= 2e5 nhưng a[i] có thể lên tới 1e9 hoặc 1e18.",
+        "Nếu cần một mảng đánh dấu used[x], không thể tạo vector kích thước 1e18.",
+        "Nếu cần Fenwick Tree theo giá trị, Fenwick có thể chỉ có M node với M là số giá trị phân biệt.",
+        "Nếu cần Segment Tree theo các giá trị xuất hiện, cũng có thể xây cây trên miền rank 0..M-1.",
+        "Coordinate Compression cũng hữu ích khi cần tìm thứ hạng của một giá trị hoặc đếm bao nhiêu giá trị nhỏ hơn nó.",
+        "Tuy nhiên nếu chỉ cần lưu tần suất của các giá trị mà không cần truy cập theo index liên tục, map hoặc unordered_map đôi khi đơn giản hơn và không cần nén."
+      ],
+      "examples": [
+        "N = 200000, a[i] <= 1e9: không thể dùng Fenwick có 1e9 node, nhưng nếu chỉ có 200000 giá trị thì sau nén Fenwick chỉ cần O(200000).",
+        "Nếu bài chỉ hỏi số lần xuất hiện của từng số, map<int, int> có thể đủ và nén tọa độ không bắt buộc."
+      ]
+    },
+    {
+      "id": "three-steps",
+      "title": "4. Ba bước chuẩn của Coordinate Compression",
+      "summary": "Copy → sort → unique, sau đó dùng lower_bound để tìm rank của từng giá trị.",
+      "content": [
+        "Bước 1: tạo một bản sao của dữ liệu gốc. Ta gọi bản sao này là compressed.",
+        "Bước 2: sort(compressed.begin(), compressed.end()) để đưa các giá trị về thứ tự tăng dần.",
+        "Bước 3: erase(unique(...), end()) để xóa các phần tử trùng và giữ lại danh sách giá trị phân biệt.",
+        "Sau ba bước này, compressed chứa toàn bộ giá trị có thể xuất hiện theo thứ tự tăng dần.",
+        "Với mỗi giá trị x, rank của x chính là vị trí của x trong compressed.",
+        "Vì compressed đã sort, vị trí đó được tìm bằng lower_bound(compressed.begin(), compressed.end(), x).",
+        "Nếu cần rank 0-based thì giữ nguyên vị trí.",
+        "Nếu cần index 1-based, ví dụ Fenwick Tree, cộng thêm 1."
+      ],
+      "examples": [
+        "values = [100, 5, 100, 20].",
+        "Copy: compressed = [100, 5, 100, 20].",
+        "Sort: [5, 20, 100, 100].",
+        "Unique: [5, 20, 100].",
+        "lower_bound(5) = 0, lower_bound(20) = 1, lower_bound(100) = 2."
+      ]
+    },
+    {
+      "id": "lower-bound",
+      "title": "5. Vì sao lower_bound cho ra rank?",
+      "summary": "Sau khi sort và unique, mỗi giá trị phân biệt xuất hiện đúng một lần, nên vị trí của nó chính là rank.",
+      "content": [
+        "Sau khi sort + unique, compressed là một mảng tăng nghiêm ngặt.",
+        "Ví dụ compressed = [5, 20, 100].",
+        "lower_bound(x) trả về iterator tới phần tử đầu tiên >= x.",
+        "Nếu x chắc chắn xuất hiện trong compressed thì phần tử đầu tiên >= x chính là x.",
+        "Do đó khoảng cách từ begin() đến iterator đó chính là index của x.",
+        "Công thức chuẩn: int rank = lower_bound(compressed.begin(), compressed.end(), x) - compressed.begin();",
+        "Nếu x không nằm trong compressed, lower_bound vẫn trả về vị trí mà x có thể được chèn vào để giữ thứ tự. Điều này hữu ích trong một số bài, nhưng khi dùng để nén các giá trị đã thu thập thì x phải nằm trong compressed."
+      ],
+      "examples": [
+        "compressed = [5, 20, 100]. lower_bound(20) trỏ tới index 1.",
+        "lower_bound(50) trỏ tới index 2 vì 100 là phần tử đầu tiên >= 50.",
+        "lower_bound(101) trả về compressed.end(), tức index 3."
+      ]
+    },
+    {
+      "id": "dry-run",
+      "title": "6. Chạy tay một ví dụ hoàn chỉnh",
+      "summary": "Từ mảng ban đầu đến rank của từng phần tử.",
+      "content": [
+        "Cho values = [100, 5, 100, 20].",
+        "Bản sao để nén: compressed = [100, 5, 100, 20].",
+        "Sau sort: compressed = [5, 20, 100, 100].",
+        "Sau unique: compressed = [5, 20, 100].",
+        "Với values[0] = 100, lower_bound trả index 2.",
+        "Với values[1] = 5, lower_bound trả index 0.",
+        "Với values[2] = 100, lower_bound vẫn trả index 2 vì các giá trị bằng nhau phải có cùng rank.",
+        "Với values[3] = 20, lower_bound trả index 1.",
+        "Kết quả cuối cùng: [2, 0, 2, 1].",
+        "Điểm cần nhớ: thứ tự tương đối của các phần tử được giữ nguyên, nhưng khoảng cách giữa các giá trị bị loại bỏ."
+      ],
+      "examples": [
+        "[100, 5, 100, 20] -> [2, 0, 2, 1].",
+        "Hai số 100 giống nhau nên đều được nén thành 2."
+      ]
+    },
+    {
+      "id": "zero-one-index",
+      "title": "7. Rank 0-based và index 1-based",
+      "summary": "Coordinate Compression thường tạo rank 0..M-1, trong khi Fenwick Tree thường yêu cầu 1..M.",
+      "content": [
+        "Vector trong C++ sử dụng index 0..M-1 nên rank tự nhiên của coordinate compression thường là 0-based.",
+        "Fenwick Tree chuẩn thường dùng index 1..M.",
+        "Vì vậy khi đưa rank vào Fenwick, ta thường dùng rank + 1.",
+        "Ví dụ compressed = [5, 20, 100], rank của 5 là 0, nhưng Fenwick index của 5 là 1.",
+        "Rank của 20 là 1, Fenwick index là 2.",
+        "Rank của 100 là 2, Fenwick index là 3.",
+        "Đây là lỗi rất phổ biến khi kết hợp Coordinate Compression với Fenwick Tree."
+      ],
+      "examples": [
+        "int rank = lower_bound(vals.begin(), vals.end(), x) - vals.begin();",
+        "int fenwickIndex = rank + 1;",
+        "Không được đưa rank = 0 trực tiếp vào Fenwick Tree chuẩn."
+      ]
+    },
+    {
+      "id": "fenwick",
+      "title": "8. Coordinate Compression + Fenwick Tree",
+      "summary": "Biến giá trị lớn thành rank nhỏ rồi dùng Fenwick để đếm theo thứ tự.",
+      "content": [
+        "Một trong những ứng dụng quan trọng nhất của Coordinate Compression là kết hợp với Fenwick Tree.",
+        "Fenwick cần index nhỏ và liên tục, trong khi giá trị a[i] có thể rất lớn hoặc âm.",
+        "Sau khi nén, mỗi giá trị được ánh xạ vào rank 1..M.",
+        "Fenwick có thể lưu tần suất của từng rank.",
+        "Khi duyệt mảng, sumPrefix(rank) cho biết số phần tử đã xuất hiện có giá trị nhỏ hơn hoặc bằng giá trị hiện tại.",
+        "Từ đó có thể đếm inversion, số phần tử nhỏ hơn một giá trị, số phần tử nằm trong một khoảng rank, v.v.",
+        "Coordinate Compression không tự giải quyết bài toán. Nó chỉ biến miền giá trị khó xử lý thành miền chỉ số dễ xử lý."
+      ],
+      "examples": [
+        "a = [100, 5, 20]. Sau nén rank 1-based là [3, 1, 2].",
+        "Khi gặp 20, Fenwick có thể query số phần tử đã gặp có rank <= 2.",
+        "Vì thứ tự rank giống thứ tự giá trị thật, kết quả đếm trên rank tương đương kết quả đếm trên giá trị thật."
+      ]
+    },
+    {
+      "id": "segment-tree",
+      "title": "9. Coordinate Compression + Segment Tree",
+      "summary": "Nén miền giá trị để xây Segment Tree trên số lượng coordinate thực sự xuất hiện.",
+      "content": [
+        "Segment Tree cũng thường cần một miền index liên tục.",
+        "Nếu các coordinate là 1, 1000000000 và 10^18 nhưng chỉ có 2e5 giá trị khác nhau, xây cây trực tiếp trên miền số học là không khả thi.",
+        "Sau khi nén, mỗi coordinate trở thành một index từ 0 đến M-1.",
+        "Ta có thể xây Segment Tree trên M coordinate.",
+        "Khi query theo thứ tự, rank bảo toàn quan hệ < và > nên các truy vấn dựa trên thứ tự vẫn hoạt động.",
+        "Nếu query yêu cầu một khoảng giá trị thật [L, R], có thể tìm rank của L và R bằng lower_bound/upper_bound rồi chuyển truy vấn sang đoạn index tương ứng.",
+        "Cần phân biệt rõ: query trên rank không phải lúc nào cũng tương đương với query theo khoảng cách số học."
+      ],
+      "examples": [
+        "Các coordinate [5, 100, 1000000000] được nén thành [0, 1, 2].",
+        "Segment Tree chỉ cần xây trên 3 vị trí thay vì 1e9 vị trí."
+      ]
+    },
+    {
+      "id": "queries",
+      "title": "10. Nén tọa độ khi có query/update",
+      "summary": "Nếu có dữ liệu xuất hiện trong các truy vấn tương lai, phải thu thập chúng trước khi nén.",
+      "content": [
+        "Coordinate Compression thông thường là kỹ thuật offline: ta cần biết trước toàn bộ các giá trị sẽ xuất hiện.",
+        "Ví dụ có Q truy vấn update(x, value). Nếu x có thể xuất hiện trong update, phải thu thập tất cả x từ toàn bộ input trước khi xây Fenwick hoặc Segment Tree.",
+        "Sau khi đọc hết input, sort + unique danh sách coordinate.",
+        "Tiếp theo mới xử lý từng query bằng lower_bound để lấy rank.",
+        "Nếu ta nén ngay khi đọc từng query và sau đó phát sinh một coordinate mới nhỏ hơn coordinate cũ, thứ tự rank có thể thay đổi và cấu trúc dữ liệu đã xây sẽ không còn đúng.",
+        "Nếu dữ liệu thực sự online và không biết trước coordinate tương lai, thường phải dùng map, ordered set, dynamic tree hoặc một kỹ thuật khác."
+      ],
+      "examples": [
+        "Có update(100), update(5), update(1000000000). Phải thu thập cả 3 coordinate trước khi xây Fenwick.",
+        "Sau khi biết toàn bộ coordinate, ta có [5, 100, 1000000000] và có thể nén thành [0, 1, 2]."
+      ]
+    },
+    {
+      "id": "negative",
+      "title": "11. Giá trị âm không phải vấn đề",
+      "summary": "Coordinate Compression hoạt động với số âm, miễn là kiểu dữ liệu và phép sort phù hợp.",
+      "content": [
+        "Không có yêu cầu coordinate phải dương.",
+        "sort vẫn sắp xếp số âm đúng thứ tự.",
+        "Ví dụ [-100, 50, -10, 50] sau sort + unique trở thành [-100, -10, 50].",
+        "Rank tương ứng là [0, 2, 1, 2].",
+        "Đây cũng là một lý do nén tọa độ hữu ích: thay vì phải xử lý index âm hoặc miền giá trị không thuận tiện, ta chuyển mọi thứ về rank không âm."
+      ],
+      "examples": [
+        "values = [-100, 50, -10, 50].",
+        "compressed = [-100, -10, 50].",
+        "values -> ranks = [0, 2, 1, 2]."
+      ]
+    },
+    {
+      "id": "two-dimensional",
+      "title": "12. Nén tọa độ 2 chiều",
+      "summary": "Với điểm (x, y), có thể nén từng chiều riêng nếu bài toán cho phép.",
+      "content": [
+        "Nếu dữ liệu gồm các điểm (x, y), ta có thể lấy toàn bộ x để tạo compressedX và toàn bộ y để tạo compressedY.",
+        "Sau đó mỗi điểm (x, y) được đổi thành (rankX, rankY).",
+        "Cách này phù hợp khi bài toán chỉ quan tâm thứ tự của từng chiều.",
+        "Không nên tự động gộp cặp (x, y) thành một số duy nhất bằng x * C + y nếu không chứng minh C đủ lớn và không overflow.",
+        "Nén từng chiều thường an toàn và rõ ràng hơn.",
+        "Tuy nhiên nén từng chiều không có nghĩa là một hình chữ nhật trên hệ tọa độ thật có diện tích hoặc khoảng cách tương ứng với hình chữ nhật trên rank.",
+        "Nếu bài toán cần độ dài thật giữa các coordinate, phải giữ lại compressedX/compressedY để lấy giá trị gốc."
+      ],
+      "examples": [
+        "Các điểm (100, 1000), (5, 20), (100, 20).",
+        "X: [5, 100] -> rank 0, 1.",
+        "Y: [20, 1000] -> rank 0, 1.",
+        "Các điểm sau nén: (1,1), (0,0), (1,0)."
+      ]
+    },
+    {
+      "id": "intervals",
+      "title": "13. Nén coordinate cho đoạn và sự kiện",
+      "summary": "Với bài interval, đôi khi cần nén cả đầu mút hoặc các vị trí liên quan đến sự kiện.",
+      "content": [
+        "Trong các bài interval, các coordinate có thể rất lớn nhưng chỉ có O(N) đầu mút.",
+        "Ta có thể thu thập toàn bộ L và R, sau đó nén chúng.",
+        "Tuy nhiên cần cẩn thận: khoảng giữa hai coordinate liên tiếp có thể chứa rất nhiều điểm thật.",
+        "Ví dụ đoạn [1, 1000000000] không tương đương với việc chỉ có một khoảng cách rank bằng 1.",
+        "Nếu bài yêu cầu độ dài hoặc số lượng điểm nguyên trong khoảng, chỉ nén các đầu mút là chưa đủ; cần lưu thêm khoảng cách thật hoặc thực hiện một dạng coordinate compression có trọng số.",
+        "Vì vậy trước khi nén interval, phải xác định bài toán chỉ quan tâm thứ tự sự kiện hay quan tâm độ dài thật."
+      ],
+      "examples": [
+        "Các điểm sự kiện 1, 100, 1000000000 có rank 0, 1, 2.",
+        "Nhưng khoảng [1, 100] dài 99 và [100, 1000000000] dài 999999900, dù cả hai đều có khoảng cách rank bằng 1."
+      ]
+    },
+    {
+      "id": "map-vs-compression",
+      "title": "14. Coordinate Compression hay map?",
+      "summary": "Không phải lúc nào nén tọa độ cũng là lựa chọn tốt nhất.",
+      "content": [
+        "Nếu chỉ cần lưu value -> frequency, map hoặc unordered_map thường đơn giản hơn.",
+        "Coordinate Compression phù hợp khi cần một cấu trúc dữ liệu dựa trên index liên tục như Fenwick Tree hoặc Segment Tree.",
+        "Nếu cần thứ tự và predecessor/successor trực tiếp, set hoặc map có thể thuận tiện hơn.",
+        "Nếu N nhỏ, nén tọa độ đôi khi chỉ làm code dài hơn mà không đem lại lợi ích đáng kể.",
+        "Nếu có dữ liệu online và coordinate mới xuất hiện bất kỳ lúc nào, map có thể phù hợp hơn vì không cần biết trước toàn bộ coordinate."
+      ],
+      "examples": [
+        "Đếm frequency của 1e9 giá trị: unordered_map<int, int> có thể đủ.",
+        "Đếm inversion với Fenwick: coordinate compression là lựa chọn tự nhiên.",
+        "Cần tìm phần tử nhỏ nhất >= x động: set có thể đơn giản hơn."
+      ]
+    },
+    {
+      "id": "complexity",
+      "title": "15. Độ phức tạp",
+      "summary": "Sort chi phối chi phí nén, sau đó mỗi lần tìm rank bằng lower_bound mất O(log M).",
+      "content": [
+        "Giả sử có N giá trị và M giá trị phân biệt, với M <= N.",
+        "Copy mảng tốn O(N).",
+        "Sort tốn O(N log N).",
+        "Unique tốn O(N).",
+        "Mỗi lower_bound để tìm rank tốn O(log M).",
+        "Nếu nén N phần tử, tổng phần tìm rank là O(N log M).",
+        "Do đó toàn bộ quy trình chuẩn có độ phức tạp O(N log N).",
+        "Bộ nhớ phụ là O(N) để lưu danh sách coordinate phân biệt và thường thêm O(N) nếu giữ mảng gốc."
+      ],
+      "examples": [
+        "N = 2e5 thì O(N log N) hoàn toàn phù hợp.",
+        "Nếu cần nén rồi xây Fenwick O(N log N), tổng vẫn thường nằm trong giới hạn tốt."
+      ]
+    },
+    {
+      "id": "pitfalls",
+      "title": "16. Những lỗi thường gặp",
+      "summary": "Sai nhiều nhất ở việc mất giá trị gốc, lệch index và nén không đủ coordinate.",
+      "content": [
+        "Quên unique: các giá trị bằng nhau sẽ nhận các index khác nhau nếu chỉ sort mà không unique.",
+        "Dùng rank 0-based trực tiếp cho Fenwick Tree chuẩn, khiến index 0 làm vòng lặp add không tiến.",
+        "Nén xong rồi mất mảng giá trị gốc trong khi bài vẫn cần khoảng cách hoặc giá trị thật.",
+        "Dùng rank difference để tính khoảng cách số học.",
+        "Chỉ thu thập coordinate từ mảng ban đầu nhưng quên coordinate xuất hiện trong query/update.",
+        "Dùng int khi coordinate có thể tới 1e18.",
+        "Dùng phép pack hai coordinate bằng nhân/cộng mà không kiểm tra overflow.",
+        "Gọi lower_bound với một giá trị không thuộc danh sách compressed rồi mặc định rằng nó chắc chắn tồn tại.",
+        "Nhầm coordinate compression với việc chia toàn bộ trục số thành các đoạn có độ dài bằng nhau. Rank chỉ biểu diễn thứ tự, không biểu diễn khoảng cách."
+      ],
+      "examples": [
+        "[5, 5, 20] phải unique thành [5, 20] trước khi lấy rank.",
+        "rank(5) = 0 nhưng Fenwick index của nó phải là 1.",
+        "Nếu cần biết 20 - 5 = 15 thì không thể lấy rank(20) - rank(5) = 1."
+      ]
+    },
+    {
+      "id": "recognition",
+      "title": "17. Cách nhận ra Coordinate Compression trong đề",
+      "summary": "Hãy nghĩ đến nén tọa độ khi giá trị rất lớn nhưng số lượng giá trị cần xét lại nhỏ.",
+      "content": [
+        "Dấu hiệu 1: a[i] có thể tới 1e9 hoặc 1e18 nhưng N chỉ khoảng 2e5.",
+        "Dấu hiệu 2: cần Fenwick/Segment Tree theo giá trị.",
+        "Dấu hiệu 3: bài chỉ quan tâm thứ tự hoặc tần suất của các giá trị.",
+        "Dấu hiệu 4: cần đếm số phần tử <= x, < x hoặc > x.",
+        "Dấu hiệu 5: coordinate là số rất lớn nhưng chỉ có O(N) coordinate xuất hiện trong input.",
+        "Khi gặp các dấu hiệu này, hãy tự hỏi: 'Mình có thực sự cần toàn bộ miền giá trị, hay chỉ cần thứ tự của những giá trị xuất hiện?'",
+        "Nếu chỉ cần thứ tự, Coordinate Compression thường là một trong những hướng đầu tiên cần nghĩ đến."
+      ],
+      "examples": [
+        "a[i] <= 1e18, N <= 2e5, cần đếm inversion -> nghĩ ngay Coordinate Compression + Fenwick.",
+        "Có Q update trên các coordinate đã biết trước -> thu thập coordinate rồi nén trước khi xử lý."
       ]
     }
   ],
   "dryRun": [
     {
-      "title": "Nén [100, 5, 100, 20]",
+      "title": "1. Nén [100, 5, 100, 20]",
       "steps": [
-        "Sort: [5, 20, 100, 100].",
-        "Unique: [5, 20, 100].",
-        "100 -> 2, 5 -> 0, 100 -> 2, 20 -> 1.",
-        "Mảng nén: [2, 0, 2, 1]. Bây giờ Fenwick size 3 là đủ."
+        "values = [100, 5, 100, 20].",
+        "Copy: compressed = [100, 5, 100, 20].",
+        "Sort: compressed = [5, 20, 100, 100].",
+        "Unique: compressed = [5, 20, 100].",
+        "100 -> lower_bound index 2.",
+        "5 -> lower_bound index 0.",
+        "100 -> lower_bound index 2.",
+        "20 -> lower_bound index 1.",
+        "Kết quả: [2, 0, 2, 1]."
+      ]
+    },
+    {
+      "title": "2. Nén để dùng Fenwick Tree",
+      "steps": [
+        "Cho a = [100, 5, 20].",
+        "Các coordinate phân biệt sau sort: [5, 20, 100].",
+        "Rank 0-based: 5 -> 0, 20 -> 1, 100 -> 2.",
+        "Fenwick cần 1-based nên đổi thành: 5 -> 1, 20 -> 2, 100 -> 3.",
+        "Mảng a trở thành [3, 1, 2].",
+        "Bây giờ Fenwick chỉ cần kích thước 3 thay vì kích thước 100."
+      ]
+    },
+    {
+      "title": "3. Giá trị âm",
+      "steps": [
+        "values = [-100, 50, -10, 50].",
+        "Sort: [-100, -10, 50, 50].",
+        "Unique: [-100, -10, 50].",
+        "-100 -> rank 0.",
+        "-10 -> rank 1.",
+        "50 -> rank 2.",
+        "Kết quả: [0, 2, 1, 2]."
+      ]
+    },
+    {
+      "title": "4. Vì sao rank không giữ khoảng cách?",
+      "steps": [
+        "Cho values = [1, 100, 1000000].",
+        "Rank tương ứng là [0, 1, 2].",
+        "Khoảng cách rank giữa 1 và 100 là 1.",
+        "Nhưng khoảng cách thật là 99.",
+        "Khoảng cách rank giữa 100 và 1000000 cũng là 1.",
+        "Nhưng khoảng cách thật là 999900.",
+        "Do đó rank chỉ cho biết thứ tự, không cho biết khoảng cách."
+      ]
+    },
+    {
+      "title": "5. Nén coordinate có query/update",
+      "steps": [
+        "Giả sử các update xuất hiện tại x = 100, 5 và 1000000000.",
+        "Không xây Fenwick ngay sau update đầu tiên.",
+        "Thu thập toàn bộ coordinate: [100, 5, 1000000000].",
+        "Sort + unique: [5, 100, 1000000000].",
+        "Mapping: 5 -> 0, 100 -> 1, 1000000000 -> 2.",
+        "Nếu dùng Fenwick: 5 -> 1, 100 -> 2, 1000000000 -> 3.",
+        "Sau đó mới xử lý toàn bộ query."
       ]
     }
   ],
   "codeBlocks": [
     {
-      "title": "Coordinate Compression",
+      "title": "Coordinate Compression cơ bản",
       "language": "cpp",
-      "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    vector<int> values = {100, 5, 100, 20};\n    vector<int> compressed = values;\n    sort(compressed.begin(), compressed.end());\n    compressed.erase(unique(compressed.begin(), compressed.end()), compressed.end());\n    for (int& value : values) {\n        value = (int)(lower_bound(compressed.begin(), compressed.end(), value) - compressed.begin());\n    }\n    for (int value : values) cout << value << ' ';\n    cout << '\\n';\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    vector<long long> values = {100, 5, 100, 20};\n    vector<long long> compressed = values;\n\n    sort(compressed.begin(), compressed.end());\n    compressed.erase(unique(compressed.begin(), compressed.end()), compressed.end());\n\n    for (long long& value : values) {\n        value = lower_bound(compressed.begin(), compressed.end(), value) - compressed.begin();\n    }\n\n    for (long long value : values)\n        cout << value << ' ';\n\n    cout << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Compression + Fenwick Tree",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Fenwick {\n    int n;\n    vector<int> bit;\n\n    Fenwick(int n) {\n        this->n = n;\n        bit.assign(n + 1, 0);\n    }\n\n    void add(int i, int value) {\n        for (; i <= n; i += i & -i)\n            bit[i] += value;\n    }\n\n    int sumPrefix(int i) {\n        int result = 0;\n        for (; i > 0; i -= i & -i)\n            result += bit[i];\n        return result;\n    }\n};\n\nint main() {\n    vector<long long> a = {100, 5, 20};\n    vector<long long> compressed = a;\n\n    sort(compressed.begin(), compressed.end());\n    compressed.erase(unique(compressed.begin(), compressed.end()), compressed.end());\n\n    Fenwick fenwick(compressed.size());\n\n    for (long long x : a) {\n        int rank = lower_bound(compressed.begin(), compressed.end(), x) - compressed.begin() + 1;\n        fenwick.add(rank, 1);\n\n        cout << \"value = \" << x\n             << \", rank = \" << rank\n             << \", count <= value = \" << fenwick.sumPrefix(rank)\n             << '\\n';\n    }\n\n    return 0;\n}"
+    },
+    {
+      "title": "Compression với nhiều query/update",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Query {\n    int type;\n    long long x;\n    long long value;\n};\n\nint main() {\n    vector<Query> queries = {\n        {1, 100, 5},\n        {1, 5, 3},\n        {2, 1000000000LL, 0}\n    };\n\n    vector<long long> coords;\n\n    for (const Query& query : queries) {\n        if (query.type == 1)\n            coords.push_back(query.x);\n        else\n            coords.push_back(query.x);\n    }\n\n    sort(coords.begin(), coords.end());\n    coords.erase(unique(coords.begin(), coords.end()), coords.end());\n\n    for (Query& query : queries) {\n        int rank = lower_bound(coords.begin(), coords.end(), query.x) - coords.begin();\n        cout << query.x << \" -> \" << rank << '\\n';\n    }\n\n    return 0;\n}"
+    },
+    {
+      "title": "Nén tọa độ 2 chiều",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    vector<pair<long long, long long>> points = {\n        {100, 1000},\n        {5, 20},\n        {100, 20}\n    };\n\n    vector<long long> xs, ys;\n\n    for (auto [x, y] : points) {\n        xs.push_back(x);\n        ys.push_back(y);\n    }\n\n    sort(xs.begin(), xs.end());\n    xs.erase(unique(xs.begin(), xs.end()), xs.end());\n\n    sort(ys.begin(), ys.end());\n    ys.erase(unique(ys.begin(), ys.end()), ys.end());\n\n    for (auto [x, y] : points) {\n        int rankX = lower_bound(xs.begin(), xs.end(), x) - xs.begin();\n        int rankY = lower_bound(ys.begin(), ys.end(), y) - ys.begin();\n\n        cout << '(' << rankX << \", \" << rankY << \")\\n\";\n    }\n\n    return 0;\n}"
     }
   ],
   "exercises": [

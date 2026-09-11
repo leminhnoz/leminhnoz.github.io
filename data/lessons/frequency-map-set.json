@@ -2,81 +2,148 @@
   "id": "frequency-map-set",
   "author": "Le Minh",
   "title": "Frequency, Map, Set & STL Containers",
-  "description": "Đếm tần suất và chọn đúng vector, map, set, unordered_map, priority_queue.",
+  "description": "Các cấu trúc dữ liệu STL thường gặp trong lập trình thi đấu. Từ bài toán đếm tần suất đến quản lý tập phần tử có thứ tự và lựa chọn phần tử lớn nhất hoặc nhỏ nhất.",
   "category": "STL Data Structures",
-  "tags": ["map", "set", "frequency", "vector", "priority queue"],
+  "tags": [
+    "map",
+    "set",
+    "frequency",
+    "vector",
+    "priority queue"
+  ],
   "level": "Module 2",
   "sections": [
     {
       "id": "vector",
-      "title": "vector",
-      "summary": "Mảng động: truy cập O(1), đẩy cuối O(1) amortized.",
+      "title": "1. vector — Mảng động",
+      "summary": "vector là lựa chọn mặc định khi cần lưu một dãy phần tử và truy cập chúng bằng chỉ số.",
       "content": [
-        "Dùng khi biết thứ tự hoặc chỉ số 0..n-1. push_back, size, sort.",
-        "reserve(n) nếu biết trước kích thước để tránh realloc.",
-        "Không dùng vector<bool>; dùng vector<char> hoặc vector<int>."
+        "Trong nhiều bài toán, dữ liệu đơn giản chỉ là một dãy số a[0], a[1], ..., a[n-1]. Khi đó vector thường là cấu trúc dữ liệu đầu tiên nên nghĩ tới.",
+        "vector lưu các phần tử liên tiếp trong bộ nhớ, vì vậy truy cập a[i] có độ phức tạp O(1). Đây là điểm khiến vector phù hợp với các bài toán cần truy cập ngẫu nhiên, sort hoặc duyệt toàn bộ dãy.",
+        "Ngoài việc tạo vector với kích thước cố định, ta có thể dùng push_back để thêm phần tử vào cuối. Chi phí trung bình của push_back là O(1) amortized.",
+        "Nếu đã biết trước số lượng phần tử cần lưu, reserve(n) có thể được sử dụng để cấp phát trước bộ nhớ. Điều này giúp hạn chế số lần vector phải mở rộng và sao chép dữ liệu.",
+        "Trong lập trình thi đấu, vector thường được dùng cùng với sort, reverse, lower_bound và upper_bound. Vì vậy, hãy xem nó như phiên bản linh hoạt hơn của mảng thông thường."
       ],
       "examples": [
-        "vector<int> a(n); a.push_back(x);"
+        "vector<int> a(n);",
+        "a.push_back(x);",
+        "sort(a.begin(), a.end());"
       ]
     },
     {
       "id": "map-set",
-      "title": "map, set, unordered_map",
-      "summary": "map/set là cây đỏ-đen O(log N); unordered_hash trung bình O(1).",
+      "title": "2. map và set — Quản lý dữ liệu có thứ tự",
+      "summary": "map lưu ánh xạ key → value, còn set lưu một tập các giá trị phân biệt. Cả hai đều duy trì thứ tự tăng dần.",
       "content": [
-        "map<key, value> giống tủ có nhãn: freq[x]++ tự tạo khóa nếu chưa có.",
-        "set lưu phần tử phân biệt, ordered. multiset cho phép trùng.",
-        "unordered_map nhanh hơn khi không cần thứ tự, nhưng worst-case hash collision. Contest thường map an toàn hơn nếu N vừa.",
-        "lower_bound trên set/map tìm phần tử nhỏ nhất >= x."
+        "Hãy bắt đầu từ một bài toán rất quen thuộc: cho một dãy số và yêu cầu biết mỗi giá trị xuất hiện bao nhiêu lần.",
+        "Nếu dùng mảng tần suất, ta có thể viết cnt[x]++. Cách này rất nhanh nhưng chỉ thuận tiện khi miền giá trị của x đủ nhỏ. Nếu x có thể lớn hoặc âm, ta cần một cách lưu trữ linh hoạt hơn.",
+        "map<int, int> có thể được sử dụng như một bảng ánh xạ. Với freq[x]++, nếu x chưa tồn tại thì map tự tạo khóa x với giá trị mặc định bằng 0, sau đó tăng lên 1.",
+        "map trong C++ thường được triển khai bằng cây tìm kiếm cân bằng. Vì vậy các thao tác insert, erase và tìm kiếm có độ phức tạp O(log N). Đổi lại, các key luôn được duy trì theo thứ tự.",
+        "set có cách hoạt động tương tự map nhưng chỉ lưu key, không lưu value. Mỗi phần tử chỉ xuất hiện một lần. Nếu chèn một giá trị đã tồn tại, set không tạo thêm bản sao.",
+        "Khi cần cho phép một giá trị xuất hiện nhiều lần nhưng vẫn muốn duy trì thứ tự, sử dụng multiset.",
+        "Một lợi thế quan trọng của map và set là lower_bound và upper_bound. Chúng cho phép tìm nhanh phần tử đầu tiên không nhỏ hơn hoặc lớn hơn một giá trị cho trước.",
+        "Nếu không cần thứ tự và chỉ quan tâm đến việc tìm kiếm hoặc đếm tần suất, unordered_map thường có thời gian trung bình O(1). Tuy nhiên, nó không cung cấp thứ tự và có thể gặp trường hợp xấu do va chạm hash."
       ],
       "examples": [
-        "a = [2,2,3] => freq[2]=2, freq[3]=1, set = {2,3}"
+        "Với dãy [2, 2, 3], sau khi đếm: freq[2] = 2 và freq[3] = 1.",
+        "set của dãy [2, 2, 3] là {2, 3}. Phần tử 2 xuất hiện hai lần trong dãy nhưng chỉ xuất hiện một lần trong set.",
+        "map<int, int> freq; freq[5]++; tương đương với việc ghi nhận rằng giá trị 5 vừa xuất hiện thêm một lần."
       ]
     },
     {
-      "id": "pq",
-      "title": "priority_queue",
-      "summary": "Heap: mặc định max-heap, lấy phần tử lớn nhất O(log N).",
+      "id": "priority-queue",
+      "title": "3. priority_queue — Luôn lấy phần tử quan trọng nhất",
+      "summary": "priority_queue là heap, cho phép lấy nhanh phần tử lớn nhất hoặc nhỏ nhất tùy cách khai báo.",
       "content": [
-        "Min-heap: priority_queue<int, vector<int>, greater<int>>.",
-        "Dijkstra dùng min-heap cặp {distance, vertex}.",
-        "Không có decrease-key: đẩy bản ghi mới, bỏ bản cũ khi lấy ra."
+        "Có những bài toán không yêu cầu lấy phần tử theo thứ tự xuất hiện. Ta chỉ quan tâm đến phần tử lớn nhất hoặc nhỏ nhất tại mỗi thời điểm.",
+        "Ví dụ, nếu liên tục thêm các số vào một tập và mỗi bước cần lấy số lớn nhất, việc sort lại toàn bộ dữ liệu sau mỗi lần thêm sẽ rất tốn thời gian.",
+        "priority_queue giải quyết chính xác tình huống này bằng cấu trúc heap. Với max-heap mặc định, top() luôn trả về phần tử lớn nhất.",
+        "push và pop đều có độ phức tạp O(log N), trong khi top chỉ mất O(1). Đây là một trong những cấu trúc dữ liệu quan trọng nhất khi xử lý các phần tử theo độ ưu tiên.",
+        "C++ mặc định tạo max-heap. Nếu cần lấy phần tử nhỏ nhất trước, ta khai báo min-heap bằng greater<int>.",
+        "Một ứng dụng kinh điển là Dijkstra. Ta đưa cặp {khoảng cách, đỉnh} vào min-heap để mỗi lần lấy ra đỉnh đang có khoảng cách nhỏ nhất.",
+        "priority_queue không hỗ trợ decrease-key như một số cấu trúc heap chuyên biệt. Trong Dijkstra, cách thường dùng là cứ đẩy trạng thái mới vào heap và bỏ qua những trạng thái đã lỗi thời khi lấy ra."
       ],
       "examples": [
-        "pq.push(x); int best = pq.top(); pq.pop();"
+        "priority_queue<int> pq; pq.push(5); pq.push(1); pq.push(4);",
+        "Sau ba lần push, pq.top() trả về 5.",
+        "Với min-heap: priority_queue<int, vector<int>, greater<int>> pq;"
+      ]
+    },
+    {
+      "id": "choosing",
+      "title": "4. Chọn cấu trúc dữ liệu nào?",
+      "summary": "Không cần nhớ máy móc từng container. Hãy bắt đầu từ thao tác mà bài toán yêu cầu.",
+      "content": [
+        "Nếu dữ liệu chỉ là một dãy và ta thường xuyên truy cập bằng chỉ số, hãy nghĩ tới vector.",
+        "Nếu cần đếm số lần xuất hiện của từng giá trị và miền giá trị nhỏ, mảng tần suất thường là lựa chọn đơn giản và nhanh nhất.",
+        "Nếu cần đếm tần suất nhưng giá trị lớn, âm hoặc không thể dùng trực tiếp làm chỉ số mảng, map hoặc unordered_map là những lựa chọn phù hợp.",
+        "Nếu chỉ cần lưu các giá trị khác nhau và muốn chúng luôn có thứ tự, dùng set.",
+        "Nếu cần các giá trị khác nhau nhưng không quan tâm thứ tự và muốn thao tác trung bình O(1), unordered_set là lựa chọn tự nhiên.",
+        "Nếu cần cho phép phần tử trùng nhau nhưng vẫn muốn duy trì thứ tự, dùng multiset.",
+        "Nếu mỗi bước cần lấy phần tử lớn nhất hoặc nhỏ nhất theo một tiêu chí nào đó, hãy nghĩ tới priority_queue.",
+        "Trong contest, đừng chọn cấu trúc dữ liệu chỉ vì nó 'mạnh'. Một vector đơn giản thường tốt hơn map nếu bài toán chỉ cần lưu một dãy."
+      ],
+      "examples": [
+        "Cần đếm tần suất: map hoặc unordered_map.",
+        "Cần các giá trị phân biệt và có thứ tự: set.",
+        "Cần phần tử lớn nhất liên tục: priority_queue.",
+        "Cần truy cập a[i] và sort: vector."
       ]
     }
   ],
   "dryRun": [
     {
-      "title": "Đếm tần suất [2, 2, 3]",
+      "title": "Đếm tần suất bằng map",
       "steps": [
-        "freq rỗng, set rỗng.",
-        "2: freq[2]=1, set={2}.",
-        "2: freq[2]=2, set không đổi.",
-        "3: freq[3]=1, set={2,3}."
+        "Ban đầu map rỗng.",
+        "Đọc số 2: freq[2] chưa tồn tại nên được tạo với giá trị 0, sau đó tăng lên 1.",
+        "Đọc số 2 lần nữa: freq[2] đang bằng 1, tăng thành 2.",
+        "Đọc số 3: tạo freq[3] = 1.",
+        "Kết quả cuối cùng: freq[2] = 2, freq[3] = 1."
+      ]
+    },
+    {
+      "title": "map và set xử lý cùng một dãy",
+      "steps": [
+        "Dãy ban đầu: [2, 2, 3].",
+        "Sau khi xử lý phần tử đầu tiên: map lưu 2 → 1, set chứa {2}.",
+        "Sau phần tử thứ hai: map lưu 2 → 2, set vẫn là {2}.",
+        "Sau phần tử thứ ba: map lưu thêm 3 → 1, set trở thành {2, 3}.",
+        "map trả lời câu hỏi 'mỗi giá trị xuất hiện bao nhiêu lần', còn set trả lời câu hỏi 'có những giá trị nào'."
       ]
     },
     {
       "title": "Registration System",
       "steps": [
-        "Lần đầu tên 'dmitry': chưa có, in OK, đếm = 1.",
-        "Lần hai 'dmitry': in dmitry1, đếm = 2.",
-        "Tên mới 'kalatoz': in OK."
+        "Ta cần kiểm tra xem một username đã xuất hiện trước đó hay chưa.",
+        "Username 'dmitry' xuất hiện lần đầu nên có thể sử dụng trực tiếp.",
+        "Khi 'dmitry' xuất hiện lần thứ hai, ta biết nó đã tồn tại và cần tạo một tên mới như 'dmitry1'.",
+        "Lần tiếp theo có thể tạo 'dmitry2', rồi tiếp tục tăng số đếm.",
+        "map<string, int> là lựa chọn tự nhiên vì mỗi username được ánh xạ tới số lần nó đã xuất hiện."
+      ]
+    },
+    {
+      "title": "priority_queue",
+      "steps": [
+        "Ban đầu heap rỗng.",
+        "Push 5: phần tử lớn nhất hiện tại là 5.",
+        "Push 1: 5 vẫn là phần tử lớn nhất.",
+        "Push 4: 5 vẫn đứng ở top.",
+        "Gọi top() nhận được 5, sau đó pop() loại 5 khỏi heap.",
+        "Lúc này phần tử lớn nhất còn lại là 4."
       ]
     }
   ],
   "codeBlocks": [
     {
-      "title": "map tần suất và set",
+      "title": "Đếm tần suất bằng map và lấy phần tử phân biệt bằng set",
       "language": "cpp",
-      "code": "#include <iostream>\n#include <map>\n#include <set>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> values = {2, 2, 3};\n    map<int, int> frequency;\n    set<int> distinct;\n    for (int value : values) {\n        ++frequency[value];\n        distinct.insert(value);\n    }\n    for (auto [key, cnt] : frequency) cout << key << ' ' << cnt << '\\n';\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    vector<int> values = {2, 2, 3};\n    map<int, int> frequency;\n    set<int> distinct;\n\n    for (int value : values) {\n        ++frequency[value];\n        distinct.insert(value);\n    }\n\n    for (auto [key, cnt] : frequency) {\n        cout << key << ' ' << cnt << '\\n';\n    }\n\n    return 0;\n}"
     },
     {
-      "title": "priority_queue min-heap",
+      "title": "Min-heap với priority_queue",
       "language": "cpp",
-      "code": "#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\n\nint main() {\n    priority_queue<int, vector<int>, greater<int>> minHeap;\n    minHeap.push(5);\n    minHeap.push(1);\n    minHeap.push(4);\n    while (!minHeap.empty()) {\n        cout << minHeap.top() << ' ';\n        minHeap.pop();\n    }\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    priority_queue<int, vector<int>, greater<int>> pq;\n\n    pq.push(5);\n    pq.push(1);\n    pq.push(4);\n\n    while (!pq.empty()) {\n        cout << pq.top() << ' ';\n        pq.pop();\n    }\n\n    return 0;\n}"
     }
   ],
   "exercises": [
@@ -84,7 +151,10 @@
       "id": "editorial-cf-43a",
       "name": "43A - Football",
       "rating": 900,
-      "tags": ["strings", "implementation"],
+      "tags": [
+        "strings",
+        "implementation"
+      ],
       "url": "post.html?editorial=editorial-cf-43a",
       "originalUrl": "https://codeforces.com/problemset/problem/43/A"
     },
@@ -92,7 +162,10 @@
       "id": "editorial-cf-1490c",
       "name": "1490C - Sum of Cubes",
       "rating": 1200,
-      "tags": ["binary search", "math"],
+      "tags": [
+        "binary search",
+        "math"
+      ],
       "url": "post.html?editorial=editorial-cf-1490c",
       "originalUrl": "https://codeforces.com/problemset/problem/1490/C"
     },
@@ -100,7 +173,10 @@
       "id": "editorial-cf-4c",
       "name": "4C - Registration System",
       "rating": 1300,
-      "tags": ["hashing", "strings"],
+      "tags": [
+        "hashing",
+        "strings"
+      ],
       "url": "post.html?editorial=editorial-cf-4c",
       "originalUrl": "https://codeforces.com/problemset/problem/4/C"
     }

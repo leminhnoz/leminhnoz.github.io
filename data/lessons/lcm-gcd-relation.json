@@ -1,0 +1,14 @@
+{
+  "id": "lcm-gcd-relation",
+  "moduleId": 1,
+  "author": "Le Minh",
+  "title": "Least Common Multiple (LCM) và quan hệ với GCD",
+  "description": "Tự suy ra LCM từ GCD và tránh overflow khi nhân.",
+  "category": "Number Theory",
+  "tags": ["lcm", "gcd", "number theory", "overflow"],
+  "level": "Module 1",
+  "sections": [{"title":"Bản chất cần hiểu","summary":"Tự giải thích công thức lcm(a,b)=a/gcd(a,b)*b và vì sao chia trước khi nhân.","content":[],"examples":["lcm(12,18)"]}],
+  "dryRun": [],
+  "codeBlocks": [{"title":"Code C++ tự viết","language":"cpp","code":""}],
+  "exercises": []
+}

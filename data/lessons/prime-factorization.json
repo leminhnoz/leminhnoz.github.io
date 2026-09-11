@@ -1,0 +1,363 @@
+{
+  "id": "prime-factorization",
+  "moduleId": 1,
+  "author": [ "Le Minh - THPT Luong Dac Bang " , "Vo Van Nam - THPT Chuyen KHTN - DHQG Ha Noi " ], 
+  "title": "Prime Factorization",
+  "description": "Hiểu bản chất phân tích thừa số nguyên tố, vì sao chỉ cần thử ước đến sqrt(n), cách xử lý phần còn lại và các ứng dụng trong Number Theory.",
+  "category": "Number Theory",
+  "tags": ["prime factorization", "divisors", "number theory"],
+  "level": "Module 1",
+  "sections": [
+    {
+      "id": "definition",
+      "title": "1. Phân tích thừa số nguyên tố là gì?",
+      "summary": "Mọi số nguyên dương lớn hơn 1 đều có thể viết duy nhất dưới dạng tích các số nguyên tố.",
+      "content": [
+        "Một số nguyên tố là số lớn hơn 1 chỉ có đúng hai ước dương: 1 và chính nó.",
+        "Prime Factorization là quá trình viết một số nguyên dương n thành tích của các số nguyên tố.",
+        "Ví dụ: 12 = 2 * 2 * 3 = 2^2 * 3.",
+        "Ví dụ: 100 = 2 * 2 * 5 * 5 = 2^2 * 5^2.",
+        "Theo định lý cơ bản của số học, cách phân tích thành thừa số nguyên tố là duy nhất nếu không xét thứ tự các thừa số.",
+        "Trong lập trình thi đấu, ta thường cần phân tích n để tìm số lượng ước, tổng các ước, số mũ của một prime, kiểm tra tính chất của n hoặc xử lý nhiều bài toán Number Theory."
+      ],
+      "examples": [
+        "12 = 2^2 * 3.",
+        "60 = 2^2 * 3 * 5.",
+        "72 = 2^3 * 3^2.",
+        "97 = 97 vì 97 đã là số nguyên tố."
+      ]
+    },
+    {
+      "id": "trial-division",
+      "title": "2. Trial Division — thử các ước",
+      "summary": "Cách cơ bản nhất là thử từng số có khả năng là ước của n và chia hết bao nhiêu lần.",
+      "content": [
+        "Ta bắt đầu từ p = 2 và thử các giá trị p có thể là thừa số của n.",
+        "Nếu n chia hết cho p, ta liên tục chia n cho p và đếm số lần xuất hiện của p.",
+        "Sau khi p không còn chia được n, chuyển sang p tiếp theo.",
+        "Nếu p không chia hết n thì không có thừa số p nào trong phân tích hiện tại.",
+        "Có thể chỉ thử p khi p * p <= n hiện tại. Khi đó thuật toán nhanh hơn đáng kể so với thử đến n.",
+        "Khi một prime p đã được lấy hết khỏi n, giá trị n hiện tại giảm xuống. Vì vậy giới hạn p * p <= n cũng có thể giảm theo thời gian."
+      ],
+      "examples": [
+        "n = 12: thử 2, chia được hai lần -> n = 3; sau đó phần còn lại 3 là prime.",
+        "n = 100: thử 2, chia hai lần -> n = 25; thử 3 không chia; thử 5, chia hai lần -> n = 1.",
+        "n = 45: thử 2 không được; thử 3, chia hai lần -> n = 5; phần còn lại 5 là prime."
+      ]
+    },
+    {
+      "id": "sqrt-proof",
+      "title": "3. Tại sao chỉ cần thử đến sqrt(n)?",
+      "summary": "Nếu n là hợp số thì nó luôn có ít nhất một ước không vượt quá sqrt(n).",
+      "content": [
+        "Giả sử n là hợp số. Khi đó n = a * b với 1 < a <= b.",
+        "Nếu cả a và b đều lớn hơn sqrt(n), thì a * b > sqrt(n) * sqrt(n) = n, mâu thuẫn với a * b = n.",
+        "Vì vậy ít nhất một trong hai thừa số a hoặc b phải nhỏ hơn hoặc bằng sqrt(n).",
+        "Do đó nếu thử tất cả p từ 2 đến sqrt(n) mà không tìm được ước nào, n chắc chắn là số nguyên tố.",
+        "Trong quá trình phân tích, n thay đổi sau mỗi lần chia. Vì vậy ta có thể dùng điều kiện p * p <= n hiện tại thay vì p * p <= n ban đầu.",
+        "Đây là lý do đoạn code thường viết for (long long p = 2; p * p <= n; ++p).",
+        "Nếu n ban đầu rất lớn, cần chú ý overflow của p * p. Có thể dùng p <= n / p để an toàn."
+      ],
+      "examples": [
+        "36 = 4 * 9, và 4 <= sqrt(36) = 6.",
+        "91 = 7 * 13, trong đó 7 <= sqrt(91) khoảng 9.54.",
+        "97 không có ước nào từ 2 đến 9 nên 97 là prime."
+      ]
+    },
+    {
+      "id": "remaining",
+      "title": "4. Vì sao phần n còn lại sau vòng lặp là số nguyên tố?",
+      "summary": "Nếu sau khi thử hết các p với p * p <= n mà n > 1, thì n không thể là hợp số.",
+      "content": [
+        "Giả sử sau vòng lặp còn n > 1 nhưng n là hợp số.",
+        "Theo tính chất ở phần trước, n phải có một ước nguyên tố p <= sqrt(n).",
+        "Nhưng vòng lặp đã thử tất cả p thỏa p * p <= n và lấy hết các lần chia được.",
+        "Điều đó mâu thuẫn với việc n vẫn còn là hợp số.",
+        "Vì vậy phần n còn lại chắc chắn là một số nguyên tố.",
+        "Đây là lý do code không cần tiếp tục thử tới n. Chỉ cần sau vòng lặp kiểm tra if (n > 1) thì thêm n vào danh sách thừa số với số mũ 1."
+      ],
+      "examples": [
+        "n = 45: lấy hết 3^2 thì n còn 5. Vì 5 > 1 nên thêm 5^1.",
+        "n = 77: thử 2, 3, 4, 5, 6, 7. Lấy 7 -> n = 11. Phần còn lại 11 là prime.",
+        "n = 97: không lấy được prime nào, vòng lặp kết thúc với n = 97 nên 97 chính là thừa số nguyên tố."
+      ]
+    },
+    {
+      "id": "dry-example",
+      "title": "5. Chạy tay: phân tích 360",
+      "summary": "Theo dõi n thay đổi sau mỗi lần chia giúp hiểu chính xác vòng lặp đang làm gì.",
+      "content": [
+        "Bắt đầu n = 360.",
+        "p = 2: 360 chia hết cho 2 -> lấy một 2, n = 180.",
+        "Tiếp tục p = 2: 180 chia hết -> lấy thêm 2, n = 90.",
+        "Tiếp tục p = 2: 90 chia hết -> lấy thêm 2, n = 45.",
+        "Lúc này 45 không chia hết cho 2. Ta thu được 2^3.",
+        "p = 3: 45 chia hết -> n = 15.",
+        "Tiếp tục chia 3 -> n = 5.",
+        "5 không chia hết cho 3.",
+        "Lúc này điều kiện p * p <= n đã không còn đúng vì 3 * 3 > 5.",
+        "Vòng lặp kết thúc. n = 5 > 1 nên thêm 5.",
+        "Kết quả: 360 = 2^3 * 3^2 * 5."
+      ],
+      "examples": [
+        "360 -> 180 -> 90 -> 45 sau ba lần chia cho 2.",
+        "45 -> 15 -> 5 sau hai lần chia cho 3.",
+        "5 còn lại là prime."
+      ]
+    },
+    {
+      "id": "implementation",
+      "title": "6. Cài đặt Trial Division",
+      "summary": "Code cơ bản vừa phân tích được thừa số vừa đếm số mũ của từng prime.",
+      "content": [
+        "Ta dùng biến n thay đổi trực tiếp. Mỗi khi tìm thấy p là ước, chia n cho p cho tới khi không còn chia được.",
+        "Biến cnt lưu số lần p xuất hiện.",
+        "Sau vòng while, nếu cnt > 0 thì p là một prime factor và có exponent bằng cnt.",
+        "Sau vòng for, nếu n > 1 thì n là một prime factor còn lại.",
+        "Dùng long long cho n nếu đề cho n lớn hơn giới hạn int.",
+        "Nếu n <= 10^12, thử tới sqrt(n) là khoảng 10^6 bước trong trường hợp xấu nhất, thường đủ nhanh cho một số.",
+        "Nếu cần phân tích rất nhiều số lớn, Trial Division từng số có thể quá chậm. Khi đó có thể cần sieve primes hoặc các thuật toán factorization mạnh hơn."
+      ],
+      "examples": [
+        "factor(12) -> (2,2), (3,1).",
+        "factor(100) -> (2,2), (5,2).",
+        "factor(97) -> (97,1)."
+      ]
+    },
+    {
+      "id": "prime-list",
+      "title": "7. Tối ưu khi có nhiều lần phân tích",
+      "summary": "Nếu phải factor nhiều số, có thể sàng prime trước rồi chỉ thử các số nguyên tố.",
+      "content": [
+        "Trial Division cơ bản thử cả số hợp như 4, 6, 8, 9, dù những số này không thể là thừa số nguyên tố mới.",
+        "Ta có thể dùng Sieve of Eratosthenes để tạo danh sách các prime tới sqrt(MAX_N).",
+        "Khi factor một số n, chỉ thử các prime trong danh sách.",
+        "Điều này giảm số phép thử và đặc biệt hữu ích khi cần factor nhiều số.",
+        "Nếu MAX_N không quá lớn và cần factor rất nhiều số nhỏ, có thể dùng SPF — Smallest Prime Factor — để phân tích mỗi số rất nhanh.",
+        "SPF[i] lưu ước nguyên tố nhỏ nhất của i. Khi biết SPF[n], ta chia n cho SPF[n] và tiếp tục cho tới khi n = 1."
+      ],
+      "examples": [
+        "Factor 10^5 số, mỗi số <= 10^6 -> có thể dùng SPF để factor rất nhanh.",
+        "Factor một vài số <= 10^12 -> Trial Division hoặc thử danh sách prime thường đủ."
+      ]
+    },
+    {
+      "id": "spfa-factor",
+      "title": "8. Smallest Prime Factor (SPF)",
+      "summary": "SPF tiền xử lý ước nguyên tố nhỏ nhất của mọi số để factor một số bằng cách truy ngược qua các ước nhỏ nhất.",
+      "content": [
+        "Với mỗi i, nếu spf[i] = 0 thì i là prime và ta có thể đánh dấu i là ước nguyên tố nhỏ nhất của các bội của nó.",
+        "Sau khi sàng xong, để factor n, lấy p = spf[n], chia n cho p và lặp lại.",
+        "Ví dụ spf[12] = 2. Chia 12 / 2 = 6, tiếp tục spf[6] = 2, rồi 6 / 2 = 3, cuối cùng spf[3] = 3.",
+        "SPF đặc biệt hữu ích khi có rất nhiều query factorization trong miền số nhỏ.",
+        "Trade-off là cần O(MAX_N) bộ nhớ và O(MAX_N log log MAX_N) hoặc tương đương tùy cách xây sieve."
+      ],
+      "examples": [
+        "12 -> 2 -> 6 -> 2 -> 3 -> 3 -> 1.",
+        "60 -> 2 -> 30 -> 2 -> 15 -> 3 -> 5 -> 5 -> 1."
+      ]
+    },
+    {
+      "id": "applications",
+      "title": "9. Ứng dụng của Prime Factorization",
+      "summary": "Phân tích thừa số nguyên tố là nền tảng của nhiều công thức Number Theory.",
+      "content": [
+        "Tìm số lượng ước: nếu n = p1^a1 * p2^a2 * ... * pk^ak thì số ước của n là (a1 + 1)(a2 + 1)...(ak + 1).",
+        "Tính tổng các ước: với mỗi prime p^a, tổng đóng góp là 1 + p + p^2 + ... + p^a. Các đóng góp được nhân với nhau.",
+        "Tìm GCD/LCM thông qua số mũ của các prime: GCD lấy min exponent, LCM lấy max exponent.",
+        "Kiểm tra số chính phương: mọi exponent trong prime factorization phải là số chẵn.",
+        "Kiểm tra số lập phương: mọi exponent phải chia hết cho 3.",
+        "Đếm số prime factor phân biệt: chỉ cần đếm số prime có exponent > 0.",
+        "Đếm tổng số prime factor có tính cả lặp: cộng tất cả exponent.",
+        "Nhiều bài yêu cầu biến đổi một số bằng cách chọn hoặc loại bỏ các prime factor. Khi đó factorization giúp biến bài toán số học thành bài toán trên các exponent."
+      ],
+      "examples": [
+        "12 = 2^2 * 3 -> số ước = (2 + 1)(1 + 1) = 6.",
+        "72 = 2^3 * 3^2 -> số ước = 4 * 3 = 12.",
+        "36 = 2^2 * 3^2 -> là số chính phương.",
+        "72 = 2^3 * 3^2 -> không phải số chính phương vì exponent của 2 là 3."
+      ]
+    },
+    {
+      "id": "divisors",
+      "title": "10. Prime Factorization và việc liệt kê ước",
+      "summary": "Sau khi có các prime factor và exponent, có thể sinh toàn bộ ước của n.",
+      "content": [
+        "Nếu n = p1^a1 * p2^a2 * ... * pk^ak, mỗi ước của n có dạng p1^b1 * p2^b2 * ... * pk^bk với 0 <= bi <= ai.",
+        "Ta có thể DFS qua từng prime và thử tất cả exponent từ 0 đến ai.",
+        "Số lượng ước sinh ra đúng bằng công thức product(ai + 1).",
+        "Nếu chỉ cần số lượng ước, không cần sinh từng ước; dùng trực tiếp công thức.",
+        "Nếu cần tổng hoặc tính chất của từng ước, có thể sinh các ước bằng DFS hoặc vòng lặp trên exponent."
+      ],
+      "examples": [
+        "12 = 2^2 * 3 -> các ước được tạo bằng 2^a * 3^b với a = 0..2, b = 0..1.",
+        "Các ước của 12: 1, 2, 3, 4, 6, 12."
+      ]
+    },
+    {
+      "id": "recognition",
+      "title": "11. Khi nào nghĩ tới Prime Factorization?",
+      "summary": "Nếu đề nói nhiều về ước, prime, GCD/LCM hoặc tính chất của số, hãy thử phân tích thừa số.",
+      "content": [
+        "Đề hỏi số lượng ước hoặc tổng các ước -> nghĩ ngay tới prime factorization.",
+        "Đề hỏi số chính phương, số lập phương hoặc một số có dạng lũy thừa -> xét exponent của các prime.",
+        "Đề cho GCD/LCM của nhiều số và cần phân tích cấu trúc -> prime factorization thường hữu ích.",
+        "Đề yêu cầu tìm prime factor nhỏ nhất/lớn nhất -> factorization hoặc sieve SPF.",
+        "Đề có nhiều query trên các số <= MAX_N -> nghĩ tới SPF.",
+        "Đề chỉ có một vài số <= 10^12 -> Trial Division thường là lựa chọn đơn giản.",
+        "Nếu n có thể lên tới 10^18 và cần factor nhiều số, Trial Division có thể không đủ nhanh; cần thuật toán mạnh hơn."
+      ],
+      "examples": [
+        "n <= 10^9, một test -> thử ước đến sqrt(n) thường rất ổn.",
+        "Q lớn, mọi n <= 10^6 -> SPF.",
+        "n <= 10^18 -> phải xem constraint số lượng test trước khi quyết định thuật toán."
+      ]
+    },
+    {
+      "id": "pitfalls",
+      "title": "12. Những lỗi thường gặp",
+      "summary": "Factorization khá ngắn nhưng có một số lỗi logic rất dễ khiến kết quả sai.",
+      "content": [
+        "Quên chia p nhiều lần. Nếu chỉ chia một lần, 12 sẽ được ghi thành 2 * 6 thay vì 2^2 * 3.",
+        "Quên xử lý n > 1 sau vòng for. Khi đó các prime lớn còn lại sẽ bị bỏ qua.",
+        "Dùng điều kiện p <= sqrt(n) nhưng tính sqrt bằng floating point không cần thiết. Dùng p * p <= n hoặc p <= n / p thường an toàn hơn.",
+        "Với n lớn, p * p có thể overflow nếu kiểu dữ liệu không đủ rộng.",
+        "Không dùng long long khi n có thể vượt int.",
+        "Nhầm số prime factor phân biệt với tổng số prime factor có lặp.",
+        "Nhầm số lượng ước với số lượng prime factor.",
+        "Nếu factor nhiều số, thử từng integer từ 2 đến sqrt(n) có thể quá chậm; cần sieve primes hoặc SPF."
+      ],
+      "examples": [
+        "12 có 2 prime factor phân biệt: 2 và 3.",
+        "12 có tổng cộng 3 prime factor nếu tính lặp: 2, 2, 3.",
+        "12 có 6 ước dương: 1, 2, 3, 4, 6, 12."
+      ]
+    },
+    {
+      "id": "complexity",
+      "title": "13. Độ phức tạp",
+      "summary": "Trial Division đủ tốt cho số vừa phải nhưng cần đánh giá constraint trước khi sử dụng.",
+      "content": [
+        "Trial Division thử tới sqrt(n), nên độ phức tạp xấp xỉ O(sqrt(n)) cho một số trong trường hợp xấu nhất.",
+        "Nếu chỉ thử các prime tới sqrt(n), số phép thử nhỏ hơn đáng kể so với thử mọi số nguyên.",
+        "Sieve of Eratosthenes tạo danh sách prime tới M trong khoảng O(M log log M).",
+        "SPF có thể tiền xử lý O(M log log M) với sieve thông thường và factor mỗi số bằng số lượng prime factor có lặp.",
+        "Nếu Q số đều lớn, tổng chi phí phải tính cả Q lần factorization. Không nên nhìn chỉ vào sqrt(n) của một test.",
+        "Với n <= 10^12, sqrt(n) <= 10^6 nên Trial Division thường có thể dùng được cho một số lượng test vừa phải.",
+        "Với n gần 10^18, sqrt(n) gần 10^9 nên Trial Division không còn phù hợp nếu phải factor nhiều số."
+      ],
+      "examples": [
+        "n = 10^12 -> sqrt(n) = 10^6.",
+        "n = 10^18 -> sqrt(n) = 10^9.",
+        "Q = 2 * 10^5 và n <= 10^6 -> SPF thường phù hợp hơn factor từng số độc lập."
+      ]
+    }
+  ],
+  "dryRun": [
+    {
+      "title": "Phân tích 12",
+      "steps": [
+        "n = 12.",
+        "p = 2, 12 chia hết cho 2 -> cnt = 1, n = 6.",
+        "2 vẫn chia hết -> cnt = 2, n = 3.",
+        "2 không còn chia hết.",
+        "Tiếp tục p = 3 nhưng 3 * 3 > 3 nên vòng lặp kết thúc.",
+        "n = 3 > 1 nên thêm prime factor 3 với exponent 1.",
+        "Kết quả: 12 = 2^2 * 3."
+      ]
+    },
+    {
+      "title": "Phân tích 100",
+      "steps": [
+        "n = 100.",
+        "p = 2: chia lần 1 -> n = 50.",
+        "p = 2: chia lần 2 -> n = 25.",
+        "2 không chia được 25.",
+        "p = 3: 3 không chia 25.",
+        "p = 4: 4 không chia 25.",
+        "p = 5: 25 chia 5 -> n = 5.",
+        "5 tiếp tục chia 5 -> n = 1.",
+        "Kết quả: 100 = 2^2 * 5^2."
+      ]
+    },
+    {
+      "title": "Phần còn lại — 77",
+      "steps": [
+        "n = 77.",
+        "2, 3, 4, 5, 6 đều không chia hết 77.",
+        "p = 7: 77 chia hết -> lấy 7, n = 11.",
+        "Bây giờ 7 * 7 > 11 nên vòng lặp dừng.",
+        "n = 11 > 1.",
+        "11 chắc chắn là prime factor còn lại.",
+        "Kết quả: 77 = 7 * 11."
+      ]
+    },
+    {
+      "title": "Số nguyên tố — 97",
+      "steps": [
+        "n = 97.",
+        "Không có số nào từ 2 đến 9 chia hết 97.",
+        "Khi p = 10 thì p * p > 97 nên vòng lặp dừng.",
+        "n vẫn bằng 97 và n > 1.",
+        "Vì không tìm được ước <= sqrt(97), 97 là số nguyên tố.",
+        "Kết quả: 97 = 97^1."
+      ]
+    }
+  ],
+  "codeBlocks": [
+    {
+      "title": "Prime Factorization — Trial Division cơ bản",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    long long n;\n    cin >> n;\n\n    for (long long p = 2; p * p <= n; ++p) {\n        if (n % p != 0) continue;\n\n        int cnt = 0;\n        while (n % p == 0) {\n            n /= p;\n            ++cnt;\n        }\n\n        cout << p << '^' << cnt << '\\n';\n    }\n\n    if (n > 1) {\n        cout << n << '^' << 1 << '\\n';\n    }\n\n    return 0;\n}"
+    },
+    {
+      "title": "Prime Factorization — trả về danh sách (prime, exponent)",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nvector<pair<long long, int>> factorize(long long n) {\n    vector<pair<long long, int>> factors;\n\n    for (long long p = 2; p <= n / p; ++p) {\n        if (n % p != 0) continue;\n\n        int cnt = 0;\n        while (n % p == 0) {\n            n /= p;\n            ++cnt;\n        }\n\n        factors.push_back({p, cnt});\n    }\n\n    if (n > 1) {\n        factors.push_back({n, 1});\n    }\n\n    return factors;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    long long n;\n    cin >> n;\n\n    vector<pair<long long, int>> factors = factorize(n);\n\n    for (auto factor : factors) {\n        cout << factor.first << '^' << factor.second << '\\n';\n    }\n\n    return 0;\n}"
+    },
+    {
+      "title": "Đếm số lượng ước từ Prime Factorization",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long countDivisors(long long n) {\n    long long answer = 1;\n\n    for (long long p = 2; p <= n / p; ++p) {\n        if (n % p != 0) continue;\n\n        int cnt = 0;\n        while (n % p == 0) {\n            n /= p;\n            ++cnt;\n        }\n\n        answer *= cnt + 1;\n    }\n\n    if (n > 1) {\n        answer *= 2;\n    }\n\n    return answer;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    long long n;\n    cin >> n;\n\n    cout << countDivisors(n) << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Sieve + danh sách prime để factor nhiều số",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nvector<int> buildPrimes(int limit) {\n    vector<bool> isPrime(limit + 1, true);\n    vector<int> primes;\n\n    isPrime[0] = isPrime[1] = false;\n\n    for (int i = 2; i <= limit; ++i) {\n        if (!isPrime[i]) continue;\n\n        primes.push_back(i);\n\n        if (1LL * i * i <= limit) {\n            for (int j = i * i; j <= limit; j += i) {\n                isPrime[j] = false;\n            }\n        }\n    }\n\n    return primes;\n}\n\nvector<pair<long long, int>> factorize(long long n, const vector<int>& primes) {\n    vector<pair<long long, int>> factors;\n\n    for (int p : primes) {\n        if (1LL * p * p > n) break;\n        if (n % p != 0) continue;\n\n        int cnt = 0;\n        while (n % p == 0) {\n            n /= p;\n            ++cnt;\n        }\n\n        factors.push_back({p, cnt});\n    }\n\n    if (n > 1) {\n        factors.push_back({n, 1});\n    }\n\n    return factors;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int limit;\n    cin >> limit;\n\n    vector<int> primes = buildPrimes(limit);\n\n    long long n;\n    cin >> n;\n\n    vector<pair<long long, int>> factors = factorize(n, primes);\n\n    for (auto factor : factors) {\n        cout << factor.first << '^' << factor.second << '\\n';\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "editorial-cf-26a",
+      "name": "26A - Almost Prime",
+      "rating": 1200,
+      "tags": ["number theory", "prime factorization"],
+      "url": "post.html?editorial=editorial-cf-26a",
+      "originalUrl": "https://codeforces.com/problemset/problem/26/A"
+    },
+    {
+      "id": "editorial-cf-1034a",
+      "name": "1034A - Enlarge GCD",
+      "rating": 1800,
+      "tags": ["number theory", "prime factorization", "gcd"],
+      "url": "post.html?editorial=editorial-cf-1034a",
+      "originalUrl": "https://codeforces.com/problemset/problem/1034/A"
+    },
+    {
+      "id": "editorial-cf-222a",
+      "name": "222A - Shooshuns and Sequence",
+      "rating": 1200,
+      "tags": ["implementation"],
+      "url": "post.html?editorial=editorial-cf-222a",
+      "originalUrl": "https://codeforces.com/problemset/problem/222/A"
+    },
+    {
+      "id": "editorial-cf-1499a",
+      "name": "1499A - Domino on Windowsill",
+      "rating": 800,
+      "tags": ["implementation"],
+      "url": "post.html?editorial=editorial-cf-1499a",
+      "originalUrl": "https://codeforces.com/problemset/problem/1499/A"
+    }
+  ]
+}

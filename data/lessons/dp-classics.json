@@ -2,71 +2,391 @@
   "id": "dp-classics",
   "author": "Le Minh",
   "title": "Dynamic Programming: Knapsack, LIS & LCS",
-  "description": "Định nghĩa state, transition và thứ tự tính cho các bài DP kinh điển.",
+  "description": "Hiểu bản chất Dynamic Programming từ state, transition, base case đến thứ tự tính; áp dụng vào Knapsack, LIS và LCS.",
   "category": "Dynamic Programming",
   "tags": ["dp", "knapsack", "lis", "lcs"],
   "level": "Module 4",
   "sections": [
     {
       "id": "mindset",
-      "title": "Tư duy DP",
-      "summary": "Chia bài lớn thành bài nhỏ overlapping; lưu đáp án để không tính lại.",
+      "title": "1. Dynamic Programming là gì?",
+      "summary": "DP là cách giải bài toán bằng cách chia thành các trạng thái nhỏ hơn, lưu kết quả của chúng và tái sử dụng khi cần.",
       "content": [
-        "Hỏi: state là gì? Thường prefix i, dung lượng w, hoặc (i, j) trên hai xâu.",
-        "Transition: từ state nhỏ hơn bằng một quyết định (chọn/bỏ, cắt, nhảy).",
-        "Base: dp[0] = 0 hoặc 1 tùy đếm/tối ưu. Impossible = -inf.",
-        "Phân biệt 0/1 knapsack (mỗi item một lần, duyệt w giảm) và unbounded (duyệt w tăng)."
+        "Dynamic Programming không phải là một thuật toán duy nhất. Nó là một phương pháp thiết kế thuật toán.",
+        "Ý tưởng cốt lõi là: thay vì giải đi giải lại cùng một bài toán con, ta tính nó một lần, lưu kết quả và sử dụng lại.",
+        "Một bài toán thường phù hợp với DP khi có hai đặc điểm: bài toán lớn có thể xây dựng từ các bài toán nhỏ hơn, và các bài toán nhỏ bị lặp lại.",
+        "Ví dụ Fibonacci: F(n) = F(n-1) + F(n-2). Nếu viết đệ quy trực tiếp, F(n-2), F(n-3), ... bị tính lại rất nhiều lần. DP lưu F(i) sau lần tính đầu tiên nên mỗi trạng thái chỉ tính một lần.",
+        "Trong competitive programming, phần khó nhất của DP thường không phải viết vòng for mà là xác định đúng state và transition.",
+        "Một cách suy nghĩ hữu ích là: 'Sau khi biết dp[state], chính xác thông tin gì về phần đã xử lý là đủ để quyết định phần còn lại?' Nếu câu trả lời cần toàn bộ lịch sử, state có thể chưa đủ.",
+        "Một state tốt phải chứa đủ thông tin để transition sang các trạng thái tiếp theo nhưng không chứa thông tin thừa khiến số trạng thái tăng không cần thiết."
       ],
       "examples": [
-        "dp[i] = max(dp[i], dp[i - a] + v)",
-        "Boredom: dp[x] = max(dp[x-1], dp[x-2] + x * cnt[x])"
+        "Fibonacci: dp[i] = số Fibonacci thứ i.",
+        "Knapsack: dp[w] = giá trị lớn nhất có thể đạt được với dung lượng w.",
+        "LCS: dp[i][j] = độ dài LCS của hai prefix đầu tiên.",
+        "Boredom: dp[x] biểu diễn đáp án tốt nhất khi chỉ xét các giá trị từ 1 đến x."
+      ]
+    },
+    {
+      "id": "state-transition",
+      "title": "2. State, Transition, Base Case và thứ tự tính",
+      "summary": "Một công thức DP hoàn chỉnh phải xác định trạng thái, cách chuyển trạng thái, giá trị ban đầu và thứ tự đảm bảo các trạng thái phụ thuộc đã được tính.",
+      "content": [
+        "State là định nghĩa chính xác ý nghĩa của dp. Ví dụ dp[i] có thể là đáp án của prefix i, giá trị tốt nhất khi tổng bằng i, hoặc độ dài tốt nhất kết thúc tại vị trí i.",
+        "Transition mô tả cách tạo một trạng thái từ những trạng thái nhỏ hơn. Đây thường là bước mô phỏng một quyết định: chọn hoặc bỏ, nối thêm phần tử, sử dụng một đoạn, hoặc chuyển từ trạng thái trước.",
+        "Base case là những trạng thái nhỏ nhất mà đáp án biết trực tiếp. Ví dụ dp[0] = 0 trong bài tối ưu tổng, hoặc dp[0][j] = dp[i][0] = 0 trong LCS.",
+        "Nếu một trạng thái không thể đạt được, cần biểu diễn nó bằng một giá trị đặc biệt như -INF đối với bài maximization hoặc INF đối với bài minimization.",
+        "Thứ tự tính phải đảm bảo khi tính dp[state], tất cả trạng thái mà transition sử dụng đã có đáp án đúng.",
+        "Với DP 1 chiều, thứ tự duyệt có thể thay đổi ý nghĩa bài toán. Đây chính là lý do 0/1 Knapsack phải duyệt trọng lượng giảm còn Unbounded Knapsack thường duyệt tăng.",
+        "Có thể xem mỗi state là một đỉnh trong một đồ thị trạng thái. Transition là cạnh đi từ state này sang state khác. DP chính là cách xử lý các state theo thứ tự phù hợp trên đồ thị trạng thái không có chu trình phụ thuộc."
+      ],
+      "examples": [
+        "dp[i] = max(dp[i - 1], dp[i - 2] + value[i])",
+        "dp[i][j] = dp[i - 1][j - 1] + 1 khi hai ký tự bằng nhau.",
+        "dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]) khi hai ký tự khác nhau."
+      ]
+    },
+    {
+      "id": "how-to-build",
+      "title": "3. Cách tự xây dựng một công thức DP",
+      "summary": "Đừng cố nhớ công thức. Hãy bắt đầu từ câu hỏi: state có nghĩa là gì và quyết định cuối cùng của đáp án là gì?",
+      "content": [
+        "Bước 1: Xác định bài toán đang tối ưu, đếm hay kiểm tra khả năng. Từ đó biết dp nên lưu max, min, số cách hay trạng thái boolean.",
+        "Bước 2: Xác định những thông tin cần thiết để mô tả một bài toán con. Đây là state.",
+        "Bước 3: Xét quyết định cuối cùng. Thông thường đáp án của state có thể chia thành một số trường hợp như chọn/bỏ một item, lấy/không lấy ký tự, hoặc phần tử cuối thuộc một cấu hình nào đó.",
+        "Bước 4: Viết transition từ những trường hợp đó.",
+        "Bước 5: Xác định base case.",
+        "Bước 6: Xác định thứ tự duyệt.",
+        "Bước 7: Kiểm tra độ phức tạp. Nếu có quá nhiều state hoặc mỗi transition quá chậm, cần tối ưu state hoặc transition.",
+        "Một mẹo quan trọng: hãy viết câu tiếng Việt mô tả dp trước rồi mới viết công thức. Nếu không thể nói rõ 'dp[i] nghĩa là gì', chưa nên code."
+      ],
+      "examples": [
+        "Nếu dp[i] là 'giá trị lớn nhất khi xét i phần tử đầu', thì transition phải giải thích được vì sao phần tử thứ i được chọn hoặc không được chọn.",
+        "Nếu dp[i][j] là 'LCS của hai prefix', thì mỗi transition phải xuất phát từ hai prefix nhỏ hơn."
       ]
     },
     {
       "id": "knapsack",
-      "title": "Knapsack",
-      "summary": "dp[w] = giá trị tốt nhất với dung lượng đúng hoặc tối đa w.",
+      "title": "4. 0/1 Knapsack",
+      "summary": "Mỗi item chỉ được dùng tối đa một lần. State thường là dung lượng đã xét, transition chọn hoặc bỏ item.",
       "content": [
-        "0/1: for item, for w = W..weight: dp[w] = max(dp[w], dp[w-weight] + value).",
-        "Duyệt giảm để mỗi item dùng một lần (lấy bản dp cũ của cùng vòng).",
-        "Cut Ribbon: unbounded, dp[i] = max over cắt độ dài a,b,c.",
-        "Writing Code: knapsack 2D hoặc tối ưu chiều người/bug."
+        "Cho n item, item i có trọng lượng w[i] và giá trị v[i]. Bài toán yêu cầu chọn một số item sao cho tổng trọng lượng không vượt quá W và tổng giá trị lớn nhất.",
+        "Với phiên bản 2 chiều, dp[i][w] có thể được định nghĩa là giá trị lớn nhất khi xét i item đầu tiên với sức chứa w.",
+        "Khi xét item i, có hai lựa chọn: không lấy item i hoặc lấy item i nếu đủ sức chứa.",
+        "Nếu không lấy: dp[i][w] = dp[i - 1][w].",
+        "Nếu lấy: dp[i][w] = dp[i - 1][w - weight[i]] + value[i].",
+        "Do đó dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - weight[i]] + value[i]).",
+        "Điểm quan trọng là trạng thái khi lấy item phải thuộc hàng i - 1. Điều đó đảm bảo item hiện tại không bị dùng lại.",
+        "Có thể tối ưu từ O(nW) bộ nhớ xuống O(W) vì mỗi hàng chỉ phụ thuộc vào hàng trước.",
+        "Khi tối ưu xuống một chiều, phải duyệt w từ W xuống weight. Nếu duyệt tăng, dp[w - weight] có thể đã được cập nhật bởi chính item hiện tại và item sẽ bị dùng nhiều lần."
       ],
       "examples": [
-        "W=3, item (2,3): dp[3] = max(dp[3], dp[1]+3)"
+        "W = 3, item (weight = 2, value = 3): dp[3] có thể lấy item vì 3 - 2 = 1 vẫn là trạng thái trước đó.",
+        "Nếu có hai item (2, 3) và (1, 2), đáp án với W = 3 là 5 vì lấy cả hai."
       ]
     },
     {
-      "id": "lis-lcs",
-      "title": "LIS và LCS",
-      "summary": "LIS giữ đuôi dãy tăng; LCS so hai prefix.",
+      "id": "knapsack-order",
+      "title": "5. Vì sao 0/1 Knapsack duyệt giảm?",
+      "summary": "Thứ tự duyệt một chiều quyết định việc một item có thể được sử dụng lại hay không.",
       "content": [
-        "LIS O(N log N): tails[len] = giá trị cuối nhỏ nhất của dãy dài len; lower_bound để thay hoặc nối.",
-        "LCS: dp[i][j] = dp[i-1][j-1]+1 nếu s[i]=t[j], else max hai phía.",
-        "Vacations/Boredom: DP 1D trên ngày hoặc trên giá trị, không phải LIS thuần."
+        "Giả sử item hiện tại có weight = 2, value = 3.",
+        "Ban đầu dp[0] = 0.",
+        "Nếu duyệt w giảm từ W xuống 2, khi tính dp[4], giá trị dp[2] vẫn là kết quả trước khi xử lý item hiện tại. Vì vậy item chỉ được lấy một lần.",
+        "Nếu duyệt w tăng từ 2 lên W, dp[2] có thể vừa được cập nhật bởi item hiện tại. Khi tính dp[4], ta có thể dùng dp[2] mới và cộng thêm item lần nữa.",
+        "Vì vậy: 0/1 Knapsack -> duyệt capacity giảm.",
+        "Ngược lại, Unbounded Knapsack cho phép dùng một item nhiều lần -> thường duyệt capacity tăng.",
+        "Đây không phải là quy tắc cú pháp. Nó xuất phát trực tiếp từ việc transition được phép sử dụng state cũ hay state vừa cập nhật."
       ],
       "examples": [
-        "tails = [1, 3, 5], thêm 4 thay 5 thành [1, 3, 4]"
+        "0/1: for (int w = W; w >= weight; --w)",
+        "Unbounded: for (int w = weight; w <= W; ++w)"
+      ]
+    },
+    {
+      "id": "unbounded",
+      "title": "6. Unbounded Knapsack và các bài tương tự",
+      "summary": "Khi một lựa chọn có thể được sử dụng nhiều lần, transition có thể dùng trạng thái vừa cập nhật.",
+      "content": [
+        "Unbounded Knapsack khác 0/1 Knapsack ở chỗ mỗi item hoặc loại item có thể được sử dụng nhiều lần.",
+        "Ví dụ Cut Ribbon: cần cắt độ dài n thành các đoạn có độ dài a, b hoặc c và tối đa hóa số đoạn.",
+        "Có thể định nghĩa dp[i] = số đoạn lớn nhất tạo được với tổng độ dài i.",
+        "Transition: dp[i] = max(dp[i - a] + 1, dp[i - b] + 1, dp[i - c] + 1) với những độ dài hợp lệ.",
+        "Vì một độ dài có thể được dùng nhiều lần, trạng thái dp[i - a] có thể đã sử dụng chính đoạn a trước đó.",
+        "Một số bài không gọi tên Knapsack nhưng có cùng cấu trúc: tổng mục tiêu, mỗi lựa chọn có thể dùng lại hoặc bị giới hạn số lần."
+      ],
+      "examples": [
+        "Cut Ribbon: dp[i] = max số đoạn tạo tổng độ dài i.",
+        "Coin Change dạng unlimited: dp[x] có thể phụ thuộc dp[x - coin]."
+      ]
+    },
+    {
+      "id": "boredom",
+      "title": "7. DP trên giá trị — Boredom",
+      "summary": "Không phải DP lúc nào cũng chạy theo index của mảng. Có thể đổi trục DP sang giá trị nếu các quyết định phụ thuộc vào giá trị.",
+      "content": [
+        "Trong Codeforces 455A - Boredom, nếu chọn giá trị x thì tất cả phần tử có giá trị x + 1 và x - 1 không thể được chọn.",
+        "Ta đếm cnt[x] = số lần giá trị x xuất hiện.",
+        "Nếu chọn x, tổng điểm nhận được là x * cnt[x]. Sau khi chọn x, không thể chọn x - 1, nên trạng thái phù hợp là dp[x - 2].",
+        "Nếu không chọn x, ta giữ dp[x - 1].",
+        "Công thức: dp[x] = max(dp[x - 1], dp[x - 2] + x * cnt[x]).",
+        "Đây có cùng tinh thần với bài chọn hoặc bỏ, nhưng 'item' ở đây là giá trị x thay vì một vị trí trong mảng.",
+        "Bài này là ví dụ quan trọng cho việc nhận ra rằng state có thể nằm trên giá trị thay vì index."
+      ],
+      "examples": [
+        "Nếu cnt[2] = 3 thì chọn giá trị 2 mang lại 2 * 3 = 6 điểm.",
+        "Khi đang xét x = 5, hai lựa chọn là bỏ 5 -> dp[4], hoặc lấy toàn bộ giá trị 5 -> dp[3] + 5 * cnt[5]."
+      ]
+    },
+    {
+      "id": "lis",
+      "title": "8. LIS — Longest Increasing Subsequence",
+      "summary": "LIS tìm độ dài dãy con tăng. Có thể giải O(N^2) bằng DP hoặc O(N log N) bằng kỹ thuật tails.",
+      "content": [
+        "Subsequence không yêu cầu các phần tử phải liên tiếp. Ta chỉ cần giữ nguyên thứ tự ban đầu.",
+        "Một DP cơ bản định nghĩa dp[i] = độ dài LIS dài nhất kết thúc tại vị trí i.",
+        "Khi đó dp[i] = 1 + max(dp[j]) với mọi j < i và a[j] < a[i].",
+        "Nếu không có j phù hợp, dp[i] = 1.",
+        "Đáp án là max(dp[i]). Độ phức tạp O(N^2).",
+        "Với N lớn, có thể tối ưu xuống O(N log N) bằng mảng tails.",
+        "tails[len - 1] lưu giá trị nhỏ nhất có thể làm phần tử cuối của một dãy tăng có độ dài len.",
+        "Với mỗi value, tìm vị trí đầu tiên trong tails có giá trị >= value bằng lower_bound. Thay giá trị ở đó bằng value.",
+        "Nếu value lớn hơn toàn bộ tails, ta thêm nó vào cuối.",
+        "Điều quan trọng: tails không nhất thiết là một subsequence thực sự xuất hiện trong mảng. Nó chỉ lưu thông tin đủ để biết độ dài LIS."
+      ],
+      "examples": [
+        "a = [3, 1, 2, 4]. Sau 3: tails = [3].",
+        "Sau 1: lower_bound(1) trỏ vào 3 -> tails = [1].",
+        "Sau 2: không có phần tử >= 2 -> tails = [1, 2].",
+        "Sau 4: tails = [1, 2, 4], nên LIS có độ dài 3."
+      ]
+    },
+    {
+      "id": "lis-tails",
+      "title": "9. Vì sao tails + lower_bound cho LIS O(N log N)?",
+      "summary": "Ta không cần lưu toàn bộ dp[i]. Chỉ cần biết đuôi nhỏ nhất của các dãy có từng độ dài.",
+      "content": [
+        "Giả sử tails[k] là đuôi nhỏ nhất có thể của một increasing subsequence dài k + 1.",
+        "Nếu có hai dãy cùng độ dài nhưng một dãy có đuôi nhỏ hơn, dãy có đuôi nhỏ hơn luôn linh hoạt hơn để nối thêm phần tử phía sau.",
+        "Vì vậy với mỗi độ dài, chỉ cần giữ đuôi nhỏ nhất.",
+        "Các giá trị trong tails luôn tăng nghiêm ngặt đối với LIS strict increasing.",
+        "Do tails đã được sắp xếp, có thể dùng binary search để tìm vị trí thay thế.",
+        "Nếu value >= tất cả tails, LIS có thể tăng thêm một độ dài.",
+        "Nếu không, ta thay phần tử đầu tiên >= value. Việc thay này không làm giảm độ dài LIS đã biết nhưng tạo ra một đuôi nhỏ hơn hoặc bằng cho cùng độ dài.",
+        "Mỗi phần tử cần một lower_bound O(log N), nên tổng độ phức tạp là O(N log N).",
+        "Nếu đề yêu cầu non-decreasing subsequence thay vì strictly increasing, thường phải dùng upper_bound thay cho lower_bound."
+      ],
+      "examples": [
+        "tails = [1, 3, 5], thêm 4 -> lower_bound(4) trỏ vào 5 -> tails = [1, 3, 4].",
+        "tails = [1, 2, 4], thêm 2 trong LIS strict -> lower_bound(2) trỏ vào 2, không tăng độ dài."
+      ]
+    },
+    {
+      "id": "lcs",
+      "title": "10. LCS — Longest Common Subsequence",
+      "summary": "LCS tìm subsequence chung dài nhất của hai xâu bằng DP trên hai prefix.",
+      "content": [
+        "Cho hai xâu s và t. Cần tìm subsequence dài nhất xuất hiện trong cả hai xâu.",
+        "Định nghĩa dp[i][j] = độ dài LCS của s[0..i-1] và t[0..j-1]. Dùng prefix giúp xử lý dễ dàng khi i hoặc j bằng 0.",
+        "Nếu s[i - 1] == t[j - 1], ta có thể ghép hai ký tự này vào một LCS tối ưu: dp[i][j] = dp[i - 1][j - 1] + 1.",
+        "Nếu hai ký tự khác nhau, ít nhất một trong hai ký tự cuối không được sử dụng trong một LCS tối ưu. Vì vậy dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]).",
+        "Base case: dp[0][j] = dp[i][0] = 0 vì xâu rỗng không có subsequence chung khác rỗng.",
+        "Độ phức tạp là O(nm) thời gian và O(nm) bộ nhớ.",
+        "Nếu chỉ cần độ dài LCS, có thể tối ưu bộ nhớ xuống O(m) bằng cách chỉ giữ hàng trước."
+      ],
+      "examples": [
+        "s = ABCD, t = ACBD -> một LCS có độ dài 3.",
+        "Nếu s[i - 1] = t[j - 1], hai ký tự giống nhau có thể đóng góp 1 vào đáp án.",
+        "Nếu hai ký tự khác nhau, bỏ ký tự cuối của s hoặc bỏ ký tự cuối của t và lấy phương án tốt hơn."
+      ]
+    },
+    {
+      "id": "lcs-proof",
+      "title": "11. Tại sao transition của LCS đúng?",
+      "summary": "Khi hai ký tự cuối khác nhau, chúng không thể cùng đồng thời là ký tự cuối của một LCS.",
+      "content": [
+        "Nếu s[i - 1] == t[j - 1], lấy hai ký tự này làm cặp cuối của LCS cho phép nối vào LCS của hai prefix trước đó.",
+        "Nếu s[i - 1] != t[j - 1], giả sử một LCS sử dụng cả hai ký tự cuối làm cùng một cặp thì điều đó là không thể vì chúng khác nhau.",
+        "Do đó trong một LCS tối ưu, ít nhất một trong hai ký tự cuối phải bị bỏ.",
+        "Nếu bỏ s[i - 1], ta còn bài toán dp[i - 1][j]. Nếu bỏ t[j - 1], ta còn dp[i][j - 1].",
+        "Lấy max của hai trường hợp bao phủ toàn bộ khả năng nên transition là đúng."
+      ],
+      "examples": [
+        "s = ABC, t = ADC. Hai ký tự cuối đều là C nên dp[3][3] = dp[2][2] + 1.",
+        "s = AB, t = AC. Hai ký tự cuối B và C khác nhau nên xét max(dp[1][2], dp[2][1])."
+      ]
+    },
+    {
+      "id": "other-dp",
+      "title": "12. Những DP kinh điển khác",
+      "summary": "Knapsack, LIS và LCS chỉ là ba mẫu lớn. Cùng tư duy state-transition có thể áp dụng cho rất nhiều dạng bài.",
+      "content": [
+        "Vacation: state có thể là ngày và hoạt động được thực hiện hôm trước; transition cấm chọn cùng hoạt động hai ngày liên tiếp.",
+        "Flowers: dp[i] có thể biểu diễn số cách tạo độ dài i; transition dựa trên độ dài của một loại hoa.",
+        "Writing Code: state thường gồm số chương trình/người đã xét và tổng số bug, tương tự một knapsack hai chiều.",
+        "Grid DP: dp[i][j] là đáp án khi tới ô (i,j), transition thường đến từ phía trên và bên trái.",
+        "Path DP: state có thể là vị trí hiện tại, còn transition là những bước di chuyển hợp lệ.",
+        "Bitmask DP: khi trạng thái cần nhớ một tập các phần tử đã chọn, ta dùng bitmask để biểu diễn tập đó.",
+        "Tree DP: state được định nghĩa trên từng node, thường phụ thuộc vào trạng thái của các con.",
+        "Digit DP: state mô tả prefix của số, giới hạn, tổng chữ số hoặc các thông tin cần thiết khác.",
+        "Interval DP: state thường là một đoạn [l,r], transition chia đoạn thành các phần nhỏ hơn."
+      ],
+      "examples": [
+        "Grid: dp[i][j] = dp[i - 1][j] + dp[i][j - 1].",
+        "Tree DP: dp[u][0] có thể là đáp án khi u không được chọn, dp[u][1] khi u được chọn.",
+        "Bitmask DP: dp[mask][i] có thể biểu diễn trạng thái đã chọn các phần tử trong mask và đang đứng tại i."
+      ]
+    },
+    {
+      "id": "recognition",
+      "title": "13. Cách nhận ra bài DP",
+      "summary": "Đừng nhìn thấy 'tối ưu' là nghĩ ngay DP. Hãy tìm bài toán con lặp lại và một trạng thái đủ để mô tả nó.",
+      "content": [
+        "Dấu hiệu thường gặp: cần tìm max/min/số cách/khả năng đạt được và mỗi quyết định hiện tại ảnh hưởng đến những quyết định sau.",
+        "Nếu brute force tạo ra rất nhiều nhánh nhưng nhiều nhánh đi tới cùng một trạng thái, DP thường là hướng tự nhiên.",
+        "Nếu đề hỏi về prefix, suffix, vị trí hiện tại, dung lượng, tổng, số lượng đã chọn hoặc hai chuỗi, hãy thử nghĩ về state tương ứng.",
+        "Nếu có một biến 'thời gian', 'ngày', 'vị trí', 'giá trị', 'dung lượng' tăng dần, đó thường là ứng viên tốt cho một chiều của DP.",
+        "Nếu cần nhớ một tập các lựa chọn đã dùng, có thể cần bitmask DP.",
+        "Nếu bài toán có cấu trúc cây và đáp án của node phụ thuộc vào các subtree, nghĩ tới Tree DP.",
+        "Một dấu hiệu mạnh khác là khi brute force có dạng: tại mỗi bước chọn A hoặc B, nhưng trạng thái sau đó chỉ phụ thuộc vào một lượng thông tin nhỏ. Khi đó ta có thể gộp những nhánh có cùng state."
+      ],
+      "examples": [
+        "Mỗi item chọn hoặc bỏ -> thường nghĩ Knapsack DP.",
+        "Dãy con tăng dài nhất -> LIS.",
+        "Hai xâu và subsequence chung -> LCS.",
+        "Mỗi ngày chọn một hoạt động nhưng không được lặp hoạt động hôm trước -> DP theo ngày và hoạt động."
+      ]
+    },
+    {
+      "id": "pitfalls",
+      "title": "14. Những lỗi DP thường gặp",
+      "summary": "Phần lớn lỗi DP đến từ định nghĩa state, base case hoặc thứ tự duyệt chứ không phải cú pháp.",
+      "content": [
+        "Không biết dp[i] nghĩa là gì nhưng vẫn bắt đầu code. Đây là lỗi nguy hiểm nhất.",
+        "Transition dùng nhầm trạng thái chưa hợp lệ hoặc thiếu một trường hợp.",
+        "Base case sai khiến toàn bộ bảng DP sai từ những trạng thái đầu tiên.",
+        "Dùng 0 cho trạng thái impossible trong bài maximization/minimization khi 0 thực sự là một đáp án hợp lệ.",
+        "Quên kiểm tra overflow khi cộng INF hoặc -INF với một số lớn.",
+        "0/1 Knapsack duyệt capacity tăng khiến một item bị dùng nhiều lần.",
+        "LIS dùng lower_bound cho non-decreasing hoặc upper_bound cho strictly increasing.",
+        "LCS lệch chỉ số giữa dp[i][j] và ký tự s[i], t[j]. Dùng prefix với s[i - 1], t[j - 1] thường dễ tránh lỗi.",
+        "Tạo DP hai chiều khi chỉ cần một chiều hoặc ngược lại. Cần kiểm tra phụ thuộc của transition để tối ưu bộ nhớ.",
+        "Tối ưu bộ nhớ nhưng không giữ đúng thứ tự cập nhật. Khi nén chiều, thứ tự loop trở thành một phần của thuật toán."
+      ],
+      "examples": [
+        "0/1 Knapsack: duyệt w tăng có thể biến một item thành nhiều lần sử dụng.",
+        "LCS: dp[i][j] ứng với s[0..i-1], t[0..j-1], nên ký tự mới là s[i-1], t[j-1].",
+        "LIS strict increasing: lower_bound tìm phần tử đầu tiên >= value."
+      ]
+    },
+    {
+      "id": "complexity",
+      "title": "15. Độ phức tạp và giới hạn",
+      "summary": "Chọn state không chỉ dựa vào việc công thức đúng mà còn phải phù hợp với constraint.",
+      "content": [
+        "0/1 Knapsack O(nW): phù hợp khi W đủ nhỏ, thường khoảng vài 10^5 hoặc thấp hơn tùy thời gian và cách tối ưu.",
+        "LIS DP cơ bản O(N^2): phù hợp khi N nhỏ hoặc trung bình. LIS tails O(N log N) dùng khi N lớn.",
+        "LCS O(nm): cần kiểm tra tích n * m trước khi cấp phát bảng.",
+        "DP 2D có thể tốn rất nhiều RAM. Ví dụ bảng 5000 x 5000 với long long đã vượt xa giới hạn bộ nhớ thông thường.",
+        "Nếu transition có thêm một vòng lặp, độ phức tạp có thể tăng từ O(N^2) lên O(N^3), vì vậy phải tìm cách tối ưu transition khi constraint lớn.",
+        "Không phải cứ thấy DP là dùng mảng dp lớn. Có thể cần map, unordered_map hoặc các cấu trúc khác khi state space thưa."
+      ],
+      "examples": [
+        "N = 2000 -> O(N^2) có thể hợp lý.",
+        "N = 2 * 10^5 -> O(N^2) chắc chắn không phù hợp; cần tối ưu như LIS O(N log N), Fenwick, segment tree hoặc một ý tưởng khác.",
+        "n,m = 2000 -> O(nm) khoảng 4 * 10^6 trạng thái, thường có thể xử lý được."
+      ]
+    },
+    {
+      "id": "workflow",
+      "title": "16. Quy trình giải một bài DP trong contest",
+      "summary": "Một quy trình cố định giúp tránh việc code công thức ngay khi chưa hiểu state.",
+      "content": [
+        "Bước 1: Viết brute force hoặc mô tả cách thử tất cả lựa chọn để hiểu không gian quyết định.",
+        "Bước 2: Tìm những trạng thái giống nhau xuất hiện nhiều lần.",
+        "Bước 3: Định nghĩa dp bằng một câu tiếng Việt thật chính xác.",
+        "Bước 4: Viết transition dựa trên quyết định cuối cùng.",
+        "Bước 5: Xác định base case và trạng thái impossible.",
+        "Bước 6: Kiểm tra dependency để quyết định thứ tự loop.",
+        "Bước 7: Tính số state và chi phí mỗi transition.",
+        "Bước 8: Chỉ sau khi công thức ổn mới bắt đầu code.",
+        "Bước 9: Chạy tay với một test rất nhỏ và kiểm tra từng state.",
+        "Bước 10: Nếu WA, kiểm tra theo thứ tự: state -> base -> transition -> loop order -> overflow -> indexing."
+      ],
+      "examples": [
+        "Với Knapsack: xác định item, capacity, chọn/bỏ rồi mới quyết định duyệt w giảm.",
+        "Với LCS: xác định hai prefix rồi mới viết trường hợp ký tự cuối bằng/khác.",
+        "Với LIS: bắt đầu từ O(N^2) để hiểu dp[i], sau đó mới tối ưu sang tails."
       ]
     }
   ],
   "dryRun": [
     {
-      "title": "0/1 knapsack W=3, item weight=2 value=3",
+      "title": "0/1 Knapsack — W = 3",
       "steps": [
-        "dp = [0, 0, 0, 0].",
-        "w=3: dp[3] = max(0, dp[1]+3) = 3.",
-        "w=2: dp[2] = max(0, dp[0]+3) = 3.",
-        "w=1: không đủ weight, giữ 0."
+        "Có một item weight = 2, value = 3.",
+        "Ban đầu dp = [0, 0, 0, 0].",
+        "Duyệt w = 3: dp[3] = max(dp[3], dp[1] + 3) = max(0, 3) = 3.",
+        "Duyệt w = 2: dp[2] = max(dp[2], dp[0] + 3) = 3.",
+        "w = 1 không đủ weight nên không cập nhật.",
+        "Kết quả dp[3] = 3.",
+        "Nếu vô tình duyệt w tăng và W lớn hơn, item có thể được sử dụng lại trong cùng vòng."
       ]
     },
     {
-      "title": "LIS [3, 1, 2, 4]",
+      "title": "0/1 Knapsack — Vì sao duyệt tăng sai?",
       "steps": [
-        "3: tails=[3].",
-        "1 thay 3: tails=[1].",
-        "2 nối: tails=[1,2].",
-        "4 nối: tails=[1,2,4], độ dài 3."
+        "Giả sử W = 4 và chỉ có item (weight = 2, value = 3).",
+        "Duyệt tăng: tại w = 2, dp[2] được cập nhật thành 3.",
+        "Sau đó tại w = 4, ta có thể dùng dp[2] vừa cập nhật: dp[4] = dp[2] + 3 = 6.",
+        "Nhưng bài 0/1 chỉ có một item, đáp án phải là 3.",
+        "Vậy duyệt tăng đã vô tình cho phép dùng cùng item hai lần.",
+        "Duyệt giảm sẽ tính w = 4 trước w = 2, nên dp[2] được sử dụng vẫn là giá trị trước khi xử lý item."
+      ]
+    },
+    {
+      "title": "Boredom — DP trên giá trị",
+      "steps": [
+        "Giả sử các giá trị là [1, 2, 2, 3].",
+        "cnt[1] = 1, cnt[2] = 2, cnt[3] = 1.",
+        "dp[1] = max(dp[0], dp[-1] + 1 * cnt[1]) = 1.",
+        "Với x = 2: nếu lấy 2, nhận 2 * 2 = 4 và không lấy 1, nên xét dp[0] + 4 = 4.",
+        "dp[2] = max(dp[1], 4) = 4.",
+        "Với x = 3: nếu lấy 3, nhận 3 và phải bỏ 2, nên xét dp[1] + 3 = 4.",
+        "dp[3] = max(dp[2], dp[1] + 3) = 4.",
+        "Đáp án là 4, tương ứng chọn hai số 2."
+      ]
+    },
+    {
+      "title": "LIS — [3, 1, 2, 4]",
+      "steps": [
+        "3: tails rỗng, thêm 3 -> tails = [3].",
+        "1: lower_bound(1) trỏ vào 3, thay 3 bằng 1 -> tails = [1].",
+        "2: lower_bound(2) nằm sau 1, thêm 2 -> tails = [1, 2].",
+        "4: lower_bound(4) nằm sau toàn bộ tails, thêm 4 -> tails = [1, 2, 4].",
+        "tails có 3 phần tử nên LIS có độ dài 3.",
+        "Một LIS thực tế là [1, 2, 4]."
+      ]
+    },
+    {
+      "title": "LIS O(N²) — [3, 1, 2, 4]",
+      "steps": [
+        "dp[0] = 1 vì dãy chỉ gồm 3 có độ dài 1.",
+        "dp[1] = 1 vì không có phần tử trước 1 nhỏ hơn 1.",
+        "dp[2]: 1 < 2 nên dp[2] = dp[1] + 1 = 2.",
+        "dp[3]: 3 < 4 nên có thể nối sau dãy kết thúc ở 3; 1 < 4 và 2 < 4 cũng hợp lệ.",
+        "dp[3] = 3 vì có thể lấy [1, 2, 4].",
+        "max(dp) = 3."
+      ]
+    },
+    {
+      "title": "LCS — s = ABCD, t = ACBD",
+      "steps": [
+        "So s[0] = A và t[0] = A: hai ký tự bằng nhau nên dp[1][1] = dp[0][0] + 1 = 1.",
+        "Khi gặp B và C khác nhau, không thể ghép chúng thành cùng một ký tự. Ta xét bỏ B hoặc bỏ C.",
+        "Các trạng thái tiếp tục được xây dựng từ những prefix ngắn hơn.",
+        "Một LCS có thể là ACD hoặc ABD.",
+        "Do đó độ dài LCS là 3."
       ]
     }
   ],
@@ -74,12 +394,42 @@
     {
       "title": "0/1 Knapsack 1D",
       "language": "cpp",
-      "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n, capacity;\n    cin >> n >> capacity;\n    vector<int> dp(capacity + 1, 0);\n    for (int i = 0; i < n; ++i) {\n        int weight, value;\n        cin >> weight >> value;\n        for (int w = capacity; w >= weight; --w)\n            dp[w] = max(dp[w], dp[w - weight] + value);\n    }\n    cout << dp[capacity] << '\\n';\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n, W;\n    cin >> n >> W;\n\n    vector<long long> dp(W + 1, 0);\n\n    for (int i = 0; i < n; ++i) {\n        int weight, value;\n        cin >> weight >> value;\n\n        for (int w = W; w >= weight; --w) {\n            dp[w] = max(dp[w], dp[w - weight] + value);\n        }\n    }\n\n    cout << dp[W] << '\\n';\n    return 0;\n}"
     },
     {
-      "title": "LIS O(N log N)",
+      "title": "0/1 Knapsack 2D — dễ hiểu hơn để học DP",
       "language": "cpp",
-      "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<int> a(n);\n    for (int i = 0; i < n; ++i) cin >> a[i];\n    vector<int> tails;\n    for (int value : a) {\n        auto it = lower_bound(tails.begin(), tails.end(), value);\n        if (it == tails.end()) tails.push_back(value);\n        else *it = value;\n    }\n    cout << tails.size() << '\\n';\n    return 0;\n}"
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n, W;\n    cin >> n >> W;\n\n    vector<int> weight(n + 1), value(n + 1);\n    for (int i = 1; i <= n; ++i) {\n        cin >> weight[i] >> value[i];\n    }\n\n    vector<vector<long long>> dp(n + 1, vector<long long>(W + 1, 0));\n\n    for (int i = 1; i <= n; ++i) {\n        for (int w = 0; w <= W; ++w) {\n            dp[i][w] = dp[i - 1][w];\n\n            if (w >= weight[i]) {\n                dp[i][w] = max(dp[i][w], dp[i - 1][w - weight[i]] + value[i]);\n            }\n        }\n    }\n\n    cout << dp[n][W] << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Unbounded Knapsack — dạng tổng quát",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n, W;\n    cin >> n >> W;\n\n    vector<int> dp(W + 1, 0);\n\n    for (int i = 0; i < n; ++i) {\n        int weight, value;\n        cin >> weight >> value;\n\n        for (int w = weight; w <= W; ++w) {\n            dp[w] = max(dp[w], dp[w - weight] + value);\n        }\n    }\n\n    cout << dp[W] << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Boredom — DP trên giá trị",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n\n    const int MAXV = 100000;\n    vector<long long> cnt(MAXV + 1, 0);\n\n    for (int i = 0; i < n; ++i) {\n        int x;\n        cin >> x;\n        ++cnt[x];\n    }\n\n    vector<long long> dp(MAXV + 1, 0);\n\n    dp[1] = cnt[1];\n\n    for (int x = 2; x <= MAXV; ++x) {\n        dp[x] = max(dp[x - 1], dp[x - 2] + 1LL * x * cnt[x]);\n    }\n\n    cout << dp[MAXV] << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "LIS O(N²) — DP cơ bản",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n\n    vector<int> a(n);\n    for (int i = 0; i < n; ++i) cin >> a[i];\n\n    vector<int> dp(n, 1);\n    int answer = 0;\n\n    for (int i = 0; i < n; ++i) {\n        for (int j = 0; j < i; ++j) {\n            if (a[j] < a[i]) {\n                dp[i] = max(dp[i], dp[j] + 1);\n            }\n        }\n        answer = max(answer, dp[i]);\n    }\n\n    cout << answer << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "LIS O(N log N) — tails",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n\n    vector<int> a(n);\n    for (int i = 0; i < n; ++i) cin >> a[i];\n\n    vector<int> tails;\n\n    for (int value : a) {\n        auto it = lower_bound(tails.begin(), tails.end(), value);\n\n        if (it == tails.end()) {\n            tails.push_back(value);\n        } else {\n            *it = value;\n        }\n    }\n\n    cout << tails.size() << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "LCS — DP 2D",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    string s, t;\n    cin >> s >> t;\n\n    int n = s.size();\n    int m = t.size();\n\n    vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));\n\n    for (int i = 1; i <= n; ++i) {\n        for (int j = 1; j <= m; ++j) {\n            if (s[i - 1] == t[j - 1]) {\n                dp[i][j] = dp[i - 1][j - 1] + 1;\n            } else {\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n    }\n\n    cout << dp[n][m] << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "LCS — tối ưu bộ nhớ O(m)",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    string s, t;\n    cin >> s >> t;\n\n    int n = s.size();\n    int m = t.size();\n\n    vector<int> dp(m + 1, 0);\n\n    for (int i = 1; i <= n; ++i) {\n        int diagonal = 0;\n\n        for (int j = 1; j <= m; ++j) {\n            int old = dp[j];\n\n            if (s[i - 1] == t[j - 1]) {\n                dp[j] = diagonal + 1;\n            } else {\n                dp[j] = max(dp[j], dp[j - 1]);\n            }\n\n            diagonal = old;\n        }\n    }\n\n    cout << dp[m] << '\\n';\n    return 0;\n}"
     }
   ],
   "exercises": [

@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="thuật toán và mẹo trong cp .">
     <title>Le Minh</title>
+
     <link rel="stylesheet" href="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/font-awesome.min.css">
     <link rel="stylesheet" href="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/css">
     <link rel="stylesheet" href="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/css(1)">
     <link rel="stylesheet" href="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/main.css">
+
     <style>
         .cp-search {
             position: relative;
             margin: 1.5em 0 2em;
         }
+
         .cp-search-label {
             display: block;
             margin-bottom: .45em;
@@ -22,6 +25,7 @@
             font-weight: bold;
             text-transform: uppercase;
         }
+
         .cp-search input {
             width: 100%;
             box-sizing: border-box;
@@ -31,7 +35,11 @@
             font: inherit;
             font-size: 1.05em;
         }
-        .cp-search input:focus { outline: 3px solid #ff8c00; }
+
+        .cp-search input:focus {
+            outline: 3px solid #ff8c00;
+        }
+
         .search-results {
             position: absolute;
             z-index: 10;
@@ -46,7 +54,11 @@
             border-top: 0;
             box-shadow: 4px 4px 0 #000;
         }
-        .search-results.is-visible { display: block; }
+
+        .search-results.is-visible {
+            display: block;
+        }
+
         .search-result {
             display: block;
             padding: .75em 1em;
@@ -54,33 +66,182 @@
             border-bottom: 1px solid #ddd;
             text-decoration: none;
         }
-        .search-result:hover, .search-result:focus { background: #fffdaf; }
-        .search-result strong { display: block; color: #008000; }
-        .search-result small { color: #666; }
-        .nav-search { position: relative; float: right; width: 24em; margin: .2em .5em 0 0; }
-        .nav-search input { width: 100%; box-sizing: border-box; padding: .42em .7em; border: 1px solid #000; border-radius: 4px; font: inherit; }
-        .nav-search .search-results { top: 2.35em; }
-        .nav-container #parnav { overflow: visible; }
-        .directory-view { display: none; }
-        .directory-view.is-active { display: block; }
-        .featured-post { margin: 1.5em 0 3em; padding: 1.5em 2em; color: #000; border: 2px solid #000; border-radius: 5px; box-shadow: 5px 5px 0 #000; background: #fff; }
-        .featured-post h1 { margin: 0 0 .55em; color: #000; font-size: 2em; line-height: 1.2; }
-        .featured-meta { margin: 0 0 1.5em; padding-bottom: .8em; color: #666; border-bottom: 1px solid #aaa; }
-        .featured-image { display: block; width: min(100%, 420px); height: auto; margin: 0 auto 1.25em; border: 2px solid #000; border-radius: 5px; }
-        .featured-post h2 { margin-top: 1.6em; border-bottom: 2px solid #000; }
-        .featured-post p, .featured-post li { line-height: 1.8; }
-        .featured-footer { display: flex; justify-content: space-between; align-items: center; gap: 1em; margin-top: 2em; padding: .85em 1em; color: #000; background: #fffdaf; border: 1px solid #888; border-radius: 5px; }
-        .featured-post .tip-list { padding-left: 1.4em; }
-        .reference-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75em; margin: 1em 0 1.5em; }
-        .reference-link { display: block; padding: .75em; color: #000; background: #fffdaf; border: 2px solid #000; border-radius: 4px; text-decoration: none; }
-        .reference-link strong { display: block; color: #008000; margin-bottom: .25em; }
-        .reference-link span { color: #555; font-size: .9em; }
-        .reference-link:hover, .reference-link:focus { color: #fff; background: #008000; }
-        .reference-link:hover strong, .reference-link:hover span, .reference-link:focus strong, .reference-link:focus span { color: #fff; }
-        .quick-links { display: flex; flex-wrap: wrap; gap: .75em; margin-top: 1.5em; }
-        .quick-link { display: inline-block; padding: .7em 1em; color: #000; background: #fffdaf; border: 2px solid #000; border-radius: 4px; font-weight: bold; text-decoration: none; }
-        .quick-link:hover, .quick-link:focus { color: #fff; background: #008000; }
-        .module { margin: 2em 0; }
+
+        .search-result:hover,
+        .search-result:focus {
+            background: #fffdaf;
+        }
+
+        .search-result strong {
+            display: block;
+            color: #008000;
+        }
+
+        .search-result small {
+            color: #666;
+        }
+
+        .nav-search {
+            position: relative;
+            float: right;
+            width: 24em;
+            margin: .2em .5em 0 0;
+        }
+
+        .nav-search input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: .42em .7em;
+            border: 1px solid #000;
+            border-radius: 4px;
+            font: inherit;
+        }
+
+        .nav-search .search-results {
+            top: 2.35em;
+        }
+
+        .nav-container #parnav {
+            overflow: visible;
+        }
+
+        .directory-view {
+            display: none;
+        }
+
+        .directory-view.is-active {
+            display: block;
+        }
+
+        .featured-post {
+            margin: 1.5em 0 3em;
+            padding: 1.5em 2em;
+            color: #000;
+            border: 2px solid #000;
+            border-radius: 5px;
+            box-shadow: 5px 5px 0 #000;
+            background: #fff;
+        }
+
+        .featured-post h1 {
+            margin: 0 0 .55em;
+            color: #000;
+            font-size: 2em;
+            line-height: 1.2;
+        }
+
+        .featured-meta {
+            margin: 0 0 1.5em;
+            padding-bottom: .8em;
+            color: #666;
+            border-bottom: 1px solid #aaa;
+        }
+
+        .featured-image {
+            display: block;
+            width: min(100%, 420px);
+            height: auto;
+            margin: 2em auto 1.25em;
+            border: 2px solid #000;
+            border-radius: 5px;
+        }
+
+        .featured-post h2 {
+            margin-top: 1.6em;
+            border-bottom: 2px solid #000;
+        }
+
+        .featured-post p,
+        .featured-post li {
+            line-height: 1.8;
+        }
+
+        .featured-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1em;
+            margin-top: 2em;
+            padding: .85em 1em;
+            color: #000;
+            background: #fffdaf;
+            border: 1px solid #888;
+            border-radius: 5px;
+        }
+
+        .featured-post .tip-list {
+            padding-left: 1.4em;
+        }
+
+        .reference-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .75em;
+            margin: 1em 0 1.5em;
+        }
+
+        .reference-link {
+            display: block;
+            padding: .75em;
+            color: #000;
+            background: #fffdaf;
+            border: 2px solid #000;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .reference-link strong {
+            display: block;
+            color: #008000;
+            margin-bottom: .25em;
+        }
+
+        .reference-link span {
+            color: #555;
+            font-size: .9em;
+        }
+
+        .reference-link:hover,
+        .reference-link:focus {
+            color: #fff;
+            background: #008000;
+        }
+
+        .reference-link:hover strong,
+        .reference-link:hover span,
+        .reference-link:focus strong,
+        .reference-link:focus span {
+            color: #fff;
+        }
+
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .75em;
+            margin-top: 1.5em;
+        }
+
+        .quick-link {
+            display: inline-block;
+            padding: .7em 1em;
+            color: #000;
+            background: #fffdaf;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .quick-link:hover,
+        .quick-link:focus {
+            color: #fff;
+            background: #008000;
+        }
+
+        .module {
+            margin: 2em 0;
+        }
+
         .module-heading {
             display: flex;
             align-items: baseline;
@@ -88,9 +249,22 @@
             margin-bottom: .75em;
             border-bottom: 2px solid #000;
         }
-        .module-heading h2 { margin: 0 0 .25em; }
-        .module-number { color: #808080; font-weight: bold; }
-        .post-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1em; }
+
+        .module-heading h2 {
+            margin: 0 0 .25em;
+        }
+
+        .module-number {
+            color: #808080;
+            font-weight: bold;
+        }
+
+        .post-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1em;
+        }
+
         .post-card {
             display: block;
             padding: 1em;
@@ -102,35 +276,185 @@
             text-decoration: none;
             transition: transform .15s ease, box-shadow .15s ease;
         }
-        .post-card:hover, .post-card:focus { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
-        .post-card h3 { margin: 0 0 .45em; color: #008000; }
-        .post-card-main { display: block; color: #000; text-decoration: none; }
-        .exercise-list { display: flex; flex-wrap: wrap; gap: .4em; margin-top: .8em; padding-top: .7em; border-top: 1px solid #ccc; }
-        .exercise-badge { display: inline-flex; align-items: center; gap: .35em; padding: .3em .45em; background: #fffdaf; border: 1px solid #888; border-radius: 4px; font-size: .82em; }
-        .exercise-route { color: #000; font-weight: bold; text-decoration: none; }
-        .exercise-route:hover { text-decoration: underline; }
-        .exercise-rating { color: #555; white-space: nowrap; }
-        .exercise-original { color: #008000; font-weight: bold; text-decoration: none; }
-        .exercise-original:hover { color: #ff8c00; }
-        .post-card p { margin: 0 0 .75em; line-height: 1.5; }
-        .post-tags { color: #555; font-size: .85em; }
-        .post-level { float: right; color: #808080; font-size: .85em; font-weight: bold; }
-        .editorial-list { display: grid; gap: 1em; }
-        .editorial-card { padding: 1em; border-left: 5px solid #03a89e; background: #fffdaf; }
-        .editorial-card h3 { margin: 0 0 .35em; }
-        .editorial-card p { margin: .25em 0; }
-        .catalog-filters { display: flex; flex-wrap: wrap; gap: .6em; margin: 1em 0 1.5em; padding: 1em; background: #fffdaf; border: 2px solid #000; }
-        .catalog-filters label { font-weight: bold; }
-        .catalog-filters select { min-width: 10em; padding: .45em; border: 1px solid #000; font: inherit; }
-        .tag-filter-apply { padding: .45em .8em; color: #fff; background: #008000; border: 1px solid #000; border-radius: 4px; cursor: pointer; font: inherit; font-weight: bold; }
-        .tag-filter-apply:hover, .tag-filter-apply:focus { background: #000; }
-        .catalog-section-title { margin: 1.5em 0 .7em; color: #008000; border-bottom: 1px solid #888; }
-        .problem-meta { display: flex; flex-wrap: wrap; gap: .45em; margin: .5em 0; font-size: .85em; }
-        .problem-badge { padding: .2em .45em; color: #000; background: #fffdaf; border: 1px solid #888; border-radius: 3px; }
-        .problem-directory { margin-top: 1.5em; border: 2px solid #000; background: #fffdaf; }
-        .problem-directory summary { padding: .8em 1em; color: #008000; cursor: pointer; font-weight: bold; }
-        .problem-directory[open] summary { border-bottom: 1px solid #888; }
-        .problem-directory .problem-list { padding: 1em; }
+
+        .post-card:hover,
+        .post-card:focus {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        .post-card h3 {
+            margin: 0 0 .45em;
+            color: #008000;
+        }
+
+        .post-card-main {
+            display: block;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .exercise-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4em;
+            margin-top: .8em;
+            padding-top: .7em;
+            border-top: 1px solid #ccc;
+        }
+
+        .exercise-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .35em;
+            padding: .3em .45em;
+            background: #fffdaf;
+            border: 1px solid #888;
+            border-radius: 4px;
+            font-size: .82em;
+        }
+
+        .exercise-route {
+            color: #000;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .exercise-route:hover {
+            text-decoration: underline;
+        }
+
+        .exercise-rating {
+            color: #555;
+            white-space: nowrap;
+        }
+
+        .exercise-original {
+            color: #008000;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .exercise-original:hover {
+            color: #ff8c00;
+        }
+
+        .post-card p {
+            margin: 0 0 .75em;
+            line-height: 1.5;
+        }
+
+        .post-tags {
+            color: #555;
+            font-size: .85em;
+        }
+
+        .post-level {
+            float: right;
+            color: #808080;
+            font-size: .85em;
+            font-weight: bold;
+        }
+
+        .editorial-list {
+            display: grid;
+            gap: 1em;
+        }
+
+        .editorial-card {
+            padding: 1em;
+            border-left: 5px solid #03a89e;
+            background: #fffdaf;
+        }
+
+        .editorial-card h3 {
+            margin: 0 0 .35em;
+        }
+
+        .editorial-card p {
+            margin: .25em 0;
+        }
+
+        .catalog-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6em;
+            margin: 1em 0 1.5em;
+            padding: 1em;
+            background: #fffdaf;
+            border: 2px solid #000;
+        }
+
+        .catalog-filters label {
+            font-weight: bold;
+        }
+
+        .catalog-filters select {
+            min-width: 10em;
+            padding: .45em;
+            border: 1px solid #000;
+            font: inherit;
+        }
+
+        .tag-filter-apply {
+            padding: .45em .8em;
+            color: #fff;
+            background: #008000;
+            border: 1px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            font: inherit;
+            font-weight: bold;
+        }
+
+        .tag-filter-apply:hover,
+        .tag-filter-apply:focus {
+            background: #000;
+        }
+
+        .catalog-section-title {
+            margin: 1.5em 0 .7em;
+            color: #008000;
+            border-bottom: 1px solid #888;
+        }
+
+        .problem-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .45em;
+            margin: .5em 0;
+            font-size: .85em;
+        }
+
+        .problem-badge {
+            padding: .2em .45em;
+            color: #000;
+            background: #fffdaf;
+            border: 1px solid #888;
+            border-radius: 3px;
+        }
+
+        .problem-directory {
+            margin-top: 1.5em;
+            border: 2px solid #000;
+            background: #fffdaf;
+        }
+
+        .problem-directory summary {
+            padding: .8em 1em;
+            color: #008000;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .problem-directory[open] summary {
+            border-bottom: 1px solid #888;
+        }
+
+        .problem-directory .problem-list {
+            padding: 1em;
+        }
+
         .welcome-hero {
             margin: 1em 0 2em;
             padding: 2.5em 2em;
@@ -140,9 +464,25 @@
             border-radius: 10px;
             box-shadow: 7px 7px 0 #ff8c00;
         }
-        .welcome-hero h1 { margin: 0 0 .35em; font-size: 2.35em; }
-        .welcome-hero p { max-width: 48em; margin: 0 0 1.35em; font-size: 1.15em; line-height: 1.55; }
-        .hero-actions { display: flex; flex-wrap: wrap; gap: .8em; }
+
+        .welcome-hero h1 {
+            margin: 0 0 .35em;
+            font-size: 2.35em;
+        }
+
+        .welcome-hero p {
+            max-width: 48em;
+            margin: 0 0 1.35em;
+            font-size: 1.15em;
+            line-height: 1.55;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .8em;
+        }
+
         .hero-button {
             display: inline-block;
             padding: .7em 1em;
@@ -153,14 +493,45 @@
             font-weight: bold;
             text-decoration: none;
         }
-        .hero-button:hover, .hero-button:focus { color: #fff; background: #008000; }
-        .welcome-guide { margin: 2em 0; }
-        .welcome-guide h2 { margin-bottom: .5em; }
-        .welcome-guide > p { line-height: 1.6; }
-        .tips-list { margin: 1em 0; padding-left: 1.5em; line-height: 1.7; }
-        .quick-navigation { margin: 2em 0 3em; }
-        .quick-navigation h2 { border-bottom: 2px solid #000; }
-        .quick-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1em; }
+
+        .hero-button:hover,
+        .hero-button:focus {
+            color: #fff;
+            background: #008000;
+        }
+
+        .welcome-guide {
+            margin: 2em 0;
+        }
+
+        .welcome-guide h2 {
+            margin-bottom: .5em;
+        }
+
+        .welcome-guide > p {
+            line-height: 1.6;
+        }
+
+        .tips-list {
+            margin: 1em 0;
+            padding-left: 1.5em;
+            line-height: 1.7;
+        }
+
+        .quick-navigation {
+            margin: 2em 0 3em;
+        }
+
+        .quick-navigation h2 {
+            border-bottom: 2px solid #000;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1em;
+        }
+
         .quick-card {
             display: block;
             min-height: 5em;
@@ -172,88 +543,342 @@
             box-shadow: 4px 4px 0 #000;
             text-decoration: none;
         }
-        .quick-card:hover, .quick-card:focus { background: #fffdaf; transform: translate(-2px, -2px); }
-        .quick-card strong { display: block; margin-bottom: .4em; color: #008000; font-size: 1.05em; }
-        .quick-card span { line-height: 1.45; }
-        .empty-message { padding: 1em; border: 1px dashed #808080; }
-        @media (max-width: 1050px) {
-            .container { width: 100%; min-width: 0; }
-            .site-header-container { width: 100%; }
+
+        .quick-card:hover,
+        .quick-card:focus {
+            background: #fffdaf;
+            transform: translate(-2px, -2px);
         }
+
+        .quick-card strong {
+            display: block;
+            margin-bottom: .4em;
+            color: #008000;
+            font-size: 1.05em;
+        }
+
+        .quick-card span {
+            line-height: 1.45;
+        }
+
+        .empty-message {
+            padding: 1em;
+            border: 1px dashed #808080;
+        }
+
+        @media (max-width: 1050px) {
+            .container {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .site-header-container {
+                width: 100%;
+            }
+        }
+
         @media (max-width: 650px) {
-            .post-list { grid-template-columns: 1fr; }
-            .quick-grid { grid-template-columns: 1fr; }
-            .module-heading { display: block; }
-            #parnav { height: auto; }
-            #parnav li#navleft { float: none; display: inline-block; }
-            .welcome-hero { padding: 1.5em 1em; }
-            .welcome-hero h1 { font-size: 1.8em; }
-            .nav-search { float: none; width: auto; margin: .4em; }
-            .featured-footer { align-items: flex-start; flex-direction: column; }
+            .post-list {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .module-heading {
+                display: block;
+            }
+
+            #parnav {
+                height: auto;
+            }
+
+            #parnav li#navleft {
+                float: none;
+                display: inline-block;
+            }
+
+            .welcome-hero {
+                padding: 1.5em 1em;
+            }
+
+            .welcome-hero h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-search {
+                float: none;
+                width: auto;
+                margin: .4em;
+            }
+
+            .featured-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
         }
     </style>
 </head>
+
 <body>
-    <header class="site-header-container"><div></div></header>
+
+    <header class="site-header-container">
+        <div></div>
+    </header>
+
     <div class="container">
+
         <div id="header" class="site-header">
-            <div class="logo-container"><a href="index.html" aria-label="Le Minh trang chủ"><h1 class="logo-text">Le Minh</h1></a></div>
-            <div id="user-info"><div class="auth-links">Ghi chú thực chiến, thuật toán C++ và chia sẻ kinh nghiệm Competitive Programming.</div></div>
+
+            <div class="logo-container">
+                <a href="index.html" aria-label="Le Minh trang chủ">
+                    <h1 class="logo-text">Le Minh</h1>
+                </a>
+            </div>
+
+            <div id="user-info">
+                <div class="auth-links">
+                    Ghi chú thực chiến, thuật toán C++ và chia sẻ kinh nghiệm Competitive Programming.
+                </div>
+            </div>
+
         </div>
+
         <div class="nav-container">
+
             <ul id="parnav">
-                <li id="navleft"><a class="nava aleft" href="index.html">TRANG CHỦ</a></li>
-                <li id="navleft"><a class="nava aleft" href="index.html#modules">MODULES THUẬT TOÁN</a></li>
-                <li id="navleft"><a class="nava aleft" href="index.html#editorial">EDITORIALS &amp; LỜI GIẢI</a></li>
-                <li class="nav-search cp-search" aria-label="Tìm kiếm bài viết">
-                    <input id="post-search" type="search" placeholder="Search: segment tree, freopen, dp..." autocomplete="off">
-                    <div id="search-results" class="search-results" role="listbox" aria-label="Gợi ý bài viết"></div>
+
+                <li id="navleft">
+                    <a class="nava aleft" href="index.html">TRANG CHỦ</a>
                 </li>
+
+                <li id="navleft">
+                    <a class="nava aleft" href="index.html#modules">MODULES THUẬT TOÁN</a>
+                </li>
+
+                <li id="navleft">
+                    <a class="nava aleft" href="index.html#editorial">EDITORIALS &amp; LỜI GIẢI</a>
+                </li>
+
+                <li class="nav-search cp-search" aria-label="Tìm kiếm bài viết">
+
+                    <input
+                        id="post-search"
+                        type="search"
+                        placeholder="Search: segment tree, freopen, dp..."
+                        autocomplete="off"
+                    >
+
+                    <div
+                        id="search-results"
+                        class="search-results"
+                        role="listbox"
+                        aria-label="Gợi ý bài viết"
+                    ></div>
+
+                </li>
+
             </ul>
+
             <main class="content-container">
+
                 <article id="home-post" class="featured-post" aria-labelledby="featured-title">
-                    <img class="featured-image" src="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/cirno.png" alt="Cirno minh họa cho CP Note">
-                    <h1 id="featured-title">Chào mừng đến với web chia sẻ kinh nghiệm lập trình thi đấu </h1>
-                    <p class="featured-meta">Đăng bởi: Le Minh NDuc (ldber 29') | Chuyên mục: Announcement &amp; Guide | <time datetime="2025-02-05">Đăng ngày: 05/02/2025</time></p>
-                    <p>Chào mừng bạn đến với nơi mình lưu trữ kinh nghiệm thi đấu, các dạng bài Competitive Programming đã cày và những khung code C++ tối ưu để dùng trong contest.</p>
+
+                    <h1 id="featured-title">
+                        Chào mừng đến với web chia sẻ kinh nghiệm lập trình thi đấu
+                    </h1>
+
+                    <p class="featured-meta">
+                        Đăng bởi: Le Minh NDuc (ldber 29') |
+                        Chuyên mục: Announcement &amp; Guide |
+                        <time datetime="2025-02-05">Đăng ngày: 05/02/2025</time>
+                    </p>
+
+                    <p>
+                        Chào mừng bạn đến với nơi mình lưu trữ kinh nghiệm thi đấu,
+                        các dạng bài Competitive Programming đã cày và những khung
+                        code C++ tối ưu để dùng trong contest.
+                    </p>
+
                     <h2>Hướng dẫn sử dụng web</h2>
+
                     <ol class="tip-list">
-                        <li><strong>Mẹo 1 - Search:</strong> Gõ từ khóa vào thanh tìm kiếm trên navigation bar để tìm nhanh thuật toán, ví dụ <code>segment tree</code>, <code>freopen</code>, <code>dp</code>.</li>
-                        <li><strong>Mẹo 2 - Modules:</strong> Học theo lộ trình từ Module -1 (C++ Basics, operators, ASCII, <code>freopen</code>) đến Module 3 (Dynamic Programming, Graph Theory).</li>
-                        <li><strong>Mẹo 3 - Editorials:</strong> Xem lời giải chi tiết gồm đề bài, input/output, chạy tay từng test và code C++.</li>
+
+                        <li>
+                            <strong>Mẹo 1 - Search:</strong>
+                            Gõ từ khóa vào thanh tìm kiếm trên navigation bar để tìm
+                            nhanh thuật toán, ví dụ
+                            <code>segment tree</code>,
+                            <code>freopen</code>,
+                            <code>dp</code>.
+                        </li>
+
+                        <li>
+                            <strong>Mẹo 2 - Modules:</strong>
+                            Học theo lộ trình từ Module -1
+                            (C++ Basics, operators, ASCII, <code>freopen</code>)
+                            đến Module 3 (Dynamic Programming, Graph Theory).
+                        </li>
+
+                        <li>
+                            <strong>Mẹo 3 - Editorials:</strong>
+                            Xem lời giải chi tiết gồm đề bài, input/output,
+                            chạy tay từng test và code C++.
+                        </li>
+
                     </ol>
+
                     <h2>Nguồn tài liệu tham khảo</h2>
-                    <p>Ngoài các ghi chú trên blog, bạn có thể tham khảo thêm các nguồn học Competitive Programming uy tín:</p>
+
+                    <p>
+                        Ngoài các ghi chú trên blog, bạn có thể tham khảo thêm
+                        các nguồn học Competitive Programming uy tín:
+                    </p>
+
                     <div class="reference-list">
-                        <a class="reference-link" href="https://marisaoj.com/" target="_blank" rel="noopener"><strong>MarisaOJ</strong><span>Lộ trình và bài tập lập trình thi đấu.</span></a>
-                        <a class="reference-link" href="https://wiki.vnoi.info/" target="_blank" rel="noopener"><strong>VNOI Wiki</strong><span>Tài liệu thuật toán và CP bằng tiếng Việt.</span></a>
-                        <a class="reference-link" href="https://cses.fi/problemset/" target="_blank" rel="noopener"><strong>CSES Problem Set</strong><span>Bộ bài tập nền tảng theo chủ đề.</span></a>
-                        <a class="reference-link" href="https://cp-algorithms.com/" target="_blank" rel="noopener"><strong>CP-Algorithms</strong><span>Tài liệu thuật toán chuyên sâu bằng tiếng Anh.</span></a>
+
+                        <a
+                            class="reference-link"
+                            href="https://marisaoj.com/"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            <strong>MarisaOJ</strong>
+                            <span>Lộ trình và bài tập lập trình thi đấu.</span>
+                        </a>
+
+                        <a
+                            class="reference-link"
+                            href="https://wiki.vnoi.info/"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            <strong>VNOI Wiki</strong>
+                            <span>Tài liệu thuật toán và CP bằng tiếng Việt.</span>
+                        </a>
+
+                        <a
+                            class="reference-link"
+                            href="https://cses.fi/problemset/"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            <strong>CSES Problem Set</strong>
+                            <span>Bộ bài tập nền tảng theo chủ đề.</span>
+                        </a>
+
+                        <a
+                            class="reference-link"
+                            href="https://cp-algorithms.com/"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            <strong>CP-Algorithms</strong>
+                            <span>Tài liệu thuật toán chuyên sâu bằng tiếng Anh.</span>
+                        </a>
+
                     </div>
+
                     <h2>Lộ trình nhanh</h2>
+
                     <div class="quick-links">
-                        <a class="quick-link" href="index.html#modules">Khám Phá Modules</a>
-                        <a class="quick-link" href="index.html#editorial">Xem Editorials</a>
+
+                        <a class="quick-link" href="index.html#modules">
+                            Khám Phá Modules
+                        </a>
+
+                        <a class="quick-link" href="index.html#editorial">
+                            Xem Editorials
+                        </a>
+
                     </div>
+
+                    <!-- ẢNH CIRNO ĐÃ ĐƯỢC CHUYỂN XUỐNG DƯỚI NỘI DUNG -->
+                    <img
+                        class="featured-image"
+                        src="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/cirno.png"
+                        alt="Cirno minh họa cho CP Note"
+                    >
+
                     <footer class="featured-footer">
+
                         <span>👤 Le Minh</span>
-                        <span>🕒 Đăng vào 00:00 Ngày 5 tháng 2 năm 2025</span>
+
+                        <span>
+                            🕒 Đăng vào 00:00 Ngày 5 tháng 2 năm 2025
+                        </span>
+
                     </footer>
+
                 </article>
-                <section id="modules" class="directory-view" aria-label="Các module bài viết">
-                    <div class="catalog-filters" aria-label="Bộ lọc bài tập">
-                        <label for="tag-filter">Lọc theo Tag</label><select id="tag-filter"><option value="">Tất cả tag</option></select><button id="tag-filter-apply" class="tag-filter-apply" type="button">Áp dụng</button>
+
+                <section
+                    id="modules"
+                    class="directory-view"
+                    aria-label="Các module bài viết"
+                >
+
+                    <div
+                        class="catalog-filters"
+                        aria-label="Bộ lọc bài tập"
+                    >
+
+                        <label for="tag-filter">
+                            Lọc theo Tag
+                        </label>
+
+                        <select id="tag-filter">
+                            <option value="">Tất cả tag</option>
+                        </select>
+
+                        <button
+                            id="tag-filter-apply"
+                            class="tag-filter-apply"
+                            type="button"
+                        >
+                            Áp dụng
+                        </button>
+
                     </div>
+
                     <div id="module-list"></div>
+
                 </section>
-                <section id="editorial" class="directory-view module" aria-label="Editorial và lời giải">
-                    <div class="module-heading"><span class="module-number">SPECIAL</span><h2>Editorial / Lời giải</h2></div>
-                    <div id="editorial-list" class="editorial-list"></div>
+
+                <section
+                    id="editorial"
+                    class="directory-view module"
+                    aria-label="Editorial và lời giải"
+                >
+
+                    <div class="module-heading">
+
+                        <span class="module-number">
+                            SPECIAL
+                        </span>
+
+                        <h2>
+                            Editorial / Lời giải
+                        </h2>
+
+                    </div>
+
+                    <div
+                        id="editorial-list"
+                        class="editorial-list"
+                    ></div>
+
                 </section>
+
             </main>
+
         </div>
+
     </div>
+
     <script src="js/data.js"></script>
     <script src="js/app.js"></script>
+
 </body>
 </html>

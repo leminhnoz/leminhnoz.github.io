@@ -9,63 +9,225 @@
   "sections": [
     {
       "id": "type-casting-overflow",
-      "title": "Ép kiểu và bẫy tràn số (Type Casting & Integer Overflow)",
-      "summary": "Phân biệt ép kiểu ngầm định, ép kiểu tường minh và lỗi tràn số khi nhân các biến int.",
+      "title": "1. Kiểu dữ liệu, ép kiểu và Integer Overflow",
+      "summary": "Hiểu C++ tính toán biểu thức bằng kiểu nào, khi nào cần ép kiểu và vì sao long long ans = a * b vẫn có thể sai.",
       "content": [
-        "Trong C++, dữ liệu có nhiều kiểu như int, long long, double và char. Ép kiểu là chuyển một giá trị từ kiểu này sang kiểu khác.",
-        "Ép kiểu ngầm định xảy ra khi C++ tự chuyển kiểu nhỏ hơn sang kiểu lớn hơn, ví dụ int + double cho ra double.",
-        "Ép kiểu tường minh có thể viết bằng (double)a hoặc static_cast<double>(a). Ví dụ (double)7 / 2 cho kết quả 3.5 thay vì 3.",
-        "Khi nhân hai biến int, phép nhân được tính bằng int trước rồi mới gán. Vì vậy long long ans = a * b vẫn có thể overflow.",
-        "Cách an toàn là dùng 1LL * a * b hoặc static_cast<long long>(a) * b."
+        "Trong C++, mỗi biến có một kiểu dữ liệu. Kiểu dữ liệu quyết định cách giá trị được lưu trữ và cách các phép toán trên giá trị đó được thực hiện.",
+        "Một số kiểu thường gặp trong competitive programming là int, long long, double và char. int thường đủ cho các giá trị khoảng vài tỷ, còn long long có miền giá trị lớn hơn rất nhiều và thường được dùng khi tính tổng, tích hoặc đáp án có thể lớn.",
+        "Ép kiểu là quá trình chuyển một giá trị từ kiểu này sang kiểu khác. Có hai trường hợp quan trọng: ép kiểu ngầm định do compiler tự thực hiện và ép kiểu tường minh do lập trình viên chủ động yêu cầu.",
+        "Ví dụ, khi tính int + double, int thường được chuyển sang double trước khi phép cộng được thực hiện. Vì vậy kết quả của 3 + 2.5 là 5.5.",
+        "Ép kiểu tường minh có thể viết bằng cú pháp C-style như (double)x hoặc cú pháp rõ ràng hơn static_cast<double>(x). Trong code C++ hiện đại, static_cast thường dễ đọc và an toàn hơn về mặt ý nghĩa.",
+        "Một ứng dụng cực kỳ quan trọng của ép kiểu là phép chia. Nếu cả hai toán hạng đều là int thì phép chia là chia nguyên. Ví dụ 7 / 2 cho kết quả 3.",
+        "Muốn nhận kết quả 3.5, ít nhất một toán hạng phải được chuyển sang kiểu số thực: (double)7 / 2 hoặc 7.0 / 2.",
+        "Integer overflow xảy ra khi kết quả của phép tính vượt quá miền giá trị mà kiểu dữ liệu đang dùng có thể biểu diễn.",
+        "Một bẫy rất phổ biến là long long ans = a * b với a và b đều là int. Việc gán kết quả cho long long không làm phép nhân trở thành phép nhân long long. Phép nhân a * b được thực hiện bằng int trước, sau đó kết quả mới được chuyển sang long long.",
+        "Cách sửa là ép một toán hạng sang long long trước khi nhân: 1LL * a * b hoặc static_cast<long long>(a) * b.",
+        "Tương tự, khi có nhiều phép toán liên tiếp, hãy bảo đảm kiểu dữ liệu đủ lớn ngay từ đầu của biểu thức. Ví dụ 1LL * a * b / c sẽ khiến phép tính bắt đầu ở long long.",
+        "1LL là một literal kiểu long long. Vì vậy khi viết 1LL * a, C++ sẽ thực hiện phép nhân bằng long long thay vì int.",
+        "Không phải cứ đổi kiểu của biến kết quả là đủ. Điều quan trọng là kiểu của các toán hạng tại thời điểm phép toán được thực hiện."
       ],
       "examples": [
         "double value = (double)7 / 2; // 3.5",
-        "long long answer = 1LL * a * b; // ép phép nhân sang long long"
+        "int value = 7 / 2; // 3",
+        "long long answer = a * b; // Có thể overflow nếu a, b là int.",
+        "long long answer = 1LL * a * b; // Phép nhân được thực hiện bằng long long.",
+        "long long answer = static_cast<long long>(a) * b;"
+      ]
+    },
+    {
+      "id": "implicit-explicit-casting",
+      "title": "2. Ép kiểu ngầm định và ép kiểu tường minh",
+      "summary": "Phân biệt compiler tự chuyển kiểu với việc lập trình viên chủ động yêu cầu chuyển kiểu.",
+      "content": [
+        "Ép kiểu ngầm định xảy ra khi C++ tự động chuyển một giá trị sang kiểu phù hợp với biểu thức. Ví dụ int x = 5; double y = x; thì x được chuyển thành double khi gán cho y.",
+        "Trong nhiều phép toán, C++ sẽ tìm một kiểu chung để thực hiện tính toán. Nếu một toán hạng là double và toán hạng còn lại là int thì int thường được chuyển thành double.",
+        "Ép kiểu tường minh xảy ra khi ta chủ động yêu cầu chuyển kiểu. Hai cách thường gặp là (double)x và static_cast<double>(x).",
+        "C-style cast ngắn và phổ biến trong code contest, nhưng static_cast thể hiện rõ hơn ý định của người viết và thường được ưu tiên trong C++.",
+        "Ép kiểu không làm thay đổi kiểu của biến gốc. Nó tạo ra giá trị được nhìn nhận dưới kiểu mới trong biểu thức hoặc phép gán.",
+        "Ví dụ int x = 7; double y = static_cast<double>(x); thì x vẫn là int, chỉ có giá trị được chuyển thành double để gán cho y.",
+        "Khi ép từ kiểu lớn xuống kiểu nhỏ, dữ liệu có thể bị mất. Ví dụ một long long quá lớn khi chuyển thành int có thể không còn giữ được giá trị ban đầu.",
+        "Vì vậy cần đặc biệt cẩn thận khi ép kiểu theo hướng long long -> int, double -> int hoặc các kiểu có miền biểu diễn nhỏ hơn."
+      ],
+      "examples": [
+        "int x = 5; double y = x; // ép kiểu ngầm định",
+        "double x = static_cast<double>(7);",
+        "int x = static_cast<int>(3.99); // x = 3",
+        "long long x = 5000000000LL; int y = static_cast<int>(x); // Có nguy cơ mất dữ liệu."
+      ]
+    },
+    {
+      "id": "integer-division",
+      "title": "3. Chia nguyên và chia số thực",
+      "summary": "Hiểu kiểu của toán hạng quyết định kết quả phép chia như thế nào.",
+      "content": [
+        "Nếu cả hai toán hạng của phép chia đều là số nguyên, C++ thực hiện integer division và bỏ phần thập phân.",
+        "Ví dụ 7 / 2 bằng 3 chứ không phải 3.5.",
+        "Việc gán kết quả vào double không thể khôi phục phần thập phân đã bị mất. double x = 7 / 2 vẫn cho x = 3.0.",
+        "Muốn phép chia cho ra số thực, hãy chuyển ít nhất một toán hạng sang double trước khi chia.",
+        "Ví dụ double x = 7.0 / 2 hoặc double x = static_cast<double>(7) / 2 đều cho 3.5.",
+        "Đây là lỗi rất hay gặp khi tính trung bình, tỷ lệ, phần trăm hoặc tọa độ trong contest."
+      ],
+      "examples": [
+        "7 / 2 = 3",
+        "7.0 / 2 = 3.5",
+        "static_cast<double>(7) / 2 = 3.5",
+        "double x = 7 / 2; // x = 3.0, không phải 3.5"
       ]
     },
     {
       "id": "ascii-table",
-      "title": "Bảng mã ASCII và kiểu ký tự (char)",
-      "summary": "Kiểu char thực chất lưu một mã số đại diện cho ký tự.",
+      "title": "4. ASCII và kiểu dữ liệu char",
+      "summary": "Hiểu char không chỉ là 'một ký tự' mà còn có thể được xử lý như một giá trị số đại diện cho ký tự.",
       "content": [
-        "Các chữ số '0' đến '9' có mã ASCII từ 48 đến 57.",
-        "Các chữ cái in hoa 'A' đến 'Z' có mã ASCII từ 65 đến 90.",
-        "Các chữ cái in thường 'a' đến 'z' có mã ASCII từ 97 đến 122.",
-        "Chữ thường lớn hơn chữ hoa tương ứng đúng 32 đơn vị: 'a' - 'A' = 32."
+        "char là kiểu dữ liệu dùng để lưu một ký tự. Trong cách biểu diễn ASCII, mỗi ký tự được gắn với một mã số.",
+        "Các chữ số '0' đến '9' có mã ASCII liên tiếp từ 48 đến 57.",
+        "Các chữ cái in hoa 'A' đến 'Z' có mã ASCII liên tiếp từ 65 đến 90.",
+        "Các chữ cái in thường 'a' đến 'z' có mã ASCII liên tiếp từ 97 đến 122.",
+        "Do các ký tự trong từng nhóm nằm liên tiếp, phép trừ giữa hai char có thể cho biết khoảng cách hoặc vị trí của chúng.",
+        "Ví dụ 'd' - 'a' bằng 3, nên nếu đánh số chữ cái từ 0 thì d có vị trí 3.",
+        "Tương tự, '8' - '0' bằng 8. Đây là lý do kỹ thuật c - '0' có thể chuyển một ký tự chữ số thành giá trị số tương ứng.",
+        "ASCII cũng giải thích tại sao chữ thường và chữ hoa tương ứng cách nhau 32 đơn vị: 'a' - 'A' = 32.",
+        "Trong C++, char có thể tham gia vào phép toán số học. Khi cần in mã số của một char, có thể ép nó sang int bằng static_cast<int>(c).",
+        "Mặc dù ASCII là nền tảng rất quan trọng để hiểu các phép toán ký tự, trong thực tế C++ còn có các encoding khác và char không phải lúc nào cũng đại diện cho một ký tự Unicode hoàn chỉnh."
       ],
       "examples": [
-        "int code = static_cast<int>('g'); // 103",
-        "char upper = 'g' - 'a' + 'A'; // 'G'"
+        "static_cast<int>('A') = 65",
+        "static_cast<int>('a') = 97",
+        "static_cast<int>('0') = 48",
+        "'a' - 'A' = 32",
+        "'d' - 'a' = 3",
+        "'8' - '0' = 8"
       ]
     },
     {
-      "id": "character-conversion",
-      "title": "Các phép biến đổi ký tự thường dùng",
-      "summary": "Đổi char thành int, int thành char và lấy vị trí chữ cái.",
+      "id": "ascii-character-arithmetic",
+      "title": "5. Character Arithmetic — Tận dụng khoảng cách ASCII",
+      "summary": "Dùng phép toán trên char để chuyển đổi chữ số, chữ cái và tạo chỉ số 0-based.",
       "content": [
-        "Đổi ký tự số sang số nguyên: char c = '7'; int value = c - '0';",
-        "Đổi số nguyên sang ký tự số: int x = 7; char c = x + '0';",
-        "Đổi chữ thường sang chữ hoa: char upper = lower - 'a' + 'A';",
-        "Lấy vị trí chữ cái 0-indexed: char c = 'd'; int position = c - 'a';, kết quả là 3."
+        "Với một ký tự số c từ '0' đến '9', biểu thức c - '0' cho giá trị nguyên tương ứng từ 0 đến 9.",
+        "Ngược lại, nếu x là một số nguyên từ 0 đến 9 thì x + '0' tạo ra ký tự chữ số tương ứng.",
+        "Với chữ cái thường c từ 'a' đến 'z', c - 'a' cho vị trí từ 0 đến 25.",
+        "Với chữ cái hoa c từ 'A' đến 'Z', c - 'A' cho vị trí từ 0 đến 25.",
+        "Có thể chuyển chữ thường thành chữ hoa bằng c - 'a' + 'A', với điều kiện c thực sự là chữ thường.",
+        "Có thể chuyển chữ hoa thành chữ thường bằng c - 'A' + 'a', với điều kiện c thực sự là chữ hoa.",
+        "Các công thức này rất hữu ích khi xử lý frequency array 26 phần tử, ví dụ cnt[c - 'a']++.",
+        "Không nên áp dụng công thức c - 'a' cho một ký tự bất kỳ nếu chưa biết c nằm trong 'a'..'z'. Nếu c không phải chữ thường, chỉ số có thể âm hoặc nằm ngoài phạm vi mảng."
       ],
       "examples": [
-        "'8' - '0' = 8",
-        "'d' - 'a' = 3"
+        "char c = '7'; int x = c - '0'; // x = 7",
+        "int x = 7; char c = x + '0'; // c = '7'",
+        "char c = 'd'; int position = c - 'a'; // 3",
+        "char upper = 'g' - 'a' + 'A'; // 'G'",
+        "int cnt[26]; cnt[c - 'a']++;"
       ]
     },
     {
       "id": "cctype-functions",
-      "title": "Các hàm xử lý ký tự trong <cctype>",
-      "summary": "Dùng thư viện chuẩn để kiểm tra và chuyển đổi ký tự an toàn hơn.",
+      "title": "6. Các hàm xử lý ký tự trong <cctype>",
+      "summary": "Dùng thư viện chuẩn để kiểm tra và chuyển đổi ký tự thay vì tự viết mọi điều kiện.",
       "content": [
-        "isdigit(c) kiểm tra c có phải ký tự số hay không.",
-        "isalpha(c) kiểm tra c có phải chữ cái hay không.",
+        "Thư viện <cctype> cung cấp nhiều hàm hữu ích để kiểm tra và xử lý ký tự.",
+        "isdigit(c) kiểm tra c có phải ký tự số từ '0' đến '9' hay không.",
+        "isalpha(c) kiểm tra c có phải ký tự chữ cái hay không.",
         "isalnum(c) kiểm tra c có phải chữ cái hoặc chữ số hay không.",
-        "tolower(c) và toupper(c) chuyển ký tự sang chữ thường hoặc chữ hoa."
+        "islower(c) kiểm tra chữ thường và isupper(c) kiểm tra chữ hoa.",
+        "isspace(c) kiểm tra các ký tự khoảng trắng như space, newline và tab.",
+        "tolower(c) chuyển ký tự chữ cái sang chữ thường nếu phù hợp.",
+        "toupper(c) chuyển ký tự chữ cái sang chữ hoa nếu phù hợp.",
+        "Các hàm trong <cctype> trả về giá trị khác 0 khi điều kiện đúng và 0 khi điều kiện sai. Vì vậy có thể dùng trực tiếp trong if.",
+        "Khi dùng các hàm <cctype> với dữ liệu có kiểu char trong những trường hợp đặc biệt liên quan đến char signed/unsigned, cách an toàn tổng quát là truyền một giá trị unsigned char đã chuyển kiểu. Với các bài ASCII thông thường chỉ chứa ký tự cơ bản, điều này thường không trở thành vấn đề."
       ],
       "examples": [
-        "isdigit('8') == true",
-        "toupper('g') == 'G'"
+        "isdigit('8') != 0",
+        "isalpha('G') != 0",
+        "isalnum('7') != 0",
+        "islower('g') != 0",
+        "isupper('G') != 0",
+        "isspace(' ') != 0",
+        "toupper('g') == 'G'",
+        "tolower('G') == 'g'"
+      ]
+    },
+    {
+      "id": "frequency-array",
+      "title": "7. ASCII và Frequency Array",
+      "summary": "Biến ký tự thành chỉ số mảng để đếm tần suất trong O(1) mỗi ký tự.",
+      "content": [
+        "Một ứng dụng cực kỳ phổ biến của ASCII là dùng char làm chỉ số cho mảng đếm.",
+        "Nếu chuỗi chỉ chứa chữ thường 'a'..'z', ta có thể dùng int cnt[26]. Ký tự c được ánh xạ thành c - 'a'.",
+        "Ví dụ 'a' -> 0, 'b' -> 1, ..., 'z' -> 25.",
+        "Khi duyệt chuỗi, cnt[s[i] - 'a']++ sẽ tăng số lần xuất hiện của ký tự đó.",
+        "Độ phức tạp là O(n) cho cả chuỗi và O(26) hoặc O(1) bộ nhớ bổ sung.",
+        "Đây thường là lựa chọn đơn giản và nhanh hơn map khi miền ký tự đã biết và nhỏ.",
+        "Nếu đề cho cả chữ hoa và chữ thường, cần xác định rõ có coi chúng là cùng một ký tự hay không. Có thể chuyển toàn bộ về lowercase trước khi đếm."
+      ],
+      "examples": [
+        "string s = \"banana\"; int cnt[26] = {};",
+        "for (char c : s) ++cnt[c - 'a'];",
+        "cnt['a' - 'a'] = 3",
+        "cnt['b' - 'a'] = 1",
+        "cnt['n' - 'a'] = 2"
+      ]
+    },
+    {
+      "id": "casting-pitfalls",
+      "title": "8. Những bẫy ép kiểu thường gặp trong contest",
+      "summary": "Nhận diện các lỗi overflow, chia nguyên và ép kiểu sai miền giá trị trước khi submit.",
+      "content": [
+        "Bẫy 1: long long ans = a * b khi a, b là int. Phép nhân có thể overflow trước khi được gán vào ans.",
+        "Bẫy 2: double average = sum / n khi sum và n đều là số nguyên. Kết quả phép chia được tính trước dưới dạng integer division.",
+        "Bẫy 3: dùng int cho tổng của nhiều phần tử lớn. Ngay cả khi từng phần tử nằm trong int, tổng của chúng có thể vượt int.",
+        "Bẫy 4: ép long long xuống int khi giá trị có thể lớn hơn miền int.",
+        "Bẫy 5: dùng c - 'a' làm index khi c có thể là chữ hoa, chữ số hoặc ký tự khác.",
+        "Bẫy 6: tự cộng/trừ 32 để đổi hoa thường mà không kiểm tra c có thực sự nằm trong nhóm chữ cái tương ứng.",
+        "Bẫy 7: tưởng rằng char luôn phải được xử lý như một ký tự và quên rằng nó có thể tham gia vào phép toán số học.",
+        "Bẫy 8: sử dụng endl quá nhiều trong vòng lặp lớn. endl vừa xuống dòng vừa flush stream, trong khi '\\n' chỉ xuống dòng và thường phù hợp hơn cho contest."
+      ],
+      "examples": [
+        "long long x = 1LL * a * b;",
+        "double average = static_cast<double>(sum) / n;",
+        "long long sum = 0;",
+        "if ('a' <= c && c <= 'z') ++cnt[c - 'a'];"
+      ]
+    },
+    {
+      "id": "when-to-use",
+      "title": "9. Khi nào cần nghĩ tới Type Casting và ASCII?",
+      "summary": "Nhận ra các pattern thường xuất hiện trong bài Implementation.",
+      "content": [
+        "Nếu đề có phép nhân hoặc tổng với giới hạn lớn, hãy kiểm tra ngay kiểu dữ liệu của biểu thức trước khi code.",
+        "Nếu đề yêu cầu trung bình, tỷ lệ hoặc kết quả thập phân, hãy kiểm tra xem phép chia có đang là integer division hay không.",
+        "Nếu đề cho chuỗi chỉ gồm chữ cái hoặc chữ số và yêu cầu đếm, ánh xạ char sang chỉ số bằng ASCII thường là cách đơn giản nhất.",
+        "Nếu cần chuyển '7' thành 7 hoặc ngược lại, nghĩ ngay tới c - '0' và x + '0'.",
+        "Nếu cần ánh xạ 'a'..'z' thành 0..25, nghĩ ngay tới c - 'a'.",
+        "Nếu đề yêu cầu kiểm tra ký tự là số, chữ cái, chữ hoa, chữ thường hoặc khoảng trắng, có thể dùng <cctype>.",
+        "Nếu miền giá trị nhỏ và cố định, frequency array thường phù hợp hơn map/unordered_map.",
+        "Type casting không phải một thuật toán độc lập. Nó là công cụ giúp biểu thức được tính bằng đúng kiểu dữ liệu và giúp chuyển đổi giữa các cách biểu diễn dữ liệu."
+      ],
+      "examples": [
+        "Tính tích lớn: 1LL * a * b",
+        "Tính trung bình: static_cast<double>(sum) / n",
+        "Đếm chữ thường: cnt[c - 'a']++",
+        "Đổi chữ số: c - '0'",
+        "Kiểm tra chữ số: isdigit(c)"
+      ]
+    },
+    {
+      "id": "complexity",
+      "title": "10. Độ phức tạp",
+      "summary": "Các thao tác ép kiểu và xử lý một ký tự đều có chi phí hằng số.",
+      "content": [
+        "Các phép ép kiểu cơ bản như static_cast<int>(c) hoặc static_cast<long long>(x) có độ phức tạp O(1).",
+        "Các phép toán ASCII trên một ký tự như c - 'a', c - '0' hoặc c + '0' đều là O(1).",
+        "Các hàm kiểm tra ký tự trong <cctype> như isdigit, isalpha, toupper và tolower được sử dụng như các thao tác O(1) trên từng ký tự.",
+        "Duyệt một chuỗi độ dài n để kiểm tra hoặc đếm ký tự có độ phức tạp O(n).",
+        "Frequency array cho 26 chữ cái sử dụng O(26) bộ nhớ, thường được xem là O(1)."
+      ],
+      "examples": [
+        "Duyệt chuỗi n ký tự: O(n)",
+        "cnt[c - 'a']++: O(1)",
+        "static_cast<long long>(x): O(1)",
+        "isdigit(c): O(1)"
       ]
     }
   ],
@@ -80,42 +242,99 @@
   ],
   "dryRun": [
     {
-      "title": "Chạy tay: Integer Overflow",
+      "title": "1. Integer Overflow",
       "steps": [
-        "a = 1000000, b = 1000000.",
-        "Viết sai: long long ans = a * b; phép nhân diễn ra bằng int trước.",
-        "Viết đúng: long long ans = 1LL * a * b; 1LL ép toàn bộ phép nhân sang long long.",
+        "Cho a = 1000000 và b = 1000000.",
+        "Tích thực tế là 1000000000000, lớn hơn miền giá trị của int.",
+        "Nếu viết long long wrongAnswer = a * b, cả a và b đều là int nên phép nhân được thực hiện bằng int trước.",
+        "Nếu kết quả phép nhân vượt miền int thì overflow xảy ra ngay ở bước này.",
+        "Sau đó giá trị đã sai mới được gán vào long long, nên long long không thể sửa được lỗi.",
+        "Nếu viết long long correctAnswer = 1LL * a * b, 1LL khiến phép nhân được thực hiện bằng long long.",
         "Kết quả đúng là 1000000000000."
       ]
     },
     {
-      "title": "Chạy tay: Chia số thực",
+      "title": "2. Chia nguyên và chia số thực",
       "steps": [
-        "x = 7, y = 2.",
-        "double v1 = x / y; hai toán hạng là int nên kết quả là 3.",
-        "double v2 = (double)x / y; x được đổi thành 7.0 nên kết quả là 3.5."
+        "Cho x = 7 và y = 2.",
+        "Với double v1 = x / y, cả x và y đều là int.",
+        "Phép chia được thực hiện dưới dạng integer division và cho kết quả 3.",
+        "Sau đó 3 mới được chuyển thành double, nên v1 bằng 3.0.",
+        "Với double v2 = static_cast<double>(x) / y, x được chuyển thành 7.0 trước khi chia.",
+        "Phép chia lúc này là 7.0 / 2 và kết quả là 3.5."
       ]
     },
     {
-      "title": "Chạy tay: ASCII với ký tự g",
+      "title": "3. ASCII với ký tự g",
       "steps": [
-        "ch = 'g' có mã ASCII là 103.",
-        "ch - 'a' = 103 - 97 = 6, nên 'g' đứng vị trí 6 nếu đếm từ 0.",
-        "ch - 'a' + 'A' = 103 - 97 + 65 = 71, tương ứng ký tự 'G'.",
-        "'8' - '0' = 56 - 48 = 8."
+        "Ký tự 'g' có mã ASCII là 103.",
+        "Ký tự 'a' có mã ASCII là 97.",
+        "Vì vậy 'g' - 'a' = 103 - 97 = 6.",
+        "Nếu đánh số chữ cái từ 0 thì a có vị trí 0 và g có vị trí 6.",
+        "Để đổi g thành G, lấy 'g' - 'a' + 'A'.",
+        "Kết quả số là 103 - 97 + 65 = 71.",
+        "Mã ASCII 71 chính là 'G'."
+      ]
+    },
+    {
+      "title": "4. Chuyển ký tự số thành số nguyên",
+      "steps": [
+        "Cho c = '8'.",
+        "Mã ASCII của '8' là 56.",
+        "Mã ASCII của '0' là 48.",
+        "Vì các chữ số nằm liên tiếp nên '8' - '0' = 56 - 48 = 8.",
+        "Do đó int value = c - '0' cho value = 8."
+      ]
+    },
+    {
+      "title": "5. Frequency Array với banana",
+      "steps": [
+        "Khởi tạo cnt[26] bằng 0.",
+        "Đọc b: b - 'a' = 1, nên tăng cnt[1].",
+        "Đọc a: a - 'a' = 0, nên tăng cnt[0].",
+        "Đọc n: n - 'a' = 13, nên tăng cnt[13].",
+        "Đọc a lần nữa: cnt[0] tăng tiếp.",
+        "Đọc n lần nữa: cnt[13] tăng tiếp.",
+        "Đọc a lần cuối: cnt[0] = 3.",
+        "Kết quả: a xuất hiện 3 lần, b xuất hiện 1 lần, n xuất hiện 2 lần."
+      ]
+    },
+    {
+      "title": "6. Toupper và kiểm tra ký tự",
+      "steps": [
+        "Cho c = 'g'.",
+        "isalpha(c) xác nhận đây là chữ cái.",
+        "islower(c) xác nhận đây là chữ thường.",
+        "toupper(c) chuyển g thành G.",
+        "Nếu c là '8', isdigit(c) trả về đúng và toupper(c) không có ý nghĩa chuyển đổi chữ cái."
       ]
     }
   ],
   "codeBlocks": [
     {
-      "title": "Code: Ép kiểu và Integer Overflow",
+      "title": "Code 1: Type Casting và Integer Overflow",
       "language": "cpp",
-      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 1000000;\n    int b = 1000000;\n\n    long long wrongAnswer = a * b; // Có thể overflow trước khi gán.\n    long long correctAnswer = 1LL * a * b; // Ép phép nhân sang long long.\n\n    cout << wrongAnswer << '\\n';\n    cout << correctAnswer << '\\n';\n    return 0;\n}"
+      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a = 1000000;\n    int b = 1000000;\n\n    long long wrongAnswer = a * b;\n    long long correctAnswer = 1LL * a * b;\n\n    cout << wrongAnswer << '\\n';\n    cout << correctAnswer << '\\n';\n    return 0;\n}"
     },
     {
-      "title": "Code: ASCII và Character Manipulation",
+      "title": "Code 2: Chia nguyên và chia số thực",
       "language": "cpp",
-      "code": "#include <iostream>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    char character = 'g';\n    char digit = '8';\n\n    cout << static_cast<int>(character) << '\\n'; // Mã ASCII: 103.\n    cout << character - 'a' << '\\n'; // Vị trí chữ cái: 6.\n    cout << static_cast<char>(character - 'a' + 'A') << '\\n'; // G.\n    cout << digit - '0' << '\\n'; // 8.\n    cout << (isdigit(digit) ? \"YES\" : \"NO\") << '\\n';\n    cout << static_cast<char>(toupper(character)) << '\\n'; // G.\n    return 0;\n}"
+      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int x = 7;\n    int y = 2;\n\n    double wrongValue = x / y;\n    double correctValue = static_cast<double>(x) / y;\n\n    cout << wrongValue << '\\n';\n    cout << correctValue << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Code 3: ASCII và Character Manipulation",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <cctype>\nusing namespace std;\n\nint main() {\n    char character = 'g';\n    char digit = '8';\n\n    cout << static_cast<int>(character) << '\\n';\n    cout << character - 'a' << '\\n';\n    cout << static_cast<char>(character - 'a' + 'A') << '\\n';\n    cout << digit - '0' << '\\n';\n    cout << (isdigit(digit) ? \"YES\" : \"NO\") << '\\n';\n    cout << static_cast<char>(toupper(character)) << '\\n';\n\n    return 0;\n}"
+    },
+    {
+      "title": "Code 4: Frequency Array cho chữ thường",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n\n    int cnt[26] = {};\n\n    for (char c : s) {\n        ++cnt[c - 'a'];\n    }\n\n    for (int i = 0; i < 26; ++i) {\n        if (cnt[i] > 0) {\n            cout << static_cast<char>('a' + i) << ' ' << cnt[i] << '\\n';\n        }\n    }\n\n    return 0;\n}"
+    },
+    {
+      "title": "Code 5: Chuẩn hóa chữ hoa/chữ thường",
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <cctype>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    getline(cin, s);\n\n    for (char &c : s) {\n        c = static_cast<char>(tolower(static_cast<unsigned char>(c)));\n    }\n\n    cout << s << '\\n';\n    return 0;\n}"
     }
   ],
   "exercises": [
@@ -129,16 +348,16 @@
     },
     {
       "id": "editorial-cf-1772a",
-      "name": "A+B Again?",
+      "name": "1772A - A+B Again?",
       "rating": 800,
       "tags": ["implementation", "strings"],
       "url": "post.html?editorial=editorial-cf-1772a",
       "originalUrl": "https://codeforces.com/problemset/problem/1772/A"
     },
     {
-      "id": "",
+      "id": "c_p10-count-letters",
       "name": "c_p10 - Đếm chữ cái",
-      "rating": "",
+      "rating": 0,
       "tags": ["ascii", "char"],
       "url": "",
       "originalUrl": ""

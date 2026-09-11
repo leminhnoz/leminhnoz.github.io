@@ -8,50 +8,340 @@
   "level": "Module -1",
   "sections": [
     {
-      "id": "freopen",
-      "title": "freopen làm gì?",
-      "summary": "Gắn stdin/stdout vào file thay vì bàn phím và màn hình.",
+      "id": "stdin-stdout",
+      "title": "1. stdin và stdout là gì?",
+      "summary": "Hiểu luồng input/output mặc định của C++ trước khi học freopen.",
       "content": [
-        "freopen(\"input.txt\", \"r\", stdin) khiến cin đọc từ file.",
-        "freopen(\"output.txt\", \"w\", stdout) khiến cout ghi ra file, ghi đè file cũ.",
-        "Khi nộp Codeforces, đề thường đọc stdin. Nếu để freopen mãi, chương trình không đọc được input judge.",
-        "Bọc trong #ifdef LOCAL và compile local với -DLOCAL."
+        "Khi chạy một chương trình C++, cin mặc định đọc dữ liệu từ stdin (standard input), còn cout mặc định ghi dữ liệu ra stdout (standard output).",
+        "Trong terminal, stdin thường tương ứng với bàn phím và stdout thường tương ứng với màn hình.",
+        "Khi nộp lên Online Judge, hệ thống judge cung cấp input cho stdin và đọc output từ stdout để chấm.",
+        "Vì vậy với bài thông thường, cin >> x sẽ đọc dữ liệu mà judge đưa vào và cout << answer sẽ gửi kết quả về cho judge.",
+        "freopen cho phép thay đổi nơi mà một stream chuẩn đọc hoặc ghi dữ liệu. Đây là lý do ta có thể khiến cin đọc từ input.txt và cout ghi vào output.txt.",
+        "Điểm quan trọng là freopen không thay đổi cách sử dụng cin/cout trong phần còn lại của chương trình. Nó chỉ thay đổi nguồn hoặc đích của stream."
       ],
       "examples": [
+        "cin >> x; // mặc định đọc từ stdin",
+        "cout << x; // mặc định ghi ra stdout",
+        "freopen(\"input.txt\", \"r\", stdin); // chuyển stdin sang file",
+        "freopen(\"output.txt\", \"w\", stdout); // chuyển stdout sang file"
+      ]
+    },
+    {
+      "id": "freopen",
+      "title": "2. freopen làm gì?",
+      "summary": "Gắn stdin/stdout vào file để chương trình có thể test bằng input.txt và output.txt.",
+      "content": [
+        "freopen(\"input.txt\", \"r\", stdin) mở input.txt ở chế độ đọc và gắn stdin vào file đó.",
+        "Sau lệnh này, các lệnh cin tiếp theo sẽ đọc dữ liệu từ input.txt thay vì chờ người dùng nhập từ bàn phím.",
+        "freopen(\"output.txt\", \"w\", stdout) mở output.txt ở chế độ ghi và gắn stdout vào file đó.",
+        "Sau lệnh này, các lệnh cout tiếp theo sẽ ghi vào output.txt thay vì hiển thị trực tiếp trên terminal.",
+        "Tham số thứ hai là mode của file. \"r\" thường dùng để đọc, \"w\" để ghi và xóa nội dung cũ, còn \"a\" để ghi nối tiếp vào cuối file.",
+        "Nếu output.txt đã tồn tại và mở bằng mode \"w\", nội dung cũ sẽ bị ghi đè.",
+        "freopen trả về một con trỏ FILE* nếu thành công và NULL nếu không mở được file. Trong contest cơ bản thường không cần dùng giá trị trả về, nhưng khi debug local có thể kiểm tra nó.",
+        "Sau khi redirect thành công, ta vẫn dùng cin/cout bình thường. Không cần thay toàn bộ cin thành fscanf hay cout thành fprintf."
+      ],
+      "examples": [
+        "freopen(\"input.txt\", \"r\", stdin);",
+        "freopen(\"output.txt\", \"w\", stdout);",
+        "freopen(\"output.txt\", \"a\", stdout);"
+      ]
+    },
+    {
+      "id": "file-modes",
+      "title": "3. Các chế độ mở file: r, w, a",
+      "summary": "Biết ý nghĩa của mode để tránh vô tình xóa hoặc ghi sai file.",
+      "content": [
+        "Mode \"r\" mở file để đọc. File cần tồn tại; nếu không tồn tại thì việc mở file thất bại.",
+        "Mode \"w\" mở file để ghi. Nếu file chưa tồn tại thì file có thể được tạo mới; nếu file đã tồn tại thì nội dung cũ bị xóa.",
+        "Mode \"a\" mở file để ghi nối tiếp. Dữ liệu mới được ghi vào cuối file thay vì xóa nội dung cũ.",
+        "Khi dùng input.txt làm input local, mode phù hợp là \"r\" vì chương trình chỉ cần đọc dữ liệu.",
+        "Khi dùng output.txt làm output local, mode thường dùng là \"w\" vì mỗi lần chạy muốn tạo một output mới.",
+        "Trong competitive programming, trường hợp phổ biến nhất là freopen input.txt bằng \"r\" và output.txt bằng \"w\"."
+      ],
+      "examples": [
+        "freopen(\"input.txt\", \"r\", stdin);",
+        "freopen(\"output.txt\", \"w\", stdout);",
+        "freopen(\"log.txt\", \"a\", stdout);"
+      ]
+    },
+    {
+      "id": "ifdef-local",
+      "title": "4. #ifdef LOCAL — Cách dùng an toàn khi submit",
+      "summary": "Chỉ redirect file khi compile local, còn khi submit Online Judge thì chương trình vẫn dùng stdin/stdout bình thường.",
+      "content": [
+        "Sai lầm phổ biến nhất khi dùng freopen là viết freopen trực tiếp trong code rồi quên xóa trước khi submit.",
+        "Nếu judge không cung cấp input.txt, chương trình có thể không đọc được input và dẫn đến WA hoặc hành vi không như mong muốn.",
+        "Cách giải quyết là dùng tiền xử lý #ifdef LOCAL.",
+        "Code nằm giữa #ifdef LOCAL và #endif chỉ được compiler giữ lại khi macro LOCAL được định nghĩa.",
+        "Khi compile local với -DLOCAL, freopen được bật và chương trình đọc input.txt, ghi output.txt.",
+        "Khi submit lên Online Judge bằng compile command thông thường không có -DLOCAL, phần freopen bị loại bỏ. Chương trình quay về stdin/stdout mặc định.",
+        "Đây là một thói quen rất hữu ích vì không cần sửa code mỗi lần chuyển giữa test local và submit."
+      ],
+      "examples": [
+        "#ifdef LOCAL",
+        "freopen(\"input.txt\", \"r\", stdin);",
+        "freopen(\"output.txt\", \"w\", stdout);",
+        "#endif",
+        "g++ main.cpp -DLOCAL -o main"
+      ]
+    },
+    {
+      "id": "working-directory",
+      "title": "5. Working Directory — File phải nằm ở đâu?",
+      "summary": "Hiểu vị trí mà chương trình tìm input.txt để tránh lỗi 'file không tồn tại'.",
+      "content": [
+        "Khi viết freopen(\"input.txt\", \"r\", stdin), đường dẫn input.txt là đường dẫn tương đối.",
+        "Đường dẫn tương đối thường được tính từ working directory của chương trình, không nhất thiết chính xác là thư mục chứa file .cpp.",
+        "Trong một IDE như CodeBlocks hoặc VS Code, working directory có thể khác với thư mục mà ta đang nhìn thấy file source.",
+        "Vì vậy nếu input.txt nằm cạnh main.cpp nhưng chương trình vẫn không đọc được, hãy kiểm tra working directory trước khi kết luận rằng freopen bị lỗi.",
+        "Một cách đơn giản khi luyện local là đặt input.txt và output.txt trong thư mục mà chương trình thực sự chạy, hoặc cấu hình working directory của IDE cho phù hợp.",
+        "Không nên phụ thuộc vào đường dẫn tuyệt đối kiểu C:\\Users\\... trong code contest vì đường dẫn đó chỉ tồn tại trên máy cá nhân."
+      ],
+      "examples": [
+        "freopen(\"input.txt\", \"r\", stdin);",
+        "freopen(\"data/input.txt\", \"r\", stdin);",
+        "freopen(\"tests/input.txt\", \"r\", stdin);"
+      ]
+    },
+    {
+      "id": "workflow",
+      "title": "6. Quy trình test local",
+      "summary": "Tạo input.txt, chạy chương trình, kiểm tra output.txt rồi submit phiên bản không redirect.",
+      "content": [
+        "Bước 1: Tạo file input.txt trong working directory của chương trình.",
+        "Bước 2: Paste test case vào input.txt đúng format của đề.",
+        "Bước 3: Compile với macro LOCAL để bật freopen.",
+        "Bước 4: Chạy chương trình. cin sẽ đọc dữ liệu từ input.txt.",
+        "Bước 5: Mở output.txt để xem kết quả mà cout tạo ra.",
+        "Bước 6: Đối chiếu output với expected output của sample hoặc đáp án tự tính.",
+        "Bước 7: Trước khi submit, kiểm tra code có dùng #ifdef LOCAL đúng cách hay không.",
+        "Nếu dùng #ifdef LOCAL thì có thể giữ nguyên freopen trong source. Khi submit mà không định nghĩa LOCAL, redirect sẽ tự động bị tắt.",
+        "Nếu file không tồn tại hoặc sai đường dẫn, cin có thể rơi vào trạng thái fail. Khi đó các lệnh đọc tiếp theo sẽ không lấy được dữ liệu hợp lệ."
+      ],
+      "examples": [
+        "input.txt: 4 5",
+        "Chương trình đọc a = 4, b = 5.",
+        "output.txt nhận 9.",
+        "Compile local: g++ main.cpp -DLOCAL -o main"
+      ]
+    },
+    {
+      "id": "file-open-debug",
+      "title": "7. Debug khi freopen không hoạt động",
+      "summary": "Phân biệt lỗi code với lỗi file hoặc working directory.",
+      "content": [
+        "Nếu cin đọc không được dữ liệu sau freopen, khả năng đầu tiên là file không tồn tại ở đúng working directory.",
+        "Có thể kiểm tra kết quả mở file bằng cách lưu FILE* result = freopen(...) và kiểm tra result == nullptr.",
+        "Nếu input.txt không mở được ở mode \"r\", nguyên nhân thường là sai đường dẫn, sai tên file hoặc file chưa tồn tại.",
+        "Nếu output.txt không xuất hiện, hãy kiểm tra working directory và quyền ghi của thư mục.",
+        "Nếu chương trình chạy nhưng output.txt trống, có thể chương trình không đọc được input hoặc đã kết thúc trước khi cout được thực hiện.",
+        "Không nên vội sửa thuật toán khi chương trình còn chưa đọc được input. Hãy xác nhận I/O trước."
+      ],
+      "examples": [
+        "FILE* input = freopen(\"input.txt\", \"r\", stdin);",
+        "if (input == nullptr) return 1;",
+        "FILE* output = freopen(\"output.txt\", \"w\", stdout);",
+        "if (output == nullptr) return 1;"
+      ]
+    },
+    {
+      "id": "online-judge",
+      "title": "8. stdin/stdout OJ và file-based OJ",
+      "summary": "Không phải mọi hệ thống chấm đều sử dụng cùng một kiểu input/output.",
+      "content": [
+        "Phần lớn bài trên Codeforces và nhiều Online Judge hiện đại sử dụng stdin/stdout. Ta chỉ cần cin/cout theo format của statement.",
+        "Một số đề cũ hoặc một số hệ thống chấm đặc biệt có thể yêu cầu file input/output với tên file cố định.",
+        "Nếu statement yêu cầu đọc từ một file cụ thể, ví dụ input.txt, và ghi ra output.txt, thì phải tuân theo đúng tên file và format mà đề yêu cầu.",
+        "Không nên tự ý dùng freopen chỉ vì đang luyện local nếu statement của OJ sử dụng stdin/stdout.",
+        "Ngược lại, nếu đề thực sự là file-based thì freopen hoặc các cơ chế file I/O tương ứng có thể là một phần bắt buộc của lời giải.",
+        "Luôn đọc statement trước khi quyết định chương trình nhận input từ đâu và xuất output ở đâu."
+      ],
+      "examples": [
+        "Codeforces thông thường: cin/cout với stdin/stdout.",
+        "Đề file-based: freopen(\"input.txt\", \"r\", stdin);",
+        "Đề yêu cầu tên file khác: phải dùng đúng tên file trong statement."
+      ]
+    },
+    {
+      "id": "fast-io-order",
+      "title": "9. freopen và Fast I/O",
+      "summary": "Redirect file trước khi thực hiện các thao tác I/O bằng cin/cout.",
+      "content": [
+        "Có thể dùng freopen cùng với ios_base::sync_with_stdio(false) và cin.tie(nullptr).",
+        "Một mẫu thông dụng là redirect stdin/stdout trước, sau đó bật fast I/O.",
+        "Quan trọng hơn cả là không được redirect sai stream hoặc tiếp tục sử dụng FILE* theo cách không phù hợp.",
+        "Với code contest thông thường, chỉ cần freopen cho stdin/stdout rồi dùng cin/cout như bình thường là đủ.",
+        "Fast I/O không liên quan trực tiếp đến việc file I/O có đúng hay không. Nó chỉ tối ưu tốc độ của stream."
+      ],
+      "examples": [
+        "#ifdef LOCAL",
+        "freopen(\"input.txt\", \"r\", stdin);",
+        "freopen(\"output.txt\", \"w\", stdout);",
+        "#endif",
+        "ios_base::sync_with_stdio(false);",
+        "cin.tie(nullptr);"
+      ]
+    },
+    {
+      "id": "submission-pitfalls",
+      "title": "10. Những lỗi thường gặp khi submit",
+      "summary": "Checklist để tránh biến một code AC local thành WA trên Online Judge.",
+      "content": [
+        "Lỗi 1: Viết freopen(\"input.txt\", \"r\", stdin) nhưng submit lên OJ không có input.txt.",
+        "Lỗi 2: Quên freopen output hoặc redirect nhầm stdout khiến output không xuất hiện ở nơi judge chờ.",
+        "Lỗi 3: Đặt freopen trong #ifdef LOCAL nhưng lại compile với -DLOCAL khi submit. Khi đó redirect vẫn được bật.",
+        "Lỗi 4: Tên file không đúng với tên mà đề yêu cầu.",
+        "Lỗi 5: input.txt nằm cạnh file .cpp nhưng không nằm trong working directory.",
+        "Lỗi 6: Dùng mode \"w\" cho một file input và vô tình làm mất dữ liệu vì mode \"w\" dùng để ghi.",
+        "Lỗi 7: Có input.txt cũ và tưởng chương trình đang đọc input từ terminal.",
+        "Lỗi 8: Trộn nhiều cơ chế I/O mà không hiểu stream nào đang được redirect.",
+        "Lỗi 9: Nghĩ rằng freopen là bắt buộc cho mọi bài local. Thực tế IDE hoặc terminal cũng có thể redirect input/output bằng cách khác.",
+        "Lỗi 10: Debug thuật toán trước khi kiểm tra input có thực sự được đọc hay chưa."
+      ],
+      "examples": [
+        "Đúng: #ifdef LOCAL ... #endif",
+        "Local: g++ main.cpp -DLOCAL -o main",
+        "Submit: compile bình thường, không định nghĩa LOCAL"
+      ]
+    },
+    {
+      "id": "alternatives",
+      "title": "11. freopen có phải cách duy nhất để test file?",
+      "summary": "Biết thêm các cách redirect input/output để hiểu freopen là một lựa chọn chứ không phải quy tắc bắt buộc.",
+      "content": [
+        "Ngoài freopen, terminal có thể redirect stdin/stdout bằng toán tử < và >.",
+        "Ví dụ trên nhiều shell, ./main < input.txt > output.txt sẽ khiến chương trình vẫn dùng stdin/stdout nhưng dữ liệu đến từ file.",
+        "Cách này có ưu điểm là không cần sửa source code để test.",
+        "freopen lại tiện khi muốn nhấn Run trực tiếp trong IDE mà không cần gõ command redirect mỗi lần.",
+        "Trong competitive programming, cả hai cách đều hữu ích. #ifdef LOCAL + freopen là một pattern phổ biến vì nó tích hợp trực tiếp vào source.",
+        "Nếu đang làm việc trong môi trường IDE, hãy chọn workflow khiến việc test nhiều lần nhanh và ít lỗi nhất."
+      ],
+      "examples": [
+        "./main < input.txt > output.txt",
         "freopen(\"input.txt\", \"r\", stdin);",
         "freopen(\"output.txt\", \"w\", stdout);"
       ]
     },
     {
-      "id": "workflow",
-      "title": "Quy trình test local",
-      "summary": "Paste sample vào input.txt, chạy, đối chiếu output.txt.",
+      "id": "contest-workflow",
+      "title": "12. Workflow thực chiến",
+      "summary": "Dùng freopen như một công cụ debug local mà không ảnh hưởng đến code submit.",
       "content": [
-        "Tạo input.txt cùng thư mục với file .exe hoặc working directory của IDE.",
-        "Nếu file không tồn tại, cin failbit: mọi biến đọc ra 0. Đó là dấu hiệu sai đường dẫn.",
-        "Một số OJ (cũ, hoặc đề file-based) bắt buộc tên file theo đề. Đọc kỹ statement."
+        "Khi đang giải bài, có thể tạo input.txt chứa sample hoặc test tự chế để chạy nhanh nhiều lần.",
+        "Nếu đang debug một case cụ thể, chỉ cần sửa input.txt rồi chạy lại thay vì nhập lại dữ liệu bằng tay.",
+        "Có thể tạo nhiều test khác nhau: test nhỏ để kiểm tra logic, test biên để kiểm tra overflow và test ngẫu nhiên để tìm bug.",
+        "Sau khi thuật toán đúng, giữ nguyên phần #ifdef LOCAL để có thể tiếp tục debug trong tương lai.",
+        "Trước khi submit, kiểm tra rằng macro LOCAL không được định nghĩa trong môi trường judge.",
+        "Mục tiêu của freopen không phải làm chương trình chạy nhanh hơn hay thay đổi thuật toán. Nó chỉ giúp việc test local thuận tiện và lặp lại được."
       ],
       "examples": [
-        "g++ main.cpp -DLOCAL -o main"
+        "Local: input.txt -> chương trình -> output.txt",
+        "Online Judge: stdin -> chương trình -> stdout"
+      ]
+    },
+    {
+      "id": "complexity",
+      "title": "13. Độ phức tạp",
+      "summary": "freopen không làm thay đổi độ phức tạp của thuật toán.",
+      "content": [
+        "Bản thân việc mở file là một thao tác hệ thống và có chi phí phụ thuộc môi trường, nhưng nó thường chỉ được thực hiện một vài lần khi chương trình bắt đầu.",
+        "Nếu chương trình xử lý n phần tử, việc thêm freopen không biến thuật toán O(n) thành O(n log n) hay O(n^2).",
+        "Chi phí chính vẫn đến từ việc đọc, xử lý và ghi dữ liệu.",
+        "Không nên dùng freopen như một cách tối ưu thuật toán. Nó chỉ thay đổi nguồn và đích của stream.",
+        "Trong contest, điều cần quan tâm vẫn là độ phức tạp của thuật toán và tốc độ I/O nếu dữ liệu rất lớn."
+      ],
+      "examples": [
+        "Mở input/output một lần: chi phí khởi tạo nhỏ so với toàn bộ chương trình.",
+        "Duyệt n phần tử: vẫn O(n).",
+        "Thuật toán O(n^2): vẫn O(n^2) dù dùng freopen."
       ]
     }
   ],
   "dryRun": [
     {
-      "title": "Cộng hai số trong file",
+      "title": "1. Cộng hai số trong file",
       "steps": [
-        "input.txt chứa: 4 5",
-        "freopen gắn stdin vào file.",
-        "cin đọc a = 4, b = 5.",
-        "cout ghi 9\\n vào output.txt."
+        "input.txt chứa: 4 5.",
+        "Chương trình chạy với LOCAL nên hai lệnh freopen được kích hoạt.",
+        "freopen input.txt với mode \"r\" gắn stdin vào input.txt.",
+        "freopen output.txt với mode \"w\" gắn stdout vào output.txt.",
+        "cin >> a >> b đọc được a = 4 và b = 5.",
+        "cout << a + b << '\\n' không in ra terminal mà ghi 9 vào output.txt.",
+        "Sau khi chương trình kết thúc, output.txt chứa 9."
+      ]
+    },
+    {
+      "title": "2. input.txt không tồn tại",
+      "steps": [
+        "Chương trình gọi freopen(\"input.txt\", \"r\", stdin).",
+        "Mode \"r\" yêu cầu file phải tồn tại.",
+        "Nếu file không tồn tại hoặc sai working directory, freopen thất bại.",
+        "Khi đó stdin không được redirect thành công.",
+        "Nếu chương trình vẫn cố cin dữ liệu mà không có input hợp lệ, các biến đọc vào có thể không có giá trị hợp lệ.",
+        "Kết luận: trước khi debug thuật toán, hãy kiểm tra file và working directory."
+      ]
+    },
+    {
+      "title": "3. #ifdef LOCAL khi compile",
+      "steps": [
+        "Source chứa #ifdef LOCAL và hai lệnh freopen.",
+        "Compile local bằng g++ main.cpp -DLOCAL -o main.",
+        "Flag -DLOCAL định nghĩa macro LOCAL.",
+        "Compiler giữ lại phần code nằm giữa #ifdef LOCAL và #endif.",
+        "Khi chạy, freopen được thực hiện và chương trình dùng file.",
+        "Nếu compile không có -DLOCAL, macro LOCAL không tồn tại.",
+        "Compiler loại bỏ phần freopen và chương trình dùng stdin/stdout mặc định."
+      ]
+    },
+    {
+      "title": "4. output.txt với mode w",
+      "steps": [
+        "Lần chạy đầu tiên, output.txt chứa 12345.",
+        "Chương trình gọi freopen(\"output.txt\", \"w\", stdout).",
+        "Mode \"w\" mở file để ghi và xóa nội dung cũ.",
+        "cout ghi 9 vào stdout đã được redirect.",
+        "Sau khi chạy xong, output.txt chỉ còn 9.",
+        "Nếu muốn ghi nối tiếp thay vì xóa nội dung cũ, mode \"a\" mới là lựa chọn phù hợp."
+      ]
+    },
+    {
+      "title": "5. Local và Online Judge",
+      "steps": [
+        "Local compile với -DLOCAL.",
+        "stdin được redirect từ input.txt và stdout được redirect tới output.txt.",
+        "Sau khi debug xong, submit source lên Online Judge.",
+        "Judge không định nghĩa LOCAL nên phần freopen không được compile.",
+        "cin quay về đọc stdin do judge cung cấp.",
+        "cout quay về ghi stdout để judge chấm.",
+        "Nhờ vậy cùng một source có thể dùng cho cả local testing và submit."
       ]
     }
   ],
   "codeBlocks": [
     {
-      "title": "Mẫu File I/O an toàn",
+      "title": "Code 1: Mẫu File I/O an toàn",
       "language": "cpp",
-      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n#ifdef LOCAL\n    freopen(\"input.txt\", \"r\", stdin);\n    freopen(\"output.txt\", \"w\", stdout);\n#endif\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int a, b;\n    cin >> a >> b;\n    cout << a + b << '\\n';\n    return 0;\n}"
+      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n#ifdef LOCAL\n    freopen(\"input.txt\", \"r\", stdin);\n    freopen(\"output.txt\", \"w\", stdout);\n#endif\n\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int a, b;\n    cin >> a >> b;\n    cout << a + b << '\\n';\n\n    return 0;\n}"
+    },
+    {
+      "title": "Code 2: Kiểm tra freopen có mở file thành công không",
+      "language": "cpp",
+      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n#ifdef LOCAL\n    if (freopen(\"input.txt\", \"r\", stdin) == nullptr) {\n        cerr << \"Cannot open input.txt\\n\";\n        return 1;\n    }\n\n    if (freopen(\"output.txt\", \"w\", stdout) == nullptr) {\n        cerr << \"Cannot open output.txt\\n\";\n        return 1;\n    }\n#endif\n\n    int a, b;\n    cin >> a >> b;\n    cout << a + b << '\\n';\n\n    return 0;\n}"
+    },
+    {
+      "title": "Code 3: Nhiều test bằng File I/O",
+      "language": "cpp",
+      "code": "#include <iostream>\nusing namespace std;\n\nvoid solve() {\n    int a, b;\n    cin >> a >> b;\n    cout << a + b << '\\n';\n}\n\nint main() {\n#ifdef LOCAL\n    freopen(\"input.txt\", \"r\", stdin);\n    freopen(\"output.txt\", \"w\", stdout);\n#endif\n\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int tests;\n    cin >> tests;\n\n    while (tests--) {\n        solve();\n    }\n\n    return 0;\n}"
+    },
+    {
+      "title": "Code 4: Test với đường dẫn tương đối",
+      "language": "cpp",
+      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n#ifdef LOCAL\n    freopen(\"tests/input.txt\", \"r\", stdin);\n    freopen(\"tests/output.txt\", \"w\", stdout);\n#endif\n\n    int n;\n    cin >> n;\n\n    long long sum = 0;\n    for (int i = 0; i < n; ++i) {\n        int x;\n        cin >> x;\n        sum += x;\n    }\n\n    cout << sum << '\\n';\n    return 0;\n}"
+    },
+    {
+      "title": "Code 5: File I/O kết hợp Fast I/O",
+      "language": "cpp",
+      "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n#ifdef LOCAL\n    freopen(\"input.txt\", \"r\", stdin);\n    freopen(\"output.txt\", \"w\", stdout);\n#endif\n\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        int x;\n        cin >> x;\n        cout << x * x << '\\n';\n    }\n\n    return 0;\n}"
     }
   ],
   "exercises": [
