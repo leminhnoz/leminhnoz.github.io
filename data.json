@@ -1,7 +1,7 @@
-﻿[
+[
     {
         "id":  "m-imo-2022",
-        "title": "IMO 2022 — Shortlisted Problems",
+        "title": "IMO2022",
         "subject":  "Math",
         "category":  "IMO",
         "year":  2022,
@@ -9,7 +9,7 @@
     },
     {
         "id":  "m-vmo-2021",
-        "title": "VMO 2021 — National Selection Paper",
+        "title": "VMO2021",
         "subject":  "Math",
         "category":  "VMO",
         "year":  2021,
@@ -17,7 +17,7 @@
     },
     {
         "id": "i-ioi-2023",
-        "title": "IOI 2023 — Day 1 & Day 2",
+        "title": "IOI2023",
         "subject": "Informatics",
         "category": "IOI",
         "year": 2023,
@@ -28,7 +28,7 @@
     },
     {
         "id":  "i-voi-2019",
-        "title": "VOI 2019 — Problems and Solutions",
+        "title": "VOI2019",
         "subject":  "Informatics",
         "category":  "VOI",
         "year":  2019,
@@ -36,7 +36,7 @@
     },
     {
         "id": "i-apio-2020",
-        "title": "APIO 2020 — Contest Booklet",
+        "title": "APIO2020",
         "subject": "Informatics",
         "category": "APIO",
         "year": 2020,
@@ -44,7 +44,7 @@
     },
     {
         "id":  "p-ipho-2018",
-        "title":  "IPhO 2018 â€” Theoretical Exam",
+        "title": "IPhO2018",
         "subject":  "Physics",
         "category":  "IPhO",
         "year":  2018,
@@ -52,7 +52,7 @@
     },
     {
         "id":  "p-vpho-2022",
-        "title":  "VPhO 2022 â€” National Round",
+        "title": "VPhO2022",
         "subject":  "Physics",
         "category":  "VPhO",
         "year":  2022,
@@ -60,7 +60,7 @@
     },
     {
         "id":  "m-imo-2019",
-        "title":  "IMO 2019 â€” Problems \u0026 Solutions",
+        "title": "IMO2019",
         "subject":  "Math",
         "category":  "IMO",
         "year":  2019,
@@ -68,7 +68,7 @@
     },
     {
         "id": "i-ioi-2017",
-        "title": "IOI 2017 — Official Problems",
+        "title": "IOI2017",
         "subject": "Informatics",
         "category": "IOI",
         "year": 2017,
@@ -80,7 +80,7 @@
 
     {
         "id":  "p-ipho-2021",
-        "title":  "IPhO 2021 â€” Experimental \u0026 Theoretical",
+        "title": "IPhO2021",
         "subject":  "Physics",
         "category":  "IPhO",
         "year":  2021,
@@ -88,7 +88,7 @@
     },
     {
         "id":  "m-vmo-2018",
-        "title":  "VMO 2018 â€” Practice Set",
+        "title": "VMO2018",
         "subject":  "Math",
         "category":  "VMO",
         "year":  2018,
@@ -96,7 +96,7 @@
     },
     {
         "id":  "i-voi-2022",
-        "title":  "VOI 2022 â€” Advanced Problems",
+        "title": "VOI2022",
         "subject":  "Informatics",
         "category":  "VOI",
         "year":  2022,
@@ -104,7 +104,7 @@
     },
     {
         "id":  "m-vmo-2024",
-        "title":  "VMO 2024 — Competition Paper (Added)",
+        "title": "VMO2024",
         "subject":  "Math",
         "category":  "VMO",
         "year":  2024,
