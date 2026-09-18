@@ -1,0 +1,193 @@
+/* Liquid Glass / Modern Dark Mode custom CSS */
+
+/* Base glass */
+.glass-sidebar, .glass-search, .glass-pill, .glass-card, .glass-modal, .glass-btn {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  border-radius: 12px;
+  transition: all 200ms cubic-bezier(.2,.9,.3,1);
+}
+
+/* Slightly darker glass for cards */
+.glass-card {
+  background: linear-gradient(180deg, rgba(15,23,42,0.36), rgba(15,23,42,0.28));
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 18px;
+  border-radius: 14px;
+}
+
+/* Pill style (filters) */
+.glass-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  color: #e6eef8;
+  font-size: 13px;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+/* Small button style */
+.glass-btn {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: #e6eef8;
+  cursor: pointer;
+}
+
+/* Search bar */
+.glass-search {
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: 0 6px 16px rgba(2,6,23,0.6);
+}
+
+/* Header pill */
+.logo .text-sm { line-height: 1; }
+
+/* Card hover glow */
+.card-hover {
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(99,102,241,0.14), 0 6px 24px rgba(2,6,23,0.6);
+  border-color: rgba(99,102,241,0.35);
+}
+
+/* active states */
+.subject-pill.active,
+.category-pill.active {
+  background: linear-gradient(90deg, rgba(99,102,241,0.12), rgba(79,70,229,0.08));
+  border-color: rgba(99,102,241,0.45);
+  color: #eaf0ff;
+  box-shadow: 0 6px 18px rgba(99,102,241,0.06);
+}
+
+/* Modal */
+#pdfModal .glass-modal {
+  max-height: 96vh;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 30px 80px rgba(2,6,23,0.8);
+}
+
+/* custom scrollbar - thin and transparent */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.02);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Buttons / links */
+a.glass-pill:hover, .glass-pill:hover, .glass-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(99,102,241,0.12);
+  border-color: rgba(99,102,241,0.32);
+}
+
+/* grid card specifics */
+.card-subject {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* small meta */
+.meta { color: #aab6d6; font-size: 13px; }
+
+/* responsive tweaks */
+@media (max-width: 768px) {
+  .glass-sidebar { position: absolute; z-index: 50; left: 12px; top: 76px; width: calc(100% - 24px); }
+}
+
+/* subtle float animation */
+@keyframes floaty {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+.floaty { animation: floaty 6s ease-in-out infinite; }
+
+/* accessible focus */
+.glass-pill:focus, .glass-btn:focus, .subject-pill:focus, .category-pill:focus {
+  outline: 2px solid rgba(99,102,241,0.22);
+  outline-offset: 2px;
+  box-shadow: 0 8px 30px rgba(99,102,241,0.08);
+}
+
+/* fallback for older browsers without backdrop-filter */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .glass-sidebar, .glass-search, .glass-pill, .glass-card, .glass-modal, .glass-btn {
+    background: rgba(15,23,42,0.68);
+    border: 1px solid rgba(255,255,255,0.02);
+  }
+}
+
+/* Layout fixes: prevent action buttons from overflowing cards */
+/* Target the card's inner flex row (first child div) and allow wrapping */
+.glass-card > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* Left content column grows and can shrink properly */
+.glass-card > div > div:first-child {
+  flex: 1 1 0;
+  min-width: 0; /* allow text truncation/wrapping inside */
+}
+
+/* Right column (actions) keeps compact but wraps when needed */
+.glass-card > div > div:last-child {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  min-width: 120px;
+}
+
+/* Make the action row wrap and stack buttons neatly */
+.glass-card .flex.gap-2 {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Keep upload label compact */
+.glass-card .upload-label {
+  white-space: nowrap;
+}
+
+/* Ensure long titles wrap and don't force overflow */
+.glass-card .text-lg { word-break: break-word; }
+
+/* When space is tight (mobile), make actions full width under content */
+@media (max-width: 640px) {
+  .glass-card > div > div:last-child {
+    width: 100%;
+    align-items: flex-start;
+  }
+  .glass-card .flex.gap-2 {
+    justify-content: flex-start;
+  }
+}

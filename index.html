@@ -1,884 +1,161 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="thuật toán và mẹo trong cp .">
-    <title>Le Minh</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Olympiad Exam Archive — Liquid Glass UI</title>
 
-    <link rel="stylesheet" href="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/font-awesome.min.css">
-    <link rel="stylesheet" href="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/css">
-    <link rel="stylesheet" href="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/css(1)">
-    <link rel="stylesheet" href="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/main.css">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-        .cp-search {
-            position: relative;
-            margin: 1.5em 0 2em;
-        }
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        .cp-search-label {
-            display: block;
-            margin-bottom: .45em;
-            color: #555;
-            font-size: .9em;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="style.css" />
 
-        .cp-search input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: .75em 1em;
-            border: 2px solid #000;
-            border-radius: 5px;
-            font: inherit;
-            font-size: 1.05em;
-        }
-
-        .cp-search input:focus {
-            outline: 3px solid #ff8c00;
-        }
-
-        .search-results {
-            position: absolute;
-            z-index: 10;
-            top: 100%;
-            right: 0;
-            left: 0;
-            display: none;
-            max-height: 22em;
-            overflow-y: auto;
-            background: #fff;
-            border: 2px solid #000;
-            border-top: 0;
-            box-shadow: 4px 4px 0 #000;
-        }
-
-        .search-results.is-visible {
-            display: block;
-        }
-
-        .search-result {
-            display: block;
-            padding: .75em 1em;
-            color: #000;
-            border-bottom: 1px solid #ddd;
-            text-decoration: none;
-        }
-
-        .search-result:hover,
-        .search-result:focus {
-            background: #fffdaf;
-        }
-
-        .search-result strong {
-            display: block;
-            color: #008000;
-        }
-
-        .search-result small {
-            color: #666;
-        }
-
-        .nav-search {
-            position: relative;
-            float: right;
-            width: 24em;
-            margin: .2em .5em 0 0;
-        }
-
-        .nav-search input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: .42em .7em;
-            border: 1px solid #000;
-            border-radius: 4px;
-            font: inherit;
-        }
-
-        .nav-search .search-results {
-            top: 2.35em;
-        }
-
-        .nav-container #parnav {
-            overflow: visible;
-        }
-
-        .directory-view {
-            display: none;
-        }
-
-        .directory-view.is-active {
-            display: block;
-        }
-
-        .featured-post {
-            margin: 1.5em 0 3em;
-            padding: 1.5em 2em;
-            color: #000;
-            border: 2px solid #000;
-            border-radius: 5px;
-            box-shadow: 5px 5px 0 #000;
-            background: #fff;
-        }
-
-        .featured-post h1 {
-            margin: 0 0 .55em;
-            color: #000;
-            font-size: 2em;
-            line-height: 1.2;
-        }
-
-        .featured-meta {
-            margin: 0 0 1.5em;
-            padding-bottom: .8em;
-            color: #666;
-            border-bottom: 1px solid #aaa;
-        }
-
-        .featured-image {
-            display: block;
-            width: min(100%, 420px);
-            height: auto;
-            margin: 2em auto 1.25em;
-            border: 2px solid #000;
-            border-radius: 5px;
-        }
-
-        .featured-post h2 {
-            margin-top: 1.6em;
-            border-bottom: 2px solid #000;
-        }
-
-        .featured-post p,
-        .featured-post li {
-            line-height: 1.8;
-        }
-
-        .featured-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1em;
-            margin-top: 2em;
-            padding: .85em 1em;
-            color: #000;
-            background: #fffdaf;
-            border: 1px solid #888;
-            border-radius: 5px;
-        }
-
-        .featured-post .tip-list {
-            padding-left: 1.4em;
-        }
-
-        .reference-list {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: .75em;
-            margin: 1em 0 1.5em;
-        }
-
-        .reference-link {
-            display: block;
-            padding: .75em;
-            color: #000;
-            background: #fffdaf;
-            border: 2px solid #000;
-            border-radius: 4px;
-            text-decoration: none;
-        }
-
-        .reference-link strong {
-            display: block;
-            color: #008000;
-            margin-bottom: .25em;
-        }
-
-        .reference-link span {
-            color: #555;
-            font-size: .9em;
-        }
-
-        .reference-link:hover,
-        .reference-link:focus {
-            color: #fff;
-            background: #008000;
-        }
-
-        .reference-link:hover strong,
-        .reference-link:hover span,
-        .reference-link:focus strong,
-        .reference-link:focus span {
-            color: #fff;
-        }
-
-        .quick-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .75em;
-            margin-top: 1.5em;
-        }
-
-        .quick-link {
-            display: inline-block;
-            padding: .7em 1em;
-            color: #000;
-            background: #fffdaf;
-            border: 2px solid #000;
-            border-radius: 4px;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .quick-link:hover,
-        .quick-link:focus {
-            color: #fff;
-            background: #008000;
-        }
-
-        .module {
-            margin: 2em 0;
-        }
-
-        .module-heading {
-            display: flex;
-            align-items: baseline;
-            gap: .6em;
-            margin-bottom: .75em;
-            border-bottom: 2px solid #000;
-        }
-
-        .module-heading h2 {
-            margin: 0 0 .25em;
-        }
-
-        .module-number {
-            color: #808080;
-            font-weight: bold;
-        }
-
-        .post-list {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 1em;
-        }
-
-        .post-card {
-            display: block;
-            padding: 1em;
-            color: #000;
-            background: #fff;
-            border: 2px solid #000;
-            border-radius: 5px;
-            box-shadow: 4px 4px 0 #000;
-            text-decoration: none;
-            transition: transform .15s ease, box-shadow .15s ease;
-        }
-
-        .post-card:hover,
-        .post-card:focus {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 #000;
-        }
-
-        .post-card h3 {
-            margin: 0 0 .45em;
-            color: #008000;
-        }
-
-        .post-card-main {
-            display: block;
-            color: #000;
-            text-decoration: none;
-        }
-
-        .exercise-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .4em;
-            margin-top: .8em;
-            padding-top: .7em;
-            border-top: 1px solid #ccc;
-        }
-
-        .exercise-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: .35em;
-            padding: .3em .45em;
-            background: #fffdaf;
-            border: 1px solid #888;
-            border-radius: 4px;
-            font-size: .82em;
-        }
-
-        .exercise-route {
-            color: #000;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .exercise-route:hover {
-            text-decoration: underline;
-        }
-
-        .exercise-rating {
-            color: #555;
-            white-space: nowrap;
-        }
-
-        .exercise-original {
-            color: #008000;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .exercise-original:hover {
-            color: #ff8c00;
-        }
-
-        .post-card p {
-            margin: 0 0 .75em;
-            line-height: 1.5;
-        }
-
-        .post-tags {
-            color: #555;
-            font-size: .85em;
-        }
-
-        .post-level {
-            float: right;
-            color: #808080;
-            font-size: .85em;
-            font-weight: bold;
-        }
-
-        .editorial-list {
-            display: grid;
-            gap: 1em;
-        }
-
-        .editorial-card {
-            padding: 1em;
-            border-left: 5px solid #03a89e;
-            background: #fffdaf;
-        }
-
-        .editorial-card h3 {
-            margin: 0 0 .35em;
-        }
-
-        .editorial-card p {
-            margin: .25em 0;
-        }
-
-        .catalog-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .6em;
-            margin: 1em 0 1.5em;
-            padding: 1em;
-            background: #fffdaf;
-            border: 2px solid #000;
-        }
-
-        .catalog-filters label {
-            font-weight: bold;
-        }
-
-        .catalog-filters select {
-            min-width: 10em;
-            padding: .45em;
-            border: 1px solid #000;
-            font: inherit;
-        }
-
-        .tag-filter-apply {
-            padding: .45em .8em;
-            color: #fff;
-            background: #008000;
-            border: 1px solid #000;
-            border-radius: 4px;
-            cursor: pointer;
-            font: inherit;
-            font-weight: bold;
-        }
-
-        .tag-filter-apply:hover,
-        .tag-filter-apply:focus {
-            background: #000;
-        }
-
-        .catalog-section-title {
-            margin: 1.5em 0 .7em;
-            color: #008000;
-            border-bottom: 1px solid #888;
-        }
-
-        .problem-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .45em;
-            margin: .5em 0;
-            font-size: .85em;
-        }
-
-        .problem-badge {
-            padding: .2em .45em;
-            color: #000;
-            background: #fffdaf;
-            border: 1px solid #888;
-            border-radius: 3px;
-        }
-
-        .problem-directory {
-            margin-top: 1.5em;
-            border: 2px solid #000;
-            background: #fffdaf;
-        }
-
-        .problem-directory summary {
-            padding: .8em 1em;
-            color: #008000;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .problem-directory[open] summary {
-            border-bottom: 1px solid #888;
-        }
-
-        .problem-directory .problem-list {
-            padding: 1em;
-        }
-
-        .welcome-hero {
-            margin: 1em 0 2em;
-            padding: 2.5em 2em;
-            color: #fff;
-            background: #000;
-            border: 4px solid #000;
-            border-radius: 10px;
-            box-shadow: 7px 7px 0 #ff8c00;
-        }
-
-        .welcome-hero h1 {
-            margin: 0 0 .35em;
-            font-size: 2.35em;
-        }
-
-        .welcome-hero p {
-            max-width: 48em;
-            margin: 0 0 1.35em;
-            font-size: 1.15em;
-            line-height: 1.55;
-        }
-
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .8em;
-        }
-
-        .hero-button {
-            display: inline-block;
-            padding: .7em 1em;
-            color: #000;
-            background: #fffdaf;
-            border: 2px solid #fff;
-            border-radius: 5px;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .hero-button:hover,
-        .hero-button:focus {
-            color: #fff;
-            background: #008000;
-        }
-
-        .welcome-guide {
-            margin: 2em 0;
-        }
-
-        .welcome-guide h2 {
-            margin-bottom: .5em;
-        }
-
-        .welcome-guide > p {
-            line-height: 1.6;
-        }
-
-        .tips-list {
-            margin: 1em 0;
-            padding-left: 1.5em;
-            line-height: 1.7;
-        }
-
-        .quick-navigation {
-            margin: 2em 0 3em;
-        }
-
-        .quick-navigation h2 {
-            border-bottom: 2px solid #000;
-        }
-
-        .quick-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 1em;
-        }
-
-        .quick-card {
-            display: block;
-            min-height: 5em;
-            padding: 1em;
-            color: #000;
-            background: #fff;
-            border: 2px solid #000;
-            border-radius: 5px;
-            box-shadow: 4px 4px 0 #000;
-            text-decoration: none;
-        }
-
-        .quick-card:hover,
-        .quick-card:focus {
-            background: #fffdaf;
-            transform: translate(-2px, -2px);
-        }
-
-        .quick-card strong {
-            display: block;
-            margin-bottom: .4em;
-            color: #008000;
-            font-size: 1.05em;
-        }
-
-        .quick-card span {
-            line-height: 1.45;
-        }
-
-        .empty-message {
-            padding: 1em;
-            border: 1px dashed #808080;
-        }
-
-        @media (max-width: 1050px) {
-            .container {
-                width: 100%;
-                min-width: 0;
-            }
-
-            .site-header-container {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 650px) {
-            .post-list {
-                grid-template-columns: 1fr;
-            }
-
-            .quick-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .module-heading {
-                display: block;
-            }
-
-            #parnav {
-                height: auto;
-            }
-
-            #parnav li#navleft {
-                float: none;
-                display: inline-block;
-            }
-
-            .welcome-hero {
-                padding: 1.5em 1em;
-            }
-
-            .welcome-hero h1 {
-                font-size: 1.8em;
-            }
-
-            .nav-search {
-                float: none;
-                width: auto;
-                margin: .4em;
-            }
-
-            .featured-footer {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-        }
-    </style>
+  <meta name="description" content="Tuyển tập đề thi Olympiad - Math, Informatics, Physics. Giao diện Liquid Glass / Modern Dark Mode." />
 </head>
+<body class="bg-[#0f172a] text-slate-100 antialiased">
 
-<body>
+  <!-- Sticky glass header -->
+  <header class="sticky top-0 z-40 p-4">
+    <div class="container mx-auto flex items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <button id="sidebarToggle" class="md:hidden p-2 glass-btn" aria-label="Toggle sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
 
-    <header class="site-header-container">
-        <div></div>
-    </header>
-
-    <div class="container">
-
-        <div id="header" class="site-header">
-
-            <div class="logo-container">
-                <a href="index.html" aria-label="Le Minh trang chủ">
-                    <h1 class="logo-text">Le Minh</h1>
-                </a>
+        <div class="flex items-center gap-3">
+          <div class="logo glass-pill flex items-center gap-3 px-3 py-2">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-400 flex items-center justify-center shadow-md">
+              <i class="fa-solid fa-flask text-white"></i>
             </div>
-
-            <div id="user-info">
-                <div class="auth-links">
-                    Ghi chú thực chiến, thuật toán C++ và chia sẻ kinh nghiệm Competitive Programming.
-                </div>
+            <div>
+              <div class="text-sm font-semibold">Olympiad Archive</div>
+              <div class="text-xs text-slate-300">Math • Informatics • Physics</div>
             </div>
-
+          </div>
         </div>
+      </div>
 
-        <div class="nav-container">
-
-            <ul id="parnav">
-
-                <li id="navleft">
-                    <a class="nava aleft" href="index.html">TRANG CHỦ</a>
-                </li>
-
-                <li id="navleft">
-                    <a class="nava aleft" href="index.html#modules">MODULES THUẬT TOÁN</a>
-                </li>
-
-                <li id="navleft">
-                    <a class="nava aleft" href="index.html#editorial">EDITORIALS &amp; LỜI GIẢI</a>
-                </li>
-
-                <li class="nav-search cp-search" aria-label="Tìm kiếm bài viết">
-
-                    <input
-                        id="post-search"
-                        type="search"
-                        placeholder="Search: segment tree, freopen, dp..."
-                        autocomplete="off"
-                    >
-
-                    <div
-                        id="search-results"
-                        class="search-results"
-                        role="listbox"
-                        aria-label="Gợi ý bài viết"
-                    ></div>
-
-                </li>
-
-            </ul>
-
-            <main class="content-container">
-
-                <article id="home-post" class="featured-post" aria-labelledby="featured-title">
-
-                    <h1 id="featured-title">
-                        Chào mừng đến với web chia sẻ kinh nghiệm lập trình thi đấu
-                    </h1>
-
-                    <p class="featured-meta">
-                        Đăng bởi: Le Minh NDuc (ldber 29') |
-                        Chuyên mục: Announcement &amp; Guide |
-                        <time datetime="2025-02-05">Đăng ngày: 05/02/2025</time>
-                    </p>
-
-                    <p>
-                        Chào mừng bạn đến với nơi mình lưu trữ kinh nghiệm thi đấu,
-                        các dạng bài Competitive Programming đã cày và những khung
-                        code C++ tối ưu để dùng trong contest.
-                    </p>
-
-                    <h2>Hướng dẫn sử dụng web</h2>
-
-                    <ol class="tip-list">
-
-                        <li>
-                            <strong>Mẹo 1 - Search:</strong>
-                            Gõ từ khóa vào thanh tìm kiếm trên navigation bar để tìm
-                            nhanh thuật toán, ví dụ
-                            <code>segment tree</code>,
-                            <code>freopen</code>,
-                            <code>dp</code>.
-                        </li>
-
-                        <li>
-                            <strong>Mẹo 2 - Modules:</strong>
-                            Học theo lộ trình từ Module -1
-                            (C++ Basics, operators, ASCII, <code>freopen</code>)
-                            đến Module 3 (Dynamic Programming, Graph Theory).
-                        </li>
-
-                        <li>
-                            <strong>Mẹo 3 - Editorials:</strong>
-                            Xem lời giải chi tiết gồm đề bài, input/output,
-                            chạy tay từng test và code C++.
-                        </li>
-
-                    </ol>
-
-                    <h2>Nguồn tài liệu tham khảo</h2>
-
-                    <p>
-                        Ngoài các ghi chú trên blog, bạn có thể tham khảo thêm
-                        các nguồn học Competitive Programming uy tín:
-                    </p>
-
-                    <div class="reference-list">
-
-                        <a
-                            class="reference-link"
-                            href="https://marisaoj.com/"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            <strong>MarisaOJ</strong>
-                            <span>Lộ trình và bài tập lập trình thi đấu.</span>
-                        </a>
-
-                        <a
-                            class="reference-link"
-                            href="https://wiki.vnoi.info/"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            <strong>VNOI Wiki</strong>
-                            <span>Tài liệu thuật toán và CP bằng tiếng Việt.</span>
-                        </a>
-
-                        <a
-                            class="reference-link"
-                            href="https://cses.fi/problemset/"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            <strong>CSES Problem Set</strong>
-                            <span>Bộ bài tập nền tảng theo chủ đề.</span>
-                        </a>
-
-                        <a
-                            class="reference-link"
-                            href="https://cp-algorithms.com/"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            <strong>CP-Algorithms</strong>
-                            <span>Tài liệu thuật toán chuyên sâu bằng tiếng Anh.</span>
-                        </a>
-
-                    </div>
-
-                    <h2>Lộ trình nhanh</h2>
-
-                    <div class="quick-links">
-
-                        <a class="quick-link" href="index.html#modules">
-                            Khám Phá Modules
-                        </a>
-
-                        <a class="quick-link" href="index.html#editorial">
-                            Xem Editorials
-                        </a>
-
-                    </div>
-
-                    <!-- ẢNH CIRNO ĐÃ ĐƯỢC CHUYỂN XUỐNG DƯỚI NỘI DUNG -->
-                    <img
-                        class="featured-image"
-                        src="./Lộ trình - MarisaOJ_ Marisa Online Judge_files/cirno.png"
-                        alt="Cirno minh họa cho CP Note"
-                    >
-
-                    <footer class="featured-footer">
-
-                        <span>👤 Le Minh</span>
-
-                        <span>
-                            🕒 Đăng vào 00:00 Ngày 5 tháng 2 năm 2025
-                        </span>
-
-                    </footer>
-
-                </article>
-
-                <section
-                    id="modules"
-                    class="directory-view"
-                    aria-label="Các module bài viết"
-                >
-
-                    <div
-                        class="catalog-filters"
-                        aria-label="Bộ lọc bài tập"
-                    >
-
-                        <label for="tag-filter">
-                            Lọc theo Tag
-                        </label>
-
-                        <select id="tag-filter">
-                            <option value="">Tất cả tag</option>
-                        </select>
-
-                        <button
-                            id="tag-filter-apply"
-                            class="tag-filter-apply"
-                            type="button"
-                        >
-                            Áp dụng
-                        </button>
-
-                    </div>
-
-                    <div id="module-list"></div>
-
-                </section>
-
-                <section
-                    id="editorial"
-                    class="directory-view module"
-                    aria-label="Editorial và lời giải"
-                >
-
-                    <div class="module-heading">
-
-                        <span class="module-number">
-                            SPECIAL
-                        </span>
-
-                        <h2>
-                            Editorial / Lời giải
-                        </h2>
-
-                    </div>
-
-                    <div
-                        id="editorial-list"
-                        class="editorial-list"
-                    ></div>
-
-                </section>
-
-            </main>
-
+      <div class="flex-1 px-4">
+        <div class="glass-search mx-auto max-w-3xl flex items-center gap-3 px-3 py-2">
+          <i class="fa-solid fa-magnifying-glass text-slate-300"></i>
+          <input id="searchInput" type="search" placeholder="Tìm theo tiêu đề, năm, hoặc từ khóa..." class="bg-transparent outline-none w-full text-sm" aria-label="Tìm kiếm đề thi" />
+          <button id="clearSearch" class="text-slate-400 hover:text-white text-sm hidden"><i class="fa-solid fa-xmark"></i></button>
         </div>
+      </div>
 
+      <div class="hidden md:flex items-center gap-3">
+        <a href="#" class="glass-pill px-3 py-2 text-sm">Upload (coming)</a>
+        <a href="#" class="glass-pill px-3 py-2 text-sm"><i class="fa-regular fa-circle-user mr-2"></i>Account</a>
+      </div>
     </div>
+  </header>
 
-    <script src="js/data.js"></script>
-    <script src="js/app.js"></script>
+  <!-- Main layout -->
+  <main class="container mx-auto p-4">
+    <div class="flex gap-6">
+      <!-- Sidebar -->
+      <aside id="sidebar" class="w-72 shrink-0 glass-sidebar p-4 hidden md:block">
+        <h3 class="text-sm font-semibold mb-3">Bộ lọc</h3>
 
+        <!-- Subject -->
+        <div class="mb-4">
+          <div class="text-xs text-slate-300 mb-2">Môn</div>
+          <div id="subjectFilters" class="flex flex-col gap-2">
+            <button class="subject-pill glass-pill active" data-subject="">Tất cả</button>
+            <button class="subject-pill glass-pill" data-subject="Math">Math</button>
+            <button class="subject-pill glass-pill" data-subject="Informatics">Informatics</button>
+            <button class="subject-pill glass-pill" data-subject="Physics">Physics</button>
+          </div>
+        </div>
+
+        <!-- Categories (dynamic) -->
+        <div class="mb-4">
+          <div class="text-xs text-slate-300 mb-2">Giải / Kỳ thi</div>
+          <div id="categoryFilters" class="flex flex-wrap gap-2">
+            <!-- pills rendered by JS -->
+          </div>
+        </div>
+
+        <div class="mt-6 flex gap-2">
+          <button id="clearFilters" class="glass-btn px-3 py-2 w-full">Xóa bộ lọc</button>
+        </div>
+
+        <div class="mt-6 text-xs text-slate-400">
+          Giao diện: Liquid Glass / Modern Dark Mode — Responsive
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <section class="flex-1">
+        <!-- summary / controls -->
+        <div class="mb-4 flex items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-semibold">Danh sách đề thi</h2>
+            <div id="resultsSummary" class="text-sm text-slate-400 mt-1">Đang tải dữ liệu...</div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <label class="text-sm text-slate-300 mr-2">Sắp xếp:</label>
+            <select id="sortSelect" class="glass-pill px-3 py-2 text-sm">
+              <option value="yearDesc">Năm giảm dần</option>
+              <option value="yearAsc">Năm tăng dần</option>
+              <option value="titleAsc">Tiêu đề A→Z</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- grid -->
+        <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- cards rendered by JS -->
+        </div>
+
+        <!-- empty state -->
+        <div id="emptyState" class="hidden mt-8 text-center text-slate-400">
+          <i class="fa-regular fa-folder-open text-4xl mb-3"></i>
+          <div class="text-lg">Không tìm thấy đề thi phù hợp.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- PDF Modal -->
+  <div id="pdfModal" class="fixed inset-0 z-50 hidden items-center justify-center">
+    <div class="absolute inset-0 backdrop-blur-xl bg-black/60" data-close="true"></div>
+    <div class="relative w-[92%] h-[90%] max-w-6xl glass-modal p-4">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-3">
+          <i class="fa-solid fa-file-pdf text-2xl text-red-400"></i>
+          <div>
+            <div id="modalTitle" class="font-semibold"></div>
+            <div id="modalMeta" class="text-sm text-slate-300"></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <a id="downloadPdf" class="glass-pill px-3 py-2 text-sm" download><i class="fa-solid fa-download mr-2"></i>Tải</a>
+          <button id="closeModal" class="glass-btn px-3 py-2" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <div class="h-[calc(100%-72px)] bg-black/60 rounded overflow-hidden flex">
+        <div id="modalFileList" class="w-64 bg-black/30 p-3 overflow-auto border-r border-white/5">
+          <!-- file items injected by JS -->
+        </div>
+        <div class="flex-1 bg-black/60">
+          <iframe id="pdfFrame" src="" class="w-full h-full border-0" title="PDF Viewer"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center text-slate-500 text-xs py-6">
+    © <span id="yearNow"></span> Olympiad Archive — Liquid Glass UI
+  </footer>
+
+  <!-- App script -->
+  <script src="app.js" type="module"></script>
 </body>
 </html>

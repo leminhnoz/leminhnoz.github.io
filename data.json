@@ -1,0 +1,113 @@
+﻿[
+    {
+        "id":  "m-imo-2022",
+        "title": "IMO 2022 — Shortlisted Problems",
+        "subject":  "Math",
+        "category":  "IMO",
+        "year":  2022,
+        "file":  "pdfs/imo_2022_shortlisted.pdf"
+    },
+    {
+        "id":  "m-vmo-2021",
+        "title": "VMO 2021 — National Selection Paper",
+        "subject":  "Math",
+        "category":  "VMO",
+        "year":  2021,
+        "file":  "pdfs/vmo_2021_selection.pdf"
+    },
+    {
+        "id": "i-ioi-2023",
+        "title": "IOI 2023 — Day 1 & Day 2",
+        "subject": "Informatics",
+        "category": "IOI",
+        "year": 2023,
+        "files": [
+            { "label": "Day 1", "file": "pdfs/ioi_2023_day1.pdf" },
+            { "label": "Day 2", "file": "pdfs/ioi_2023_day2.pdf" }
+        ]
+    },
+    {
+        "id":  "i-voi-2019",
+        "title": "VOI 2019 — Problems and Solutions",
+        "subject":  "Informatics",
+        "category":  "VOI",
+        "year":  2019,
+        "file":  "pdfs/voi_2019_problems.pdf"
+    },
+    {
+        "id": "i-apio-2020",
+        "title": "APIO 2020 — Contest Booklet",
+        "subject": "Informatics",
+        "category": "APIO",
+        "year": 2020,
+        "file": "pdfs/apio_2020_contest.pdf"
+    },
+    {
+        "id":  "p-ipho-2018",
+        "title":  "IPhO 2018 â€” Theoretical Exam",
+        "subject":  "Physics",
+        "category":  "IPhO",
+        "year":  2018,
+        "file":  "pdfs/ipho_2018_theory.pdf"
+    },
+    {
+        "id":  "p-vpho-2022",
+        "title":  "VPhO 2022 â€” National Round",
+        "subject":  "Physics",
+        "category":  "VPhO",
+        "year":  2022,
+        "file":  "pdfs/vpho_2022_national.pdf"
+    },
+    {
+        "id":  "m-imo-2019",
+        "title":  "IMO 2019 â€” Problems \u0026 Solutions",
+        "subject":  "Math",
+        "category":  "IMO",
+        "year":  2019,
+        "file":  "pdfs/imo_2019_full.pdf"
+    },
+    {
+        "id": "i-ioi-2017",
+        "title": "IOI 2017 — Official Problems",
+        "subject": "Informatics",
+        "category": "IOI",
+        "year": 2017,
+        "files": [
+            { "label": "Day 1", "file": "pdfs/ioi_2017_day1.pdf" },
+            { "label": "Day 2", "file": "pdfs/ioi_2017_day2.pdf" }
+        ]
+    },
+
+    {
+        "id":  "p-ipho-2021",
+        "title":  "IPhO 2021 â€” Experimental \u0026 Theoretical",
+        "subject":  "Physics",
+        "category":  "IPhO",
+        "year":  2021,
+        "file":  "pdfs/ipho_2021_full.pdf"
+    },
+    {
+        "id":  "m-vmo-2018",
+        "title":  "VMO 2018 â€” Practice Set",
+        "subject":  "Math",
+        "category":  "VMO",
+        "year":  2018,
+        "file":  "pdfs/vmo_2018_practice.pdf"
+    },
+    {
+        "id":  "i-voi-2022",
+        "title":  "VOI 2022 â€” Advanced Problems",
+        "subject":  "Informatics",
+        "category":  "VOI",
+        "year":  2022,
+        "file":  "pdfs/voi_2022_advanced.pdf"
+    },
+    {
+        "id":  "m-vmo-2024",
+        "title":  "VMO 2024 — Competition Paper (Added)",
+        "subject":  "Math",
+        "category":  "VMO",
+        "year":  2024,
+        "file":  "pdfs/VMO2024.pdf"
+    }
+]
