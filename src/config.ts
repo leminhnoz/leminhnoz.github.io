@@ -22,18 +22,12 @@ export default {
     { name: "problems", url: "/problems" },
   ],
 
-  banner: "/images/banner.webp", // which means themes/reimu/source/images/banner.webp
-  // You can also write it in the form of the following url
-  // banner: "https://example.com"
+  banner: "/images/banner.png",
 
   // If you want to use the srcset attribute, please enable it
   banner_srcset: {
-    enable: true,
-    srcset: [
-      { src: "/images/banner-600w.webp", media: "(max-width: 479px)" },
-      { src: "/images/banner-800w.webp", media: "(max-width: 799px)" },
-      { src: "/images/banner.webp", media: "(min-width: 800px)" },
-    ],
+    enable: false,
+    srcset: [],
   },
 
   footer: {
