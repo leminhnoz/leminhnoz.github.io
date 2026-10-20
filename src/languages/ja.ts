@@ -25,6 +25,7 @@ export default {
   about: "プロフィール",
   friend: "フレンド",
   archives: "アーカイブ",
+  problems: "問題",
 
   sidebar: {
     post: "投稿",

@@ -25,6 +25,7 @@ export default {
   about: "關於",
   friend: "友鏈",
   archives: "歸檔",
+  problems: "題單",
 
   sidebar: {
     post: "文章",
