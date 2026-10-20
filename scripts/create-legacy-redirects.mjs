@@ -65,20 +65,28 @@ async function writeRedirect(target, destination, title) {
 const files = (await readdir(postsDir)).filter((file) => /\.(?:md|mdx)$/.test(file));
 
 for (const file of files) {
+  const raw = await readFile(path.join(postsDir, file), "utf8");
+  const postId = file.replace(/\.(?:md|mdx)$/, "");
   const match = file.match(filePattern);
 
-  if (!match) {
-    throw new Error(`Post filename must match YYYY-MM-DD-slug.md: ${file}`);
+  let year, month, day, slug;
+  if (match) {
+    [, year, month, day, slug] = match;
+  } else {
+    slug = postId;
+    const pubDateMatch = raw.match(/^pubDate:\s*["']?(\d{4})-(\d{2})-(\d{2})/m);
+    if (pubDateMatch) {
+      [, year, month, day] = pubDateMatch;
+    }
   }
 
-  const [, year, month, day, slug] = match;
-  const postId = file.replace(/\.(?:md|mdx)$/, "");
-  const raw = await readFile(path.join(postsDir, file), "utf8");
   const title = frontmatterTitle(raw)
     || raw.match(headingPattern)?.[1]?.trim()
     || slug.replace(/-/g, " ");
   const destination = `/blog/${postId.toLowerCase()}/`;
 
   await writeRedirect(path.join(distDir, "posts", postId, "index.html"), destination, title);
-  await writeRedirect(path.join(distDir, year, month, day, `${slug}.html`), destination, title);
+  if (year && month && day) {
+    await writeRedirect(path.join(distDir, year, month, day, `${slug}.html`), destination, title);
+  }
 }

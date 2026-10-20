@@ -9,7 +9,7 @@ export default {
   },
 
   sidebar: {
-    avatar: "/images/avatar.webp",
+    avatar: "/images/avatar.png",
     position: "right", // left or right
   },
 
