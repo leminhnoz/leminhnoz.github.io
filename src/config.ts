@@ -1,10 +1,10 @@
 export default {
   site: {
-    title: "DeMen100ns's Blog",
+    title: "clearluv4ever_'s Blog",
     subtitle: "ICPC stories, university notes, and personal writing.",
-    description: "Competitive programming, university notes, and personal writing by DeMen100ns.",
-    keywords: "DeMen100ns, blog, ICPC, competitive programming, NUS",
-    author: "DeMen100ns",
+    description: "Competitive programming, university notes, and personal writing by clearluv4ever_.",
+    keywords: "clearluv4ever_, blog, ICPC, competitive programming, NUS",
+    author: "clearluv4ever_",
     language: "en",
   },
 
@@ -57,7 +57,7 @@ export default {
   },
 
   social: {
-    github: "https://github.com/DeMen100ns",
+    github: "https://github.com/leminhnoz",
   },
 
   // https://valine.js.org
@@ -217,7 +217,7 @@ export default {
   triangle_badge: {
     enable: false,
     type: "github",
-    link: "https://github.com/DeMen100ns/demen100ns.github.io",
+    link: "https://github.com/leminhnoz/leminhnoz.github.io",
   },
   // whether to display the notification when the article is outdated
   outdate: {

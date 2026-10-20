@@ -68,7 +68,7 @@ function getFontPlugin() {
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://demen100ns.github.io',
+  site: 'https://leminhnoz.github.io',
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex, rehypeLazyLoadImage],

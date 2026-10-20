@@ -1,6 +1,6 @@
-# DeMen100ns Blog
+# clearluv4ever_ Blog
 
-Personal static blog for <https://demen100ns.github.io>, ported to [D-Sketon/astro-theme-reimu](https://github.com/D-Sketon/astro-theme-reimu).
+Personal static blog for <https://leminhnoz.github.io>, ported to [D-Sketon/astro-theme-reimu](https://github.com/D-Sketon/astro-theme-reimu).
 
 ## Development
 
