@@ -9,9 +9,62 @@ import react from "@astrojs/react";
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import Font from 'vite-plugin-font';
+import fs from 'node:fs';
+import path from 'node:path';
+import { createRequire } from 'node:module';
 
 import mermaid from './src/plugins/mermaid.mjs';
 import rehypeLazyLoadImage from './src/plugins/lazyLoadImage.mjs';
+
+const require = createRequire(import.meta.url);
+
+function getFontPlugin() {
+  try {
+    const cnPkg = require.resolve('cn-font-split/package.json');
+    const distDir = path.join(path.dirname(cnPkg), 'dist');
+    const platform = process.platform;
+    const arch = process.arch;
+
+    let binName = '';
+    if (platform === 'linux') {
+      binName = arch === 'arm64' ? 'libffi-aarch64-unknown-linux-gnu.so' : 'libffi-x86_64-unknown-linux-gnu.so';
+    } else if (platform === 'win32') {
+      binName = arch === 'arm64' ? 'libffi-aarch64-pc-windows-msvc.dll' : 'libffi-x86_64-pc-windows-msvc.dll';
+    } else if (platform === 'darwin') {
+      binName = arch === 'arm64' ? 'libffi-aarch64-apple-darwin.dylib' : 'libffi-x86_64-apple-darwin.dylib';
+    }
+
+    const binPath = binName ? path.join(distDir, binName) : '';
+    const hasBinary =
+      (binPath && fs.existsSync(binPath) && fs.statSync(binPath).size > 0) ||
+      Boolean(process.env.CN_FONT_SPLIT_BIN);
+
+    if (hasBinary) {
+      return Font.vite({
+        scanFiles: ['src/**/*.{ts,tsx,js,jsx,md,mdx,astro,yml}']
+      });
+    }
+
+    console.warn(`[vite-plugin-font] Native binary (${binName || platform}) not found. Enabling fallback font plugin.`);
+  } catch (err) {
+    console.warn(`[vite-plugin-font] Error detecting native binary: ${err.message}. Enabling fallback font plugin.`);
+  }
+
+  return {
+    name: 'vite-plugin-font-fallback',
+    enforce: 'pre',
+    resolveId(id) {
+      if (/\.(ttf|otf|woff2?)(\?.*)?$/.test(id)) {
+        return id;
+      }
+    },
+    load(id) {
+      if (/\.(ttf|otf|woff2?)(\?.*)?$/.test(id)) {
+        return `export const css = { family: "LXGW WenKai Screen" }; export default css;`;
+      }
+    }
+  };
+}
 
 // https://astro.build/config
 export default defineConfig({
@@ -40,9 +93,7 @@ export default defineConfig({
   }), mdx(), sitemap(), icon(), react()],
   vite: {
     plugins: [
-     Font.vite({
-        scanFiles: ['src/**/*.{ts,tsx,js,jsx,md,mdx,astro,yml}']
-      }),
+      getFontPlugin(),
     ]
   }
 });

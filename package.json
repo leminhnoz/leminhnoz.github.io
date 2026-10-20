@@ -5,11 +5,13 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "start": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "postinstall": "node scripts/ensure-font-split-binary.mjs",
+    "prebuild": "node scripts/ensure-font-split-binary.mjs",
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
     "postbuild": "node scripts/create-legacy-redirects.mjs",
-    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix"
