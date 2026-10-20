@@ -1,0 +1,476 @@
+---
+import { FOOTER, FIREWORK } from "../utils/config";
+import packageData from "../../package.json";
+const firework = FIREWORK;
+
+const copyright = String.raw`
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`
+---
+
+<!-- busuanzi -->
+{
+  FOOTER.busuanzi && 
+  <script>
+  document.addEventListener('astro:page-load', () => {
+    window.loadScript("https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js", "busuanzi-script");
+  })
+</script>
+}
+
+<!-- aos -->
+<script>
+  import AOS from "@reimujs/aos";
+  const aosInit = () => {
+    AOS.init({
+      duration: 1000,
+      easing: "ease",
+      once: true,
+      offset: 50,
+    });
+  };
+  aosInit();
+  document.addEventListener("astro:after-swap", aosInit);
+</script>
+<!-- ThemeToogle -->
+<script>
+  // prevent flash when using view transitions in astro
+  const initColorMode = () => {
+    const storedTheme = JSON.parse(
+      window.localStorage.getItem("theme") ?? '"auto"'
+    );
+    let presetTheme;
+    if (storedTheme === "auto") {
+      presetTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    } else {
+      presetTheme = storedTheme;
+    }
+    if (presetTheme === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.style.colorScheme = "dark";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      document.documentElement.style.colorScheme = "light";
+    }
+  };
+
+  // Runs on initial navigation
+  initColorMode();
+  // Runs on view transitions navigation
+  document.addEventListener("astro:after-swap", initColorMode);
+</script>
+<!-- Firework -->
+{firework && firework.enable && (
+  <>
+    <script>
+      function initFirework() {
+        const config = window.__FIREWORK_CONFIG__;
+        
+        if (config && config.enable) {
+          if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            return;
+          }
+          if (config.disable_on_mobile && ('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
+            return;
+          }
+          
+          import('mouse-firework').then((mod) => {
+            const fire = mod.default;
+            fire(config.options as Parameters<typeof fire>[0]);
+          }).catch((e) => {
+            console.warn('Failed to load mouse-firework', e);
+          });
+        }
+      }
+      
+      initFirework();
+      
+      document.addEventListener('astro:page-load', () => {
+        initFirework();
+      });
+    </script>
+    <script is:inline define:vars={{ firework }}>
+      window.__FIREWORK_CONFIG__ = firework;
+    </script>
+  </>
+)}
+<!-- Guitar click sound -->
+<script>
+  type GuitarSoundWindow = typeof window & {
+    __guitarSoundBound?: boolean;
+    __guitarAudioContext?: AudioContext;
+    __guitarMelodyIndex?: number;
+    webkitAudioContext?: typeof AudioContext;
+  };
+
+  const guitarWindow = window as GuitarSoundWindow;
+  const noteIndexes: Record<string, number> = {
+    C: 0,
+    Cs: 1,
+    D: 2,
+    Ds: 3,
+    E: 4,
+    F: 5,
+    Fs: 6,
+    G: 7,
+    Gs: 8,
+    A: 9,
+    As: 10,
+    B: 11,
+  };
+
+  const noteToFrequency = (note: string) => {
+    const match = /^([A-G]s?)(\d)$/.exec(note);
+    if (!match) return 440;
+
+    const [, pitch, octave] = match;
+    const noteIndex = noteIndexes[pitch];
+    if (noteIndex == null) return 440;
+
+    const midiNote = (Number(octave) + 1) * 12 + noteIndex;
+    return 440 * Math.pow(2, (midiNote - 69) / 12);
+  };
+
+  const repeatNotes = (notes: string[], times: number) => {
+    const repeatedNotes: string[] = [];
+    for (let index = 0; index < times; index += 1) {
+      repeatedNotes.push(...notes);
+    }
+    return repeatedNotes;
+  };
+
+  const introRiff = [
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "D5",
+    "C5",
+    "A4",
+    "G4",
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+  ];
+
+  const verseA = [
+    "A4",
+    "B4",
+    "C5",
+    "A4",
+    "A4",
+    "G4",
+    "E4",
+    "G4",
+    "A4",
+    "B4",
+    "C5",
+    "A4",
+    "C5",
+    "D5",
+    "C5",
+    "B4",
+    "A4",
+    "B4",
+    "C5",
+    "A4",
+    "A4",
+    "G4",
+    "E4",
+    "G4",
+    "A4",
+    "C5",
+    "D5",
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+    "G4",
+  ];
+
+  const verseB = [
+    "E4",
+    "G4",
+    "A4",
+    "A4",
+    "C5",
+    "B4",
+    "A4",
+    "G4",
+    "E4",
+    "G4",
+    "A4",
+    "C5",
+    "D5",
+    "C5",
+    "B4",
+    "A4",
+    "G4",
+    "A4",
+    "C5",
+    "D5",
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "D5",
+    "C5",
+    "A4",
+    "G4",
+  ];
+
+  const preChorus = [
+    "C5",
+    "C5",
+    "D5",
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+    "G4",
+    "A4",
+    "C5",
+    "D5",
+    "E5",
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+    "C5",
+    "D5",
+    "E5",
+    "G5",
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+    "G4",
+    "A4",
+    "C5",
+    "D5",
+    "C5",
+    "B4",
+    "A4",
+    "G4",
+  ];
+
+  const chorusHook = [
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "E5",
+    "E5",
+    "D5",
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "D5",
+    "D5",
+    "C5",
+    "B4",
+    "A4",
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "C5",
+    "D5",
+    "B4",
+    "A4",
+    "G4",
+    "D5",
+    "C5",
+  ];
+
+  const chorusAnswer = [
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "E5",
+    "E5",
+    "D5",
+    "C5",
+    "D5",
+    "E5",
+    "G5",
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+    "G4",
+    "A4",
+    "C5",
+    "D5",
+    "C5",
+    "B4",
+    "A4",
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "G4",
+  ];
+
+  const turnaround = [
+    "D5",
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "G4",
+    "E4",
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "G4",
+  ];
+
+  const bridge = [
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+    "C5",
+    "D5",
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+    "G4",
+    "A4",
+    "C5",
+    "A4",
+    "G4",
+    "E4",
+    "G4",
+    "A4",
+    "C5",
+    "D5",
+    "E5",
+    "G5",
+    "E5",
+    "D5",
+    "C5",
+    "D5",
+    "E5",
+    "D5",
+    "C5",
+    "A4",
+    "G4",
+    "A4",
+  ];
+
+  const guitarMelody = [
+    ...repeatNotes(introRiff, 2),
+    ...verseA,
+    ...verseB,
+    ...preChorus,
+    ...chorusHook,
+    ...chorusAnswer,
+    ...turnaround,
+    ...verseA,
+    ...verseB,
+    ...preChorus,
+    ...chorusHook,
+    ...chorusAnswer,
+    ...bridge,
+    ...repeatNotes(chorusHook, 2),
+    ...chorusAnswer,
+    ...repeatNotes(turnaround, 2),
+  ].map(noteToFrequency);
+
+  const getGuitarAudioContext = () => {
+    const AudioContextCtor =
+      window.AudioContext || guitarWindow.webkitAudioContext;
+    if (!AudioContextCtor) return null;
+
+    if (!guitarWindow.__guitarAudioContext) {
+      guitarWindow.__guitarAudioContext = new AudioContextCtor();
+    }
+
+    return guitarWindow.__guitarAudioContext;
+  };
+
+  const playGuitarClick = () => {
+    const audioContext = getGuitarAudioContext();
+    if (!audioContext) return;
+
+    void audioContext.resume();
+
+    const melodyIndex = guitarWindow.__guitarMelodyIndex ?? 0;
+    const frequency = guitarMelody[melodyIndex % guitarMelody.length];
+    guitarWindow.__guitarMelodyIndex = melodyIndex + 1;
+
+    const now = audioContext.currentTime;
+    const output = audioContext.createGain();
+    output.gain.setValueAtTime(0.0001, now);
+    output.gain.exponentialRampToValueAtTime(0.22, now + 0.01);
+    output.gain.exponentialRampToValueAtTime(0.0001, now + 0.34);
+    output.connect(audioContext.destination);
+
+    const filter = audioContext.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(Math.min(frequency * 7, 4200), now);
+    filter.frequency.exponentialRampToValueAtTime(frequency * 2.3, now + 0.26);
+    filter.connect(output);
+
+    [1, 2].forEach((multiplier, index) => {
+      const oscillator = audioContext.createOscillator();
+      const noteGain = audioContext.createGain();
+      oscillator.type = index === 0 ? "triangle" : "sine";
+      oscillator.frequency.setValueAtTime(frequency * multiplier, now);
+      oscillator.frequency.exponentialRampToValueAtTime(
+        frequency * multiplier * 0.985,
+        now + 0.18,
+      );
+      noteGain.gain.setValueAtTime(index === 0 ? 0.9 : 0.18, now);
+      oscillator.connect(noteGain);
+      noteGain.connect(filter);
+      oscillator.start(now);
+      oscillator.stop(now + 0.36);
+    });
+  };
+
+  if (!guitarWindow.__guitarSoundBound) {
+    guitarWindow.__guitarSoundBound = true;
+    document.addEventListener(
+      "click",
+      (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        if (!target.closest("[data-guitar-sound]")) return;
+        playGuitarClick();
+      },
+      { capture: true },
+    );
+  }
+</script>
+<!-- Copyright -->
+<script is:inline define:vars={{ copyright, version: packageData.version }}>
+  console.log(String.raw`%c ${copyright}`,'color: #4A9FD8;')
+  console.log('%c Theme.Reimu v' + `${version}` + ' %c https://github.com/D-Sketon/astro-theme-reimu ', 'color: white; background: #4A9FD8; padding:5px 0;', 'padding:4px;border:1px solid #4A9FD8;')
+</script>

@@ -1,0 +1,42 @@
+.sidebar-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background-color: var(--color-wrap);
+  border-radius: 50%;
+  font-family: font-icon;
+  box-shadow: 1px 2px 10px rgba(0, 0, 0, .2);
+  z-index: 999;
+  user-select: none;
+  transition: opacity 1s;
+  cursor: pointer;
+
+  img {
+    transition: .3s;
+    opacity: 1;
+    border-radius: 50%;
+  }
+
+  .arrow-up {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    transition: .3s;
+    opacity: 0;
+    width: 30px;
+    height: 30px;
+    color: var(--red-1);
+    text-align: center;
+  }
+
+  &:hover {
+    img {
+      opacity: 0;
+    }
+    .arrow-up {
+      opacity: 1;
+    }
+  }
+}

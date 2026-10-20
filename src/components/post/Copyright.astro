@@ -1,0 +1,117 @@
+---
+import type { CollectionEntry } from "astro:content";
+import dayjs from "dayjs";
+import { Icon } from "astro-icon/components";
+
+import { COPYRIGHT, SITE } from "../../utils/config";
+import { urlFor } from "../../utils/urlFor";
+import { __ } from "../../utils/i18n";
+
+const { content, enable } = COPYRIGHT;
+const { author, link, title, date, updated, license, license_type } = content;
+
+type Props = {
+  frontmatter: CollectionEntry<"blog">["data"];
+  url: string;
+};
+
+const { frontmatter, url } = Astro.props;
+---
+
+{
+  (enable && frontmatter.copyright !== false || frontmatter.copyright) && (
+    <blockquote class="article-copyright">
+      {author && (
+        <p>
+          <strong>{__("article_copyright.author")}</strong>
+          {frontmatter.author || SITE.author} @ {SITE.title}
+        </p>
+      )}
+      {link && (
+        <p>
+          <strong>{__("article_copyright.permalink")}</strong>
+          <a href={urlFor(`${url}/`, true)}>{urlFor(`${url}/`, true)}</a>
+        </p>
+      )}
+      {title && (
+        <p>
+          <strong>{__("article_copyright.title")}</strong>
+          {frontmatter.title}
+        </p>
+      )}
+      {date && (
+        <p>
+          <strong>{__("article_copyright.date")}</strong>
+          {dayjs(frontmatter.pubDate).format("YYYY-MM-DD HH:mm:ss")}
+        </p>
+      )}
+      {updated && (
+        <p>
+          <strong>{__("article_copyright.updated")}</strong>
+          {dayjs(frontmatter.updatedDate).format("YYYY-MM-DD HH:mm:ss")}
+        </p>
+      )}
+      {license && (
+        <p>
+          <strong>{__("article_copyright.license")}</strong>
+          {__("article_copyright.license_content_before")}{" "}
+          <a class="article-copyright-license-link" href={`https://creativecommons.org/licenses/${license_type}/4.0/deed.zh`} rel="noopener external nofollow noreferrer" target="_blank">
+            <Icon name="fa6-brands:creative-commons"/>
+            {license_type.toUpperCase()}
+          </a>
+          {" "}{__("article_copyright.license_content_after")}
+        </p>
+        <Icon class="article-copyright-bg" name="fa6-brands:creative-commons" />
+      )}
+    </blockquote>
+  )
+}
+
+<style lang="stylus">
+  .article-copyright {
+    background: var(--red-5-5);
+    border-left: 6px var(--red-4) solid;
+    margin: 24px 0;
+    border-radius: 12px;
+    transition: 0.3s;
+    padding: 6px 10px;
+    box-shadow: var(--shadow-meta);
+    position: relative;
+    overflow: hidden;
+    word-break: break-all;
+
+    p {
+      font-size: 14px;
+      line-height: 2;
+      color: var(--color-default);
+
+      strong {
+        font-weight: 700;
+      }
+    }
+
+    a {
+      color: var(--color-default);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .article-copyright-bg {
+    font-size: 120px;
+    color: var(--red-3);
+    opacity: .2;
+    position: absolute;
+    right: -15px;
+    bottom: -40px;
+  }
+
+  .article-copyright-license-link {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: bottom;
+  }
+</style>

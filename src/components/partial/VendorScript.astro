@@ -1,0 +1,80 @@
+---
+import { ANALYTICS } from "../../utils/config";
+
+import BaiduAnalytics from "./BaiduAnalytics.astro";
+import GoogleAnalytics from "./GoogleAnalytics.astro";
+import Clarity from "./Clarity.astro";
+---
+
+{ANALYTICS.baidu_analytics && <BaiduAnalytics id={ANALYTICS.baidu_analytics} />}
+{
+  ANALYTICS.google_analytics && (
+    <GoogleAnalytics id={ANALYTICS.google_analytics} />
+  )
+}
+{ANALYTICS.clarity && <Clarity id={ANALYTICS.clarity} />}
+<script is:inline>
+  if (!window.loadScript) {
+    window.loadScript = (src, options, target) =>
+      new Promise((resolve, reject) => {
+        let id;
+        let attrs = {};
+        if (typeof options === "string") {
+          id = options;
+        } else if (options) {
+          id = options.id;
+          attrs = { ...options };
+          delete attrs.id;
+        }
+        if (id) {
+          const existed = document.getElementById(id);
+          if (existed) {
+            resolve();
+            return;
+          }
+        }
+        const script = document.createElement("script");
+        script.src = src;
+        script.async = true;
+        if (id) script.id = id;
+        for (const [key, value] of Object.entries(attrs)) {
+          script.setAttribute(key, value);
+        }
+        script.onload = () => resolve();
+        script.onerror = (e) => reject(e);
+        (target ?? document.head).appendChild(script);
+      });
+  }
+
+  if (!window.loadCSS) {
+    window.loadCSS = (src, options) =>
+      new Promise((resolve, reject) => {
+        let id;
+        let attrs = {};
+        if (typeof options === "string") {
+          id = options;
+        } else if (options) {
+          id = options.id;
+          attrs = { ...options };
+          delete attrs.id;
+        }
+        if (id) {
+          const existed = document.getElementById(id);
+          if (existed) {
+            resolve();
+            return;
+          }
+        }
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = src;
+        if (id) link.id = id;
+        for (const [key, value] of Object.entries(attrs)) {
+          link.setAttribute(key, value);
+        }
+        link.onload = () => resolve();
+        link.onerror = (e) => reject(e);
+        document.head.appendChild(link);
+      });
+  }
+</script>

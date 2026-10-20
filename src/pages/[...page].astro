@@ -1,0 +1,292 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import { Icon } from "astro-icon/components";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE, HOME_CATEGORIES, BANNER } from "../utils/config";
+import randomCover from "../utils/randomCover";
+import { _p } from "../utils/i18n";
+import { wordCount, readingTime } from "../utils/wordCount";
+import Footer from "../components/Footer.astro";
+import Pagination from "../components/Pagination.astro";
+import HeaderTitle from "../components/partial/HeaderTitle.astro";
+import HeaderSubTitle from "../components/partial/HeaderSubTitle.astro";
+import HomeCategories from "../components/HomeCategories.astro";
+import { formatDate } from "../utils/formatDate";
+import { urlFor } from "../utils/urlFor";
+import { sortPosts } from "../utils/sortPosts";
+
+type Props = {
+  page: {
+    data: CollectionEntry<"blog">[];
+    url: {
+      prev: string;
+      next: string;
+    };
+    currentPage: number;
+    lastPage: number;
+  };
+};
+
+export async function getStaticPaths({ paginate }: { paginate: Function }) {
+  const posts = await getCollection("blog");
+  const sortedPosts = posts.sort(sortPosts);
+  return paginate(sortedPosts, {
+    pageSize: 10,
+  });
+}
+const { page } = Astro.props;
+---
+
+<BaseLayout>
+  <!-- Header -->
+  <HeaderTitle title={SITE.title} url={urlFor("/")} slot="header" />
+  {
+    SITE.subtitle && (
+      <HeaderSubTitle
+        subtitle={SITE.subtitle}
+        url={urlFor("/")}
+        slot="header"
+      />
+    )
+  }
+  <!-- Content -->
+  <section id="main" aria-label="Main content">
+    {
+      HOME_CATEGORIES.enable && (
+        <HomeCategories content={HOME_CATEGORIES.content} />
+      )
+    }
+    {
+      page.data.map((post, index) => (
+        <div class="post-wrapper">
+          <div
+            class:list={["post-wrap", { right: index % 2 === 1 }]}
+            data-aos="fade-up"
+          >
+            <a
+              class="post-link"
+              href={urlFor(`blog/${post.id}`)}
+              aria-label={post.id}
+            />
+            <div class:list={["post-cover", { right: index % 2 === 1 }]}>
+              <img
+                loading="lazy"
+                decoding="async"
+                fetchpriority="low"
+                src={urlFor(post.data.cover || randomCover() || BANNER)}
+                alt={post.data.title}
+              />
+            </div>
+            <div class="post-info">
+              <div class="post-meta">
+                <span>
+                  <Icon name="fa6-solid:calendar" size={14} />
+                  &nbsp;
+                  {formatDate(post.data.pubDate)}
+                </span>
+                <span>
+                  <Icon name="fa6-solid:pen-nib" size={14} />
+                  &nbsp;
+                  {_p("post.count", wordCount(post.body || ""))}
+                </span>
+                <span>
+                  <Icon name="fa6-solid:hourglass-half" size={14} />
+                  &nbsp;
+                  {_p("post.time", readingTime(post.body || ""))}
+                </span>
+              </div>
+              <h2 class="post-title">{post.data.title}</h2>
+              <article class="post-article">
+                {post.data.excerpt ? (
+                  <p>{post.data.excerpt}</p>
+                ) : (
+                  <p>{post.body?.slice(0, 300)}</p>
+                )}
+              </article>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+    <Pagination
+      prevUrl={page.url.prev}
+      nextUrl={page.url.next}
+      currentPage={page.currentPage}
+      lastPage={page.lastPage}
+    />
+  </section>
+  <!-- Footer -->
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style lang="stylus">
+  :global(.post-link) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .post-wrap {
+    width: 100%;
+    height: 232px;
+    margin-bottom: 32px;
+    position: relative;
+    border-radius: 12px;
+    background: var(--color-wrap);
+    display: flex;
+    flex-direction: row;
+    transition: 0.3s;
+
+    &.right {
+      flex-direction: row-reverse;
+    }
+
+    @media screen and (max-width: 767px) {
+      flex-direction: column;
+      height: 400px;
+      margin-bottom: 20px;
+      &.right {
+        flex-direction: column;
+      }
+    }
+  }
+
+  :global([data-theme='dark'])  {
+    .post-wrap.left, .post-wrap.right {
+      box-shadow: var(--shadow-card);
+    }
+  }
+
+  .post-wrapper {
+    border-radius: 12px;
+    transition: 0.3s;
+
+    .aos-animate {
+      transition-property: initial !important;
+
+      @media screen and (min-width: 768px) {
+        &:hover {
+          box-shadow: var(--shadow-card-hover);
+        }
+      }
+    }
+
+    img {
+      will-change: transform;
+    }
+
+    @media screen and (min-width: 768px) {
+      &:hover {
+        transform: scale(1.01);
+
+        img {
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+
+  .post-info {
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .post-meta {
+    display: flex;
+    justify-content: flex-end;
+    margin: 4px 0;
+
+    span {
+      font-size: 14px;
+      color: var(--grey-7);
+      margin: 0 12px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+
+      @media screen and (max-width: 767px) {
+        margin: 0 8px;
+      }
+    }
+  }
+
+  .post-article {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    line-height: 32px;
+    font-size: 15px;
+    color: var(--grey-7);
+
+    a {
+      color: var(--color-link);
+    }
+  }
+
+  .post-cover {
+    width: 40%;
+    position: relative;
+    overflow: hidden;
+    min-height: 95px;
+    background-color: var(--color-wrap);
+    flex-shrink: 0;
+    pointer-events: none;
+
+    @media screen and (max-width: 767px) {
+      width: 100%;
+      height: 45%;
+    }
+
+    @media screen and (min-width: 768px) {
+      border-radius: 12px 0 0 12px;
+      -webkit-clip-path: polygon(0 0, 92% 0%, 100% 100%, 0% 100%);
+      clip-path: polygon(0 0, 92% 0%, 100% 100%, 0% 100%);
+
+      &.right {
+        border-radius: 0 12px 12px 0;
+        -webkit-clip-path: polygon(0 0, 100% 0%, 100% 100%, 8% 100%);
+        clip-path: polygon(0 0, 100% 0%, 100% 100%, 8% 100%);
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      border-radius: 12px 12px 0 0;
+
+      &.right {
+        border-radius: 12px 12px 0 0;
+      }
+    }
+
+    img {
+      display: block;
+      transition: 0.2s;
+      position: absolute;
+      left: 0;
+      top: 0;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .post-title {
+    padding: 20px 0;
+    color: var(--color-link);
+    font-size: 25px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.3s;
+  }
+</style>

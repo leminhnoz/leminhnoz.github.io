@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Hidden bug hunting cover</title>
+  <desc id="desc">A geometric kitchen and debugging cover for Chicken+ Thach Thuc 2025 recap part 2.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#202329" />
+      <stop offset="0.48" stop-color="#0e8992" />
+      <stop offset="1" stop-color="#ff8f99" />
+    </linearGradient>
+    <linearGradient id="flame" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff0a6" />
+      <stop offset="0.55" stop-color="#ff8f3d" />
+      <stop offset="1" stop-color="#e73a4c" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)" />
+  <g opacity="0.18" stroke="#fff" stroke-width="3">
+    <path d="M80 112h1040M80 236h1040M80 360h1040M80 484h1040M80 608h1040" />
+    <path d="M180 72v620M380 72v620M580 72v620M780 72v620M980 72v620" />
+  </g>
+  <g transform="translate(102 96)">
+    <rect width="996" height="532" rx="32" fill="#f8fafc" opacity="0.9" />
+    <text x="68" y="140" fill="#202329" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="900">TRUY TIM LOI AN</text>
+    <text x="68" y="220" fill="#0e8992" font-family="Inter, Arial, sans-serif" font-size="52" font-weight="850">debugging recipe</text>
+    <text x="70" y="292" fill="#555a62" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="650">Part 2 / Champion flavor / Chicken+</text>
+    <g transform="translate(662 102)">
+      <path d="M196 272c52-58 32-106-18-158-18 54-46 78-88 96 28-54 20-106-30-156C40 126 0 182 0 252c0 84 66 150 150 150s150-60 150-130c0-38-16-72-46-104 4 42-14 76-58 104Z" fill="url(#flame)" />
+      <rect x="24" y="334" width="254" height="38" rx="19" fill="#202329" />
+      <path d="M58 278h184" stroke="#202329" stroke-width="16" stroke-linecap="round" />
+      <path d="M86 246h128" stroke="#202329" stroke-width="16" stroke-linecap="round" />
+      <circle cx="150" cy="184" r="48" fill="#f8fafc" stroke="#202329" stroke-width="16" />
+    </g>
+  </g>
+</svg>

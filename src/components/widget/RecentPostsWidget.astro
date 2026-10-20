@@ -1,0 +1,35 @@
+---
+import { getCollection } from "astro:content";
+
+import { urlFor } from "../../utils/urlFor";
+import { __ } from "../../utils/i18n";
+import { sortPosts } from "../../utils/sortPosts";
+
+async function getRecentPosts(limit = 5) {
+  const posts = await getCollection("blog");
+  return posts
+    .sort(sortPosts)
+    .slice(0, limit);
+}
+
+const recentPosts = await getRecentPosts();
+---
+
+{
+  recentPosts.length > 0 && (
+    <div class="widget-wrapper">
+      <div class="widget-wrap" data-aos="fade-up">
+        <h3 class="widget-title">{__("recent_posts")}</h3>
+        <div class="widget">
+          <ul>
+            {recentPosts.map((post) => (
+              <li>
+                <a href={urlFor(`blog/${post.id}`)}>{post.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}

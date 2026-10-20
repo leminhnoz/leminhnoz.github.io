@@ -1,0 +1,45 @@
+---
+interface Props {
+  width?: number;
+  col?: number;
+}
+
+const { width = 240, col } = Astro.props;
+
+const gridStyle = col
+  ? `grid-template-columns: repeat(${col}, 1fr);`
+  : `grid-template-columns: repeat(auto-fit, minmax(${width}px, 1fr));`;
+---
+
+<div class="reimu-grid" style={gridStyle}>
+  <slot />
+</div>
+
+<style lang="stylus" is:global>
+.reimu-grid {
+  display: grid;
+  margin: 20px 0;
+  gap: 16px;
+
+  .grid-cell {
+    min-width: 0;
+
+    .post-link-card {
+      width: 100%;
+    }
+
+    &:has(> *:only-child) {
+      > *:only-child {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .reimu-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>

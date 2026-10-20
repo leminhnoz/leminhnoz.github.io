@@ -1,0 +1,268 @@
+---
+import { Icon } from "astro-icon/components";
+
+import { __ } from "../utils/i18n";
+import {
+  SITE,
+  MENU,
+  BANNER,
+  BANNER_SRCSET,
+  TRIANGLE_BADGE,
+} from "../utils/config";
+import { urlFor } from "../utils/urlFor";
+
+import HeaderLink from "./partial/HeaderLink.astro";
+import RssBtn from "./partial/RssBtn";
+import SearchBtn from "./partial/SearchBtn";
+import ThemeBtn from "./partial/ThemeBtn";
+import SearchBox from "./partial/SearchBox";
+
+type Props = {
+  title?: string;
+  cover?: string;
+};
+
+const { title = SITE.title, cover } = Astro.props;
+---
+
+<div id="header-nav">
+  <nav id="main-nav">
+    {
+      MENU.map((item) => (
+        <HeaderLink href={urlFor(item.url)} aria-label={item.name}>
+          {__(item.name)}
+        </HeaderLink>
+      ))
+    }
+    <span
+      id="main-nav-toggle"
+      class="nav-icon"
+      aria-label="Toggle navigation"
+      role="button"
+    >
+      <Icon name="fa6-solid:bars" size={14} />
+    </span>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+    <RssBtn client:load href={urlFor("rss.xml")} className="nav-icon" />
+    <SearchBtn client:load className="nav-icon" />
+    <ThemeBtn client:load className="nav-icon" />
+  </nav>
+  {
+    TRIANGLE_BADGE.enable && (
+      <a
+        href={TRIANGLE_BADGE.link}
+        class="triangle-badge"
+        title={TRIANGLE_BADGE.type}
+        target="_blank"
+        rel="noopener nofollow noreferrer"
+      >
+        <Icon
+          name={`fa6-brands:${TRIANGLE_BADGE.type}`}
+          class="triangle-badge-icon"
+        />
+      </a>
+    )
+  }
+</div>
+<header id="header">
+  {
+    cover ? (
+      <img src={urlFor(cover)} alt={title} fetchpriority="high" />
+    ) : BANNER_SRCSET.enable ? (
+      <picture style="user-select: none;">
+        {BANNER_SRCSET.srcset.map((source) => (
+          <source media={source.media} srcset={urlFor(source.src)} />
+        ))}
+        <img src={urlFor(BANNER)} alt={title} fetchpriority="high" />
+      </picture>
+    ) : (
+      <img src={urlFor(BANNER)} alt={title} fetchpriority="high" />
+    )
+  }
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <slot />
+    </div>
+  </div>
+</header>
+<SearchBox
+  client:idle
+  searchIndexUrl={urlFor("search.json")}
+  postUrlPrefix={urlFor("blog")}
+  imageUrl={urlFor("images/reimu.png")}
+/>
+
+<script>
+  let oldScrollTop = 0;
+  window.addEventListener("scroll", () => {
+    let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    let diffY = scrollTop - oldScrollTop;
+    window.diffY = diffY;
+    oldScrollTop = scrollTop;
+    if (diffY < 0) {
+      document
+        .getElementById("header-nav")!
+        .classList.remove("header-nav-hidden");
+    } else {
+      document.getElementById("header-nav")!.classList.add("header-nav-hidden");
+    }
+  });
+</script>
+
+<style lang="stylus">
+  #header-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    background: var(--color-header-background);
+    box-shadow: var(--shadow-card);
+    transition: background 1s, top 0.3s;
+    z-index: 200;
+    &.header-nav-hidden {
+      top: -80px;
+    }
+    &:hover {
+      background: rgba(255, 255, 255, 0.95);
+    }
+  }
+
+  #main-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  #header {
+    min-height: 400px;
+    height: 35vh;
+    position: relative;
+
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 180%;
+      z-index: -2;
+      user-select: none;
+      display: block;
+      object-fit: cover;
+      transition: 0.3s;
+      -webkit-mask: linear-gradient(to top, transparent, #fff 50%);
+      mask: linear-gradient(to top, transparent, #fff 50%);
+
+      @media screen and (max-width: 959px) {
+        height: 120%;
+      }
+
+      @media screen and (max-width: 767px) {
+        height: 100%;
+      }
+    }
+  }
+
+  #header-outer {
+    height: 100%;
+    position: relative;
+    max-width: 100%;
+  }
+
+
+  #main-nav-toggle {
+    display: none;
+
+    @media screen and (max-width: 767px) {
+      display: block;
+    }
+  }
+
+  :global(.nav-icon) {
+    color: var(--red-0);
+    opacity: 0.8;
+    text-decoration: none;
+    transition: 0.2s;
+    padding: 20px 15px;
+    text-align: center;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    will-change: transform;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+
+  :global([data-theme='dark']) {
+    #header-nav:hover {
+      background: var(--color-header-background);
+    }
+
+    :global(.nav-icon) {
+      color: var(--red-2);
+    }
+  }
+
+  #header-title {
+    font-weight: 700;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    margin: 40px * -0.5 2.5% 0;
+    width: 95%;
+    opacity: 0;
+    filter: blur(8px);
+    will-change: transform, opacity, filter;
+    animation: fade-in-blur 800ms ease-out 200ms forwards;
+  }
+
+  #sub-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  @keyframes fade-in-blur {
+    0% {
+      opacity: 0;
+      filter: blur(10px);
+    }
+
+    100% {
+      opacity: 1;
+      filter: blur(0);
+    }
+  }
+
+  .triangle-badge {
+    position: absolute;
+    top: -6px;
+    right: -26px;
+    transform: rotate(45deg);
+    width: 0;
+    height: 0;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-bottom: 40px solid var(--red-2);
+    display: inline-block;
+    transition: 0.3s;
+
+    @media screen and (max-width: 959px) {
+      display: none;
+    }
+  }
+
+  .triangle-badge-icon {
+    position: absolute;
+    top: 12px;
+    left: -13px;
+    color: var(--color-header-background) !important;
+    font-size: 28px;
+    transition: 0.3s;
+  }
+</style>

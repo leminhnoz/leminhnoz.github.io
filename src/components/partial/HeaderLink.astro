@@ -1,0 +1,79 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+import { urlFor } from "../../utils/urlFor";
+
+type Props = HTMLAttributes<"a">;
+
+const { href, ...props } = Astro.props;
+---
+
+<span class="main-nav-link-wrap" data-guitar-sound>
+  <img
+    src={urlFor("images/avatar.webp")}
+    alt=""
+    class="main-nav-icon"
+    width="32"
+    height="32"
+    loading="lazy"
+    decoding="async"
+  />
+  <a class="main-nav-link" href={href} {...props}><slot /></a>
+</span>
+
+<style lang="stylus">
+  .main-nav-link-wrap {
+    color: var(--red-0);
+    opacity: 1;
+    text-decoration: none;
+    padding: 0 15px;
+    display: flex;
+    transition: .3s;
+
+    @media screen and (max-width: 959px) {
+      padding: 0 10px;
+    }
+
+    @media screen and (max-width: 767px) {
+      display: none;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+    &:hover .main-nav-icon {
+      transform: scale(1.08);
+    }
+  }
+
+  .main-nav-link {
+    color: var(--red-0);
+    opacity: 0.7;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    padding: 20px 15px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  :global([data-theme='dark']) {
+    .main-nav-link, .main-nav-link-wrap {
+      color: var(--red-2);
+    }
+  }
+
+  .main-nav-icon {
+    opacity: 1;
+    text-decoration: none;
+    display: block;
+    padding: 11px 5px;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 50%;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+    transition: transform 0.3s, opacity 0.3s;
+    cursor: pointer;
+    will-change: transform;
+  }
+</style>

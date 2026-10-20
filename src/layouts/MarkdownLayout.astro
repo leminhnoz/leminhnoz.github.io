@@ -1,0 +1,117 @@
+---
+import "../styles/base.stylus";
+import "katex/dist/katex.min.css";
+import "../styles/markdown.stylus";
+
+import type { CollectionEntry } from "astro:content";
+
+import { urlFor } from "../utils/urlFor";
+import Footer from "../components/Footer.astro";
+import Date from "../components/post/Date.astro";
+import Comment from "../components/post/Comment.astro";
+import HeaderTitle from "../components/partial/HeaderTitle.astro";
+
+import BaseLayout from "./BaseLayout.astro";
+
+type Props = {
+  frontmatter: CollectionEntry<"blog">["data"];
+  headings?: Array<{
+    depth: number;
+    slug: string;
+    text: string;
+  }>;
+};
+
+const { frontmatter, headings = [] } = Astro.props;
+
+const {
+  title,
+  description = "",
+  keywords = "",
+  pubDate,
+  cover,
+  comment = true,
+  toc = true,
+} = frontmatter;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  cover={cover}
+  keywords={keywords}
+  isPost={true}
+  headings={headings}
+  toc={toc}
+>
+  <HeaderTitle title={title} url={urlFor("/")} slot="header" />
+  <section id="main" aria-label="Main content">
+    <article
+      class="article"
+      itemprop="blogPost"
+      itemscope
+      itemtype="https://schema.org/BlogPosting"
+      data-aos="fade-up"
+    >
+      <div class="article-inner">
+        <div class="article-meta">
+          <Date
+            pubDate={typeof pubDate === "string"
+              ? new globalThis.Date(pubDate as any)
+              : (pubDate as Date)}
+          />
+        </div>
+        <div class="hr-line"></div>
+        <div class="article-entry" itemprop="articleBody">
+          <slot />
+        </div>
+        <slot name="footer" />
+      </div>
+      <slot name="nav" />
+    </article>
+
+    <Comment comment={comment} />
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  .hr-line {
+    margin: 12px 36px;
+    opacity: 0.3;
+    height: 4px;
+    background-image: linear-gradient(
+      to right,
+      var(--red-0) 50%,
+      transparent 0%
+    );
+    background-size: 50px 4px;
+    background-repeat: repeat-x;
+    filter: drop-shadow(0px 0px 2px var(--red-1));
+    transition:
+      opacity 0.3s,
+      color 0.3s;
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+
+  .article-inner {
+    background: var(--color-wrap);
+    border-radius: 12px;
+    display: flow-root;
+    transition: 0.3s;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 36px 0;
+
+    @media screen and (max-width: 767px) {
+      padding: 20px 16px 0;
+    }
+  }
+</style>

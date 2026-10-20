@@ -1,0 +1,41 @@
+---
+import { VALINE, WALINE, GITALK, GISCUS, UTTERANCES, TWIKOO, DISQUS } from "../../utils/config";
+
+import ValineComment from "./comment/ValineComment.astro";
+import WalineComment from "./comment/WalineComment.astro";
+import GitalkComment from "./comment/GitalkComment.astro";
+import GiscusComment from "./comment/GiscusComment.astro";
+import UtterancesComment from "./comment/UtterancesComment.astro";
+import TwikooComment from "./comment/TwikooComment.astro";
+import DisqusComment from "./comment/DisqusComment.astro";
+
+type Props = {
+  comment: boolean;
+};
+
+const { comment } = Astro.props;
+---
+
+{comment && VALINE.enable && <ValineComment />}
+{comment && WALINE.enable && <WalineComment />}
+{comment && GITALK.enable && <GitalkComment />}
+{comment && GISCUS.enable && <GiscusComment />}
+{comment && TWIKOO.enable && <TwikooComment />}
+{comment && DISQUS.enable && <DisqusComment />}
+{comment && UTTERANCES.enable && <UtterancesComment />}
+<style lang="stylus" is:global>
+  #comments {
+    background: var(--color-wrap);
+    padding: 20px 36px;
+    border-radius: 12px;
+    margin: 12px 0;
+
+    @media screen and (max-width: 767px) {
+      padding: 20px 16px;
+    }
+
+    a {
+      color: var(--color-link);
+    }
+  }
+</style>

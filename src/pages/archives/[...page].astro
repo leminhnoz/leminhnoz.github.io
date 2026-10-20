@@ -1,0 +1,96 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { __ } from "../../utils/i18n";
+import Footer from "../../components/Footer.astro";
+import TagList from "../../components/partial/TagList.astro";
+import ArchiveList from "../../components/ArchiveList.astro";
+import Pagination from "../../components/Pagination.astro";
+import HeaderTitle from "../../components/partial/HeaderTitle.astro";
+import { urlFor } from "../../utils/urlFor";
+import { sortPosts } from "../../utils/sortPosts";
+import CategoryList from "../../components/partial/CategoryList.astro";
+
+export async function getStaticPaths({ paginate }: { paginate: Function }) {
+  const posts = await getCollection("blog");
+  posts.sort(sortPosts);
+  return paginate(posts, {
+    pageSize: 10,
+  });
+}
+
+type Props = {
+  page: {
+    data: CollectionEntry<"blog">[];
+    url: {
+      prev: string;
+      next: string;
+    };
+    currentPage: number;
+    lastPage: number;
+  };
+};
+
+const { page } = Astro.props;
+// group by year
+const postsByYear: Map<number, CollectionEntry<"blog">[]> = new Map();
+page.data.forEach((post) => {
+  const year = post.data.pubDate.getFullYear();
+  if (postsByYear.has(year)) {
+    postsByYear.get(year)!.push(post);
+  } else {
+    postsByYear.set(year, [post]);
+  }
+});
+
+const posts = await getCollection("blog");
+const tags = new Set<string>();
+const categories = new Set<string>();
+posts.forEach((post) => {
+  if (Array.isArray(post.data.tags)) {
+    post.data.tags.forEach((tag) => {
+      tags.add(tag);
+    });
+  }
+  if (Array.isArray(post.data.categories)) {
+    post.data.categories.forEach((category) => {
+      categories.add(category);
+    });
+  }
+});
+---
+
+<BaseLayout title={__("archive_a")}>
+  <!-- Header -->
+  <HeaderTitle
+    title={__("archive_a")}
+    url={urlFor("archives")}
+    slot="header"
+  />
+  <!-- Content -->
+  <section id="main" aria-label="Main content">
+    <div class="archives-outer-wrap" data-aos="fade-up">
+      <TagList tags={[...tags]} />
+      <CategoryList categories={[...categories]} />
+      <ArchiveList page={page} type="archives" />
+    </div>
+    <Pagination
+      prevUrl={page.url.prev}
+      nextUrl={page.url.next}
+      currentPage={page.currentPage}
+      lastPage={page.lastPage}
+      url="/archives"
+    />
+  </section>
+  <!-- Footer -->
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  .archives-outer-wrap {
+    background: var(--color-wrap);
+    border-radius: 12px;
+    padding: 16px 0;
+  }
+</style>

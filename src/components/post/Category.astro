@@ -1,0 +1,50 @@
+---
+import { Icon } from "astro-icon/components";
+
+import { urlFor } from "../../utils/urlFor";
+
+type Props = {
+  categories: string[];
+};
+
+const { categories } = Astro.props;
+---
+
+<ul class="article-category-list">
+  {
+    categories.map((category) => (
+      <li class="article-category-list-item" data-aos="zoom-in">
+        <Icon
+          name="fa6-solid:bookmark"
+          style="margin-right: 8px; vertical-align: bottom;"
+        />
+          <a
+            class="article-category-list-link"
+            href={urlFor(`categories/${category}`)}
+            rel="category"
+          >
+          {category}
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .article-category-list-link {
+    color: var(--red-1);
+    text-decoration: none;
+  }
+  .article-category-list-item {
+    float: left;
+    text-decoration: none;
+    text-transform: uppercase;
+    background: var(--red-5);
+    color: var(--red-1);
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-top: 20px;
+    margin-right: 12px;
+    box-shadow: var(--shadow-meta);
+  }
+</style>

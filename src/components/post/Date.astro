@@ -1,0 +1,43 @@
+---
+import { Icon } from "astro-icon/components";
+
+import { formatDate } from "../../utils/formatDate";
+
+type Props = {
+  pubDate: Date;
+};
+
+const { pubDate } = Astro.props;
+---
+
+<div class="article-date">
+  <span class="article-date-span" data-aos="zoom-in">
+    <Icon
+      name="fa6-solid:calendar"
+      style="margin-right: 8px; vertical-align: bottom;"
+    />
+    <time datetime={pubDate.toISOString()} itemprop="datePublished"
+      >{formatDate(pubDate)}</time
+    >
+  </span>
+</div>
+
+<style>
+  .article-date {
+    display: flex;
+    align-items: center;
+  }
+
+  .article-date-span {
+    font-size: 14px;
+    color: var(--red-1);
+    background: var(--red-5);
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin: 0 12px 16px 0;
+    box-shadow: var(--shadow-meta);
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+  }
+</style>

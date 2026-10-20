@@ -1,0 +1,59 @@
+---
+import { Icon } from "astro-icon/components";
+
+import { __ } from "../../utils/i18n";
+import { VALINE, WALINE } from "../../utils/config";
+import { urlFor } from "../../utils/urlFor";
+
+type Props = {
+  url: string;
+  title: string;
+};
+
+const { url, title } = Astro.props;
+---
+
+{
+  VALINE.enable && VALINE.appId && VALINE.appKey && VALINE.visitor && (
+    <span
+      id={urlFor(`${url}/`)}
+      class="leancloud_visitors article-visitor-link"
+      data-flag-title={title}
+      data-aos="zoom-in"
+    >
+      <Icon
+        name="fa6-solid:book-open"
+        style="margin-right: 8px; vertical-align: bottom;"
+      />
+      <span class="leancloud-visitors-count">0</span>
+      <em class="post-meta-item-text">{__("reading")}</em>
+    </span>
+  )
+}
+{
+  WALINE.enable && WALINE.serverURL && WALINE.pageview && (
+    <span class="article-visitor-link" data-aos="zoom-in">
+      <Icon
+        name="fa6-solid:book-open"
+        style="margin-right: 8px; vertical-align: bottom;"
+      />
+      <span class="waline-pageview-count" data-path={urlFor(`${url}/`)}>
+        0
+      </span>
+      <em class="post-meta-item-text">{__("reading")}</em>
+    </span>
+  )
+}
+
+<style>
+  .article-visitor-link {
+    color: var(--red-1);
+    float: right;
+    font-size: 14px;
+    background: var(--red-5);
+    margin-left: 12px;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-top: 20px;
+  }
+</style>

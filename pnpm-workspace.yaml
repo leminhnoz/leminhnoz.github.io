@@ -1,0 +1,15 @@
+allowBuilds:
+  cn-font-split: true
+  esbuild: true
+  koffi: true
+  protobufjs: true
+  sharp: true
+packages:
+  - "."
+
+onlyBuiltDependencies:
+  - cn-font-split
+  - esbuild
+  - koffi
+  - protobufjs
+  - sharp

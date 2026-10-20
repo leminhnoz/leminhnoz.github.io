@@ -1,0 +1,173 @@
+---
+import { type CollectionEntry } from "astro:content";
+
+import { urlFor } from "../utils/urlFor";
+
+type Props = {
+  page: {
+    data: CollectionEntry<"blog">[];
+    url: {
+      prev: string;
+      next: string;
+    };
+    currentPage: number;
+    lastPage: number;
+  };
+  type: "archives" | "tags";
+};
+
+const { page } = Astro.props;
+const posts = page.data;
+
+// group by year
+const postsByYear: Map<number, CollectionEntry<"blog">[]> = new Map();
+posts.forEach((post) => {
+  const year = post.data.pubDate.getFullYear();
+  if (postsByYear.has(year)) {
+    postsByYear.get(year)!.push(post);
+  } else {
+    postsByYear.set(year, [post]);
+  }
+});
+---
+
+{
+  [...postsByYear.entries()].map(([year, posts]) => {
+    return (
+      <section class="archives-wrap" data-aos="fade-up">
+        <div class="archive-year-wrap">
+          <span class="archive-year">{year}</span>
+        </div>
+        <ul>
+          {posts.map((post) => {
+            return (
+              <li class="archive-article">
+                <div class="archive-article-date-wrap">
+                  <a href={urlFor(`blog/${post.id}`)}>
+                    <time
+                      class="dt-published"
+                      datetime={post.data.pubDate.toISOString()}
+                      itemprop="datePublished"
+                    >
+                      {post.data.pubDate.getMonth() + 1}-{String(post.data.pubDate.getDate()).padStart(2, '0')}
+                    </time>
+                  </a>
+                </div>
+                <div class="archive-article-title-wrap">
+                  <a
+                    class="archive-article-title"
+                    href={urlFor(`blog/${post.id}`)}
+                  >
+                    {post.data.title}
+                  </a>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    );
+  })
+}
+
+<style lang="stylus">
+  .archives-wrap {
+    padding: 20px 36px;
+
+    @media screen and (max-width: 767px) {
+      padding: 20px 16px;
+    }
+  }
+
+  .archive-year-wrap {
+    margin-bottom: 32px;
+    position: relative;
+
+    &:before {
+      content: "";
+      width: 100%;
+      border-bottom: 1px solid var(--color-h2-border);
+      position: absolute;
+      bottom: -15px;
+      transition: 1s;
+    }
+
+    &:after {
+      transition: 0.3s;
+      content: "";
+      position: absolute;
+      background: var(--color-h2-after);
+      width: 1em;
+      height: 7px;
+      bottom: -18px;
+      left: 0;
+      border-radius: 10px;
+      box-shadow: var(--shadow-red-6-shadow);
+    }
+
+    &:hover:after {
+      width: 3em;
+    }
+  }
+
+  .archive-year {
+    color: var(--color-archive-year);
+    font-weight: bold;
+    font-size: 24px;
+  }
+
+  .archive-article {
+    padding: 16px 0 16px 24px;
+    display: flex;
+    align-items: center;
+
+    &:before {
+      content: '';
+      display: inline-block;
+      vertical-align: middle;
+      width: 6px;
+      height: 15px;
+      background: var(--color-h2-after);
+      margin: 1px 12px 0 -24px;
+      box-shadow: var(--shadow-red-6-shadow);
+      opacity: 0.5;
+      transition: 0.2s;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      &:before {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        opacity: 1;
+      }
+
+      .archive-article-title {
+        opacity: 1;
+      }
+    }
+  }
+
+  .archive-article-date-wrap {
+    flex-shrink: 0;
+
+    a {
+      text-decoration: none;
+    }
+  }
+  .dt-published {
+    color: var(--grey-9);
+    margin-left: 6px;
+  }
+
+  .archive-article-title {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: bold;
+    color: var(--red-0);
+    transition: 0.3s;
+    opacity: 0.7;
+    margin-left: 16px;
+  }
+</style>
