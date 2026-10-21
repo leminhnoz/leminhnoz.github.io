@@ -26,6 +26,7 @@ export default {
   friend: "フレンド",
   archives: "アーカイブ",
   problems: "問題",
+  roadmap: "ロードマップ",
 
   sidebar: {
     post: "投稿",

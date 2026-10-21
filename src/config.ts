@@ -19,6 +19,7 @@ export default {
     { name: "home", url: "/" },
     { name: "archives", url: "/archives" },
     { name: "about", url: "/about" },
+    { name: "roadmap", url: "/roadmap" },
     { name: "problems", url: "/problems" },
   ],
 

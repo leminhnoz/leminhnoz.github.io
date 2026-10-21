@@ -26,6 +26,7 @@ export default {
   friend: "友链",
   archives: "归档",
   problems: "题单",
+  roadmap: "路线图",
 
   sidebar: {
     post: "文章",

@@ -1,328 +1,215 @@
 ---
-title: "Tìm kiếm nhị phân trên đáp án: Nghĩ từ một bài toán đơn giản"
-description: "Từ một bài toán tưởng chừng phải thử từng trường hợp, khám phá cách tìm kiếm nhị phân giúp tìm ra đáp án tối ưu nhanh và thông minh hơn."
+title: "Tìm kiếm nhị phân trên đáp án: Bí kíp biến bài toán hóc búa thành trò chơi đoán số"
+description: "Làm chủ kỹ thuật Tìm kiếm nhị phân trên đáp án (Binary Search on Answer) từ con số 0. Đi từ tính đơn điệu của hàm kiểm tra, thuật toán tham lam check(mid) đến template C++ bất bại tránh lặp vô tận và kỹ thuật nhị phân trên số thực."
 pubDate: "2026-10-16"
 tags: ["Competitive Programming", "Binary Search", "C++", "Algorithms"]
 categories: ["Algorithms"]
-excerpt: "Khi gặp một bài toán, đừng vội nghĩ đến thuật toán. Hãy thử giải nó theo cách đơn giản nhất, tìm ra điểm khiến cách đó chậm, rồi mới tối ưu."
+excerpt: "Nếu bạn chỉ biết dùng Binary Search để tìm một số trong mảng đã sắp xếp, bạn đã bỏ lỡ 90% sức mạnh của nó! Khám phá cách chuyển đổi bài toán tối ưu thành bài toán đoán số siêu tốc."
 ---
 
-# Tìm kiếm nhị phân trên đáp án: Nghĩ từ một bài toán đơn giản
+> *"Ngừng học các thuật toán vô dụng. Hãy luyện tập và học cách dùng tìm kiếm nhị phân!"*  
+> — **Um_nik** (World Champion ICPC & Legendary Grandmaster)
 
-> Ngừng học các thuật toán vô dụng, hãy luyện tập, học cách dùng tìm kiếm nhị phân - **Um_nik**
+Hầu hết chúng ta khi mới học lập trình đều biết đến **Tìm kiếm nhị phân (Binary Search)** qua một bài toán quen thuộc: *Cho một mảng số đã được sắp xếp tăng dần, hãy tìm xem số $X$ có nằm trong mảng hay không.*
 
-## 1. Khi gặp một vấn đề, mày sẽ làm gì đầu tiên?
+Nhưng nếu chỉ dùng nhị phân để tìm một phần tử trong mảng, bạn mới chỉ đang sử dụng **10% công lực** của thuật toán này.
 
-Thử tưởng tượng có một nhóm công việc cần hoàn thành. Mỗi công việc mất một khoảng thời gian khác nhau, và chúng phải được thực hiện theo đúng thứ tự.
+Sức mạnh thực sự khiến các cao thủ Competitive Programming "nghiện" tìm kiếm nhị phân nằm ở một đẳng cấp cao hơn: **Tìm kiếm nhị phân trên không gian đáp án (Binary Search on Answer)**. 
 
-Mày có hai ngày để hoàn thành tất cả. Mày muốn biết một ngày cần được phép làm tối đa bao nhiêu đơn vị công việc để chắc chắn hoàn thành đúng hạn.
+Hôm nay, hãy cùng mình biến kỹ thuật tưởng chừng cao siêu này thành một trò chơi đoán số cực kỳ tự nhiên, dễ hiểu đến mức bạn sẽ tự hỏi: *"Tại sao ngày xưa mình lại thấy nó khó nhỉ?!"*
 
-Nếu giới hạn thời gian mỗi ngày quá thấp, công việc sẽ bị chia thành quá nhiều ngày. Nếu giới hạn đủ lớn, mọi thứ sẽ dễ dàng hơn.
+---
 
-Vấn đề là: **giới hạn nhỏ nhất có thể là bao nhiêu?**
+## 1. Trò chơi đoán số năm lên 7 tuổi
 
-Đây là lúc nhiều người mới học lập trình thường nghĩ ngay đến việc tìm một công thức. Nhưng thật ra, chưa cần công thức gì cả.
+Hãy nhớ lại trò chơi tuổi thơ:
+> Bạn mình bí mật nghĩ trong đầu một số nguyên từ **$1$ đến $100$**.  
+> Bạn được quyền đoán một số, và người bạn chỉ được trả lời 1 trong 3 câu: *"Lớn hơn rồi"*, *"Nhỏ hơn rồi"*, hoặc *"Đoán đúng rồi!"*.
 
-Hãy bắt đầu bằng cách giải quyết vấn đề theo cách đơn giản nhất mà mình nghĩ ra.
+Bạn sẽ đoán thế nào?
+- Đoán lần lượt $1, 2, 3, 4 \dots$? Quá ngây thơ, lỡ bạn ấy nghĩ số $99$ thì bạn mất $99$ lượt đoán!
+- Cách thông minh nhất: **Luôn đoán số chính giữa!**
+  - Lượt 1: Đoán $50$. Bạn bảo: *"Nhỏ hơn rồi"* $\implies$ Loại phăng toàn bộ đoạn $[1, 50]$, chỉ còn $[51, 100]$.
+  - Lượt 2: Đoán số giữa của đoạn còn lại: $75$. Bạn bảo: *"Lớn hơn rồi"* $\implies$ Loại đoạn $[75, 100]$, chỉ còn $[51, 74]$.
+  - Lượt 3: Đoán giữa: $62 \dots$
 
-## 2. Cách nghĩ ngây thơ: Thử từng đáp án
+Chỉ sau tối đa **$\approx 7$ lần đoán** ($\log_2 100 \approx 7$), bạn chắc chắn tìm ra con số bí mật. Nếu khoảng từ $1$ đến $10^{18}$? Cũng chỉ mất đúng **$60$ lần đoán**!
 
-Giả sử có năm công việc, lần lượt mất:
+**Tìm kiếm nhị phân trên đáp án bản chất chính là trò chơi này!** Ta không có sẵn mảng nào cả. "Mảng" ở đây chính là toàn bộ các đáp án tiềm năng đang nằm trong đầu chúng ta.
 
-\[
-7,\ 2,\ 5,\ 10,\ 8
-\]
+---
 
-Mày phải hoàn thành chúng trong không quá hai ngày, và không được đổi thứ tự công việc.
+## 2. Bài toán thực tế: Chia việc cho công nhân
 
-Nếu mỗi ngày chỉ được làm tối đa 10 đơn vị thời gian thì sao?
+Hãy đến với một bài toán thực chiến kinh điển (xuất hiện trong cả phỏng vấn Google, LeetCode 410 và Codeforces):
 
-- Ngày đầu: làm công việc mất 7 và 2 đơn vị, tổng cộng 9.
-- Ngày tiếp theo có thể làm công việc mất 5 và 10 đơn vị không? Không, vì tổng là 15, vượt quá 10.
-- Công việc mất 10 và công việc mất 8 cũng không thể nằm cùng một ngày.
+> Bạn có $N = 5$ kiện hàng cần vận chuyển theo đúng thứ tự:
+> $$[7, 2, 5, 10, 8]$$
+> Bạn có $K = 2$ ngày để chở hết số hàng này (không được đổi thứ tự các kiện hàng).  
+> **Câu hỏi:** Tải trọng tối thiểu của xe tải mỗi ngày phải là bao nhiêu để chở hết hàng trong không quá 2 ngày?
 
-Rõ ràng, giới hạn 10 là quá thấp.
+### Cách nghĩ ngây thơ: Thử từng mức tải trọng
+Ta thử đoán từng mức tải trọng $X$:
+- Thử tải trọng $X = 10$:
+  - Ngày 1: Chở kiện $7$ và $2$ (tổng $9 \le 10$). Kiện tiếp theo là $5$, cộng vào thành $14 > 10$, xe không chở nổi!
+  - Ngày 2: Kiện $5$ (tổng $5$). Kiện tiếp theo là $10$, cộng vào thành $15 > 10$, chịu!
+  - Hết 2 ngày mà mới chở được 3 kiện hàng $\implies$ Tải trọng $10$ **KHÔNG ĐƯỢC**.
+- Thử $X = 11, 12, 13, 14, 15, 16, 17$: Xe vẫn không chở kịp trong 2 ngày $\implies$ **KHÔNG ĐƯỢC**.
+- Thử $X = 18$:
+  - Ngày 1: $7 + 2 + 5 = 14 \le 18$.
+  - Ngày 2: $10 + 8 = 18 \le 18$.
+  - Xong vừa vặn trong đúng 2 ngày! $\implies$ **ĐƯỢC!**
 
-Vậy thử 11? 12? 13? Hay 14?
+Đáp án nhỏ nhất chính là **$18$**.
 
-Ta có thể viết chương trình thử lần lượt từng giới hạn:
+Nhưng nếu tổng trọng lượng hàng lên tới $10^{14}$ thì sao? Thử từng số từ $1$ đến $10^{14}$ thì máy tính chạy đến thiên thu cũng không xong!
 
-- Thử 10, kiểm tra xem có hoàn thành trong hai ngày không.
-- Nếu không được, thử 11.
-- Vẫn không được thì thử 12.
-- Cứ tiếp tục cho đến khi tìm thấy giới hạn đầu tiên đáp ứng yêu cầu.
+---
 
-Đây là một cách giải hoàn toàn hợp lý. Nó đơn giản, dễ hiểu và có thể tìm được đáp án nếu ta kiểm tra đúng.
+## 3. Khám phá bí mật: Tính đơn điệu (Monotonicity)
 
-Nhưng có một câu hỏi: **nếu đáp án nằm trong hàng tỷ giá trị thì sao?**
+Hãy nhìn vào bảng kết quả khi ta kiểm tra từng mức tải trọng:
 
-Thử từng số một sẽ rất chậm. Ta cần một cách tìm kiếm thông minh hơn.
+| Tải trọng xe ($X$) | Có chở kịp trong 2 ngày không? |
+| :---: | :---: |
+| 10 | **KHÔNG** (false) |
+| 12 | **KHÔNG** (false) |
+| 15 | **KHÔNG** (false) |
+| 17 | **KHÔNG** (false) |
+| **18** | **CÓ** (true) $\to$ *Ngưỡng nhỏ nhất cần tìm!* |
+| 19 | **CÓ** (true) |
+| 20 | **CÓ** (true) |
+| 100 | **CÓ** (true) |
 
-## 3. Nhận ra một điều rất quan trọng
+Bạn có nhận ra điều gì đặc biệt không?
 
-Quay lại bài toán trên.
+Một khi xe tải trọng **$18$** đã chở kịp, thì bất kỳ mức tải trọng nào **lớn hơn 18** ($19, 20, 100 \dots$) **CHẮC CHẮN CŨNG SẼ CHỞ KỊP**! Xe càng to thì việc chở hàng chỉ có dễ hơn chứ không thể khó hơn được!
 
-Giả sử ta đã kiểm tra giới hạn 18 và thấy rằng nó làm được. Nghĩa là với tối đa 18 đơn vị thời gian mỗi ngày, ta có thể hoàn thành công việc trong hai ngày.
+Chuỗi kết quả của chúng ta có dạng phân chia ranh giới rõ ràng:
+$$[\text{false}, \text{false}, \text{false}, \dots, \text{false}, \;\mathbf{true}, \text{true}, \text{true}, \dots, \text{true}]$$
 
-Vậy giới hạn 19 có làm được không?
+Đặc tính này trong toán học gọi là **Tính đơn điệu (Monotonicity)**.  
+Và một khi hàm kiểm tra đã có tính đơn điệu: **Ta hoàn toàn có thể dùng Tìm kiếm nhị phân để nhảy cóc tìm ra điểm giao nhau giữa `false` và `true`!**
 
-Có. Nếu mỗi ngày được phép làm tối đa 18 đơn vị mà đã hoàn thành được, thì tăng giới hạn lên 19 không thể khiến việc phân chia trở nên khó khăn hơn.
+---
 
-Tương tự, 20, 21, 22... đều làm được.
+## 4. Ba bước vàng cài đặt Binary Search on Answer
 
-Ta có một nhận xét:
+### Bước 1: Xác định không gian tìm kiếm $[L, R]$
+Đáp án nằm trong khoảng nào?
+- **Cận dưới $L$:** Xe bắt buộc phải chở được kiện hàng nặng nhất. Kiện nặng nhất là $10$, nên ít nhất tải trọng xe phải là:
+  $$L = \max(A) = 10$$
+- **Cận trên $R$:** Trường hợp dư dả nhất là chở toàn bộ kiện hàng trong đúng $1$ ngày:
+  $$R = \sum A = 7 + 2 + 5 + 10 + 8 = 32$$
 
-- Giới hạn quá nhỏ: không hoàn thành được.
-- Đến một giới hạn nào đó: bắt đầu hoàn thành được.
-- Từ giới hạn đó trở đi: tất cả các giới hạn lớn hơn đều làm được.
+Vậy đáp án chắc chắn nằm trong đoạn $[10, 32]$.
 
-Hãy hình dung dãy kết quả:
+---
 
-| Giới hạn mỗi ngày | Có hoàn thành được không? |
-|---:|:---|
-| 10 | Không |
-| 11 | Không |
-| 12 | Không |
-| 13 | Không |
-| 14 | Không |
-| 15 | Không |
-| 16 | Không |
-| 17 | Không |
-| 18 | Có |
-| 19 | Có |
-| 20 | Có |
-| 21 | Có |
+### Bước 2: Viết hàm kiểm tra `check(mid)` (Dễ hơn bạn nghĩ!)
+Thay vì phải tìm công thức tính toán phức tạp, ta chỉ cần viết một hàm thẩm định:  
+*"Nếu cho xe tải trọng `mid`, liệu có chở hết hàng trong không quá $K$ ngày không?"*
 
-Điểm thú vị là ta không cần biết trước đáp án. Chỉ cần kiểm tra một giới hạn bất kỳ, ta có thể biết nên tiếp tục tìm ở phía nào.
-
-Đây chính là ý tưởng nền tảng của **tìm kiếm nhị phân trên đáp án**, hay *Binary Search on Answer*.
-
-## 4. Thay vì thử từng số, hãy thử ở giữa
-
-Giả sử ta biết đáp án nằm trong khoảng từ 10 đến 30.
-
-Cách thông thường là thử 10, rồi 11, rồi 12... Nhưng ta có thể thử ngay số nằm giữa khoảng:
-
-\[
-mid = \left\lfloor \frac{10+30}{2} \right\rfloor = 20
-\]
-
-Giả sử 20 làm được.
-
-Ta biết 20 là một giới hạn đủ tốt. Nhưng có thể còn một giới hạn nhỏ hơn cũng làm được, nên ta không cần tìm ở phía lớn hơn 20 nữa.
-
-Ta chỉ giữ lại khoảng từ 10 đến 20.
-
-Tiếp theo, thử chính giữa khoảng mới:
-
-\[
-mid = \left\lfloor \frac{10+20}{2} \right\rfloor = 15
-\]
-
-Nếu 15 không làm được, thì các giới hạn nhỏ hơn 15 cũng không làm được. Ta có thể bỏ toàn bộ đoạn từ 10 đến 15, rồi tìm tiếp trong đoạn còn lại.
-
-Cứ như vậy, mỗi lần kiểm tra ta loại bỏ được khoảng một nửa số khả năng.
-
-Đó là lý do tìm kiếm nhị phân nhanh hơn rất nhiều so với việc thử từng số.
-
-## 5. Nhưng máy tính kiểm tra một đáp án như thế nào?
-
-Ta cần dạy máy tính cách trả lời câu hỏi:
-
-*Với giới hạn thời gian mỗi ngày là \(X\), có thể hoàn thành công việc trong không quá hai ngày không?*
-
-Hãy lấy ví dụ \(X = 18\).
-
-Các công việc là:
-
-\[
-[7,\ 2,\ 5,\ 10,\ 8]
-\]
-
-Ta lần lượt xếp công việc vào từng ngày, giữ nguyên thứ tự và không để tổng thời gian vượt quá 18.
-
-- Ngày 1: \(7 + 2 + 5 = 14\). Thêm công việc 10 sẽ thành 24, quá giới hạn, nên dừng ngày đầu.
-- Ngày 2: \(10 + 8 = 18\).
-
-Ta hoàn thành trong đúng hai ngày. Vậy 18 là một giới hạn khả thi.
-
-Bây giờ thử \(X = 17\):
-
-- Ngày 1: \(7 + 2 + 5 = 14\).
-- Ngày 2: chỉ làm được công việc 10.
-- Ngày 3: làm công việc 8.
-
-Cần ba ngày, nên giới hạn 17 không đáp ứng yêu cầu.
-
-Từ đây, ta có thể viết một hàm tên `check(X)`. Nó chỉ cần trả lời `true` nếu giới hạn \(X\) dùng được, và `false` nếu không dùng được.
-
-Tên hàm không quan trọng. Điều quan trọng là nó giúp ta kiểm tra một đáp án ứng viên mà không cần thử tất cả những đáp án khác.
-
-## 6. Viết chương trình C++ từ những ý tưởng vừa rồi
-
-Đây là toàn bộ chương trình cho bài toán chia công việc:
+Ta dùng thuật toán Tham lam (Greedy): Cứ nhét hàng vào ngày hiện tại cho đến khi không nhét nổi nữa thì sang ngày mới:
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+bool check(long long limit, const std::vector<long long>& a, int k) {
+    int days = 1;
+    long long current_weight = 0;
 
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<ll> a(n);
-    ll L = 0, R = 0;
-
-    for (ll &x : a) {
-        cin >> x;
-        L = max(L, x);
-        R += x;
-    }
-
-    // Kiểm tra giới hạn thời gian limit
-    // có đủ để hoàn thành trong không quá k ngày không.
-    auto check = [&](ll limit) -> bool {
-        int days = 1;
-        ll current = 0;
-
-        for (ll x : a) {
-            if (current + x <= limit) {
-                current += x;
-            } else {
-                ++days;
-                current = x;
-            }
-        }
-
-        return days <= k;
-    };
-
-    // Tìm giới hạn nhỏ nhất có thể sử dụng.
-    while (L < R) {
-        ll mid = L + (R - L) / 2;
-
-        if (check(mid)) {
-            R = mid;
+    for (long long x : a) {
+        if (current_weight + x <= limit) {
+            current_weight += x;
         } else {
-            L = mid + 1;
+            days++; // Sang ngày mới
+            current_weight = x;
         }
     }
-
-    cout << L << '\n';
-
-    return 0;
+    return days <= k;
 }
 ```
 
-Input:
+---
 
-```text
-5 2
-7 2 5 10 8
-```
+### Bước 3: Template vòng lặp nhị phân bất bại (Không bao giờ lặp vô tận)
 
-Output:
-
-```text
-18
-```
-
-### Đọc code theo cách dễ hiểu
-
-**Bước 1: Tìm khoảng đáp án.**
+Rất nhiều bạn bị ám ảnh bởi lỗi vòng lặp vô tận khi viết `while (L <= R)`. Dưới đây là template chuẩn mực và an toàn nhất:
 
 ```cpp
-L = max(L, x);
-R += x;
+long long L = max_element_val;
+long long R = sum_all_val;
+long long ans = R;
+
+while (L <= R) {
+    long long mid = L + (R - L) / 2; // Tránh tràn số thay vì (L + R) / 2
+
+    if (check(mid, a, k)) {
+        ans = mid;      // mid khả thi! Ghi nhận kỷ lục tạm thời
+        R = mid - 1;    // Thử tìm xem có tải trọng nào NHỎ HƠN nữa mà vẫn được không
+    } else {
+        L = mid + 1;    // mid quá bé, bắt buộc phải tăng tải trọng lên!
+    }
+}
+
+std::cout << ans << "\n";
 ```
 
-Một ngày không thể nhận ít thời gian hơn thời gian của công việc dài nhất, nên cận dưới là công việc lớn nhất.
+---
 
-Còn nếu một ngày có đủ thời gian bằng tổng thời gian của tất cả công việc, ta luôn có thể làm hết trong một ngày. Vì thế, tổng thời gian là cận trên hợp lệ.
+## 5. Mở rộng đỉnh cao: Nhị phân trên số thực (Real Numbers)
 
-**Bước 2: Kiểm tra một giới hạn.**
+Nếu đề bài yêu cầu tìm một giá trị số thực $X$ (ví dụ: vận tốc nhỏ nhất, tỉ số lớn nhất) với độ chính xác $10^{-6}$ thì sao?
 
-Hàm `check(limit)` lần lượt xếp các công việc vào ngày hiện tại. Nếu thêm công việc tiếp theo khiến tổng vượt quá giới hạn, nó chuyển sang ngày mới.
+Rất nhiều người viết `while (R - L > 1e-7)` và bị dính TLE do hiện tượng trôi dấu phẩy động của số thực (`double`).
 
-Cuối cùng, nếu số ngày cần dùng không vượt quá `k`, hàm trả về `true`.
+### Bí kíp của dân chuyên: Cố định 100 vòng lặp!
+Mỗi lần chia đôi, khoảng cách giảm đi một nửa. Sau $100$ lần chia đôi:
+$$\frac{R - L}{2^{100}} \approx \frac{R - L}{10^{30}}$$
+Sai số sau 100 vòng lặp nhỏ hơn $10^{-15}$ — chính xác tuyệt đối và không bao giờ lo TLE!
 
-**Bước 3: Thu hẹp khoảng đáp án.**
+```cpp
+double L = 0.0, R = 1e9;
+for (int iter = 0; iter < 100; iter++) {
+    double mid = L + (R - L) / 2.0;
+    if (check(mid)) {
+        L = mid; // hoặc R = mid tùy bài toán
+    } else {
+        R = mid;
+    }
+}
+std::cout << std::fixed << std::setprecision(9) << L << "\n";
+```
 
-Nếu `check(mid)` trả về `true`, giới hạn `mid` đã đủ tốt, nhưng ta vẫn thử tìm một giới hạn nhỏ hơn. Vì vậy, ta đặt `R = mid`.
+---
 
-Nếu `check(mid)` trả về `false`, giới hạn đó quá nhỏ. Ta phải tìm một giá trị lớn hơn, nên đặt `L = mid + 1`.
+## 6. Dấu hiệu nhận biết bài toán trong đề thi
 
-Khi `L == R`, ta đã tìm được giới hạn nhỏ nhất có thể sử dụng.
+Làm sao để khi đọc một đề bài lạ hoắc, bạn nhận ra ngay: *"À, bài này dùng Binary Search on Answer!"*?
 
-## 7. Tại sao cách này nhanh hơn?
+Hãy tìm những cụm từ "chìa khóa" sau:
+1. **"Tìm giá trị nhỏ nhất sao cho..."** (Minimize the maximum / Min của Max)
+2. **"Tìm giá trị lớn nhất thỏa mãn điều kiện..."** (Maximize the minimum / Max của Min)
+3. **Bài toán xuôi thì cực khó, nhưng bài toán ngược thì siêu dễ:**  
+   - *Bài toán xuôi:* Tìm tải trọng xe tối ưu để chở xong trong $K$ ngày $\to$ Rất khó nghĩ công thức trực tiếp.
+   - *Bài toán ngược:* Cho trước xe tải trọng $X$, hỏi chở mất mấy ngày $\to$ Duyệt qua mảng mất $O(N)$ là biết ngay!
 
-Với cách thử từng số, nếu đáp án nằm rất xa cận dưới, chương trình có thể phải kiểm tra hàng triệu hoặc hàng tỷ giá trị.
+Khi thấy bài toán ngược dễ giải $\implies$ **Hãy nhị phân để đoán đáp án của bài toán xuôi!**
 
-Với tìm kiếm nhị phân, mỗi lần kiểm tra ta loại bỏ gần một nửa khoảng đang tìm kiếm.
+---
 
-Ví dụ, một khoảng có 1.000.000 khả năng sẽ giảm còn khoảng:
+## 7. Bài tập thực hành có link trực tiếp
 
-- 500.000 sau lần đầu.
-- 250.000 sau lần thứ hai.
-- 125.000 sau lần thứ ba.
+Hãy bắt tay vào luyện tập ngay với 4 bài toán kinh điển từ dễ đến nâng cao:
 
-Ta không cần đi qua lần lượt từng giá trị để đến gần đáp án.
+1. [CSES - Factory Machines](https://cses.fi/problemset/task/1620): Tính thời gian tối thiểu để $K$ máy sản xuất đủ $T$ sản phẩm.
+2. [CSES - Array Division](https://cses.fi/problemset/task/1088): Chia mảng thành $K$ đoạn con sao cho tổng lớn nhất là nhỏ nhất (giống hệt bài chở hàng ở trên).
+3. [Codeforces 1201C - Maximum Median](https://codeforces.com/contest/1201/problem/C): Tăng tối đa số trung vị của mảng với không quá $K$ thao tác.
+4. [LeetCode 1011 - Capacity To Ship Packages Within D Days](https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/): Bài toán chuyển hàng kinh điển.
 
-Nếu mỗi lần kiểm tra cần duyệt \(n\) công việc, chương trình có độ phức tạp:
+---
 
-\[
-O(n\log S)
-\]
+## Lời kết
 
-Trong đó \(S\) là tổng thời gian của tất cả công việc.
+Tìm kiếm nhị phân trên đáp án là một bước chuyển tư duy quan trọng từ người mới bắt đầu sang một lập trình viên thi đấu thực thụ: **Biến bài toán tối ưu hóa phức tạp thành một chuỗi các câu hỏi Đúng/Sai đơn giản.**
 
-Đừng quá bận tâm đến công thức này khi mới học. Điều cần nhớ là: **ta dùng một lần kiểm tra để loại bỏ rất nhiều khả năng, thay vì kiểm tra từng khả năng một.**
-
-## 8. Khi nào nên nghĩ đến kỹ thuật này?
-
-Không phải cứ bài toán có đáp án là có thể dùng tìm kiếm nhị phân trên đáp án.
-
-Hãy chú ý khi đề bài yêu cầu:
-
-- Tìm giá trị nhỏ nhất đủ để hoàn thành một nhiệm vụ.
-- Tìm giới hạn lớn nhất mà vẫn đáp ứng điều kiện.
-- Tìm thời gian tối thiểu, sức chứa tối thiểu hoặc một mức tài nguyên phù hợp.
-- Kiểm tra một giá trị cụ thể khá dễ, nhưng thử tất cả các giá trị lại quá chậm.
-
-Sau đó, hãy tự hỏi:
-
-**Nếu một giá trị đã làm được, những giá trị lớn hơn hoặc nhỏ hơn có chắc chắn làm được theo một chiều nào đó không?**
-
-Nếu có, mày có thể đang đứng trước một bài toán phù hợp với Binary Search on Answer.
-
-Nếu không, đừng cố ép nó vào tìm kiếm nhị phân. Có thể bài toán cần một cách tiếp cận khác.
-
-## 9. Điều nên rút ra khi luyện Competitive Programming
-
-Khi mới gặp một bài khó, đừng vội mở template hoặc cố nhớ tên thuật toán.
-
-Hãy thử đi theo trình tự:
-
-1. Đọc đề và nói lại bằng lời của mình xem đề thực sự yêu cầu gì.
-2. Nghĩ ra cách giải đơn giản nhất, kể cả khi nó chậm.
-3. Xác định phần nào khiến cách giải đó tốn thời gian.
-4. Tìm xem có thể bỏ qua nhiều khả năng cùng lúc hay không.
-5. Chứng minh rằng cách loại bỏ ấy không làm mất đáp án đúng.
-6. Cuối cùng mới chọn thuật toán và viết code.
-
-Trong ví dụ này, cách ngây thơ là thử từng giới hạn thời gian. Bước cải tiến là nhận ra rằng khi một giới hạn đã đủ tốt, mọi giới hạn lớn hơn cũng đủ tốt. Từ nhận xét ấy, ta mới có cơ sở để dùng tìm kiếm nhị phân.
-
-Đó là một cách học thuật toán bền vững hơn việc chỉ ghi nhớ những đoạn code có sẵn.
-
-## Kết luận
-
-Tìm kiếm nhị phân trên đáp án nghe có vẻ là một khái niệm khó, nhưng ý tưởng ban đầu khá gần gũi: thay vì thử mọi lựa chọn, hãy tìm cách xác định một lựa chọn có đủ tốt hay không, rồi dùng kết quả đó để loại bỏ những lựa chọn không cần thiết.
-
-Code chỉ là phần cuối cùng của quá trình. Phần đáng học nhất là cách ta đi từ một lời giải đơn giản đến một lời giải nhanh hơn.
-
-Khi luyện Codeforces, hãy tập trung vào quá trình suy nghĩ đó. Một khi hiểu được vì sao thuật toán hoạt động, việc nhớ và áp dụng code sẽ tự nhiên hơn rất nhiều.
+Chỉ cần rèn luyện phản xạ nhận diện tính đơn điệu, bạn sẽ thấy hàng loạt bài toán hóc búa bỗng chốc trở nên dễ dàng đến bất ngờ. Chúc các bạn làm chủ trọn vẹn kỹ thuật này!

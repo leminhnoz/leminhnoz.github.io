@@ -26,6 +26,7 @@ export default {
   friend: "Friend",
   archives: "Archives",
   problems: "Problems",
+  roadmap: "Roadmap",
 
   sidebar: {
     post: "Posts",
