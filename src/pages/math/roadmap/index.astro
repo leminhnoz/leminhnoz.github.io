@@ -6,6 +6,8 @@ import Footer from "../../../components/Footer.astro";
 import { Icon } from "astro-icon/components";
 import { urlFor } from "../../../utils/urlFor";
 import { mathRoadmapStages } from "../../../data/mathRoadmap";
+import { renderFormula, renderMathInText } from "../../../utils/renderMath";
+import "katex/dist/katex.min.css";
 
 const title = "Lộ Trình Toán Olympic | IMO & VMO Roadmap";
 const description = "Lộ trình 6 giai đoạn chinh phục Toán Olympic: Số học chuyên sâu, Đại số & PT hàm, Hình học thuần túy, Tổ hợp rời rạc, Bất đẳng thức và Olympic Sinh viên.";
@@ -108,14 +110,14 @@ const completedNodes = mathRoadmapStages.reduce(
                       </span>
                     </div>
 
-                    <h3 class="node-title">{node.title}</h3>
-                    <div class="node-vietnamese-title">{node.vietnameseTitle}</div>
-                    <p class="node-desc">{node.description}</p>
+                    <h3 class="node-title" set:html={renderMathInText(node.title)} />
+                    <div class="node-vietnamese-title" set:html={renderMathInText(node.vietnameseTitle)} />
+                    <div class="node-desc" set:html={renderMathInText(node.description)} />
 
                     <!-- Key Formula Box -->
                     <div class="formula-box">
                       <span class="formula-label">Công thức then chốt:</span>
-                      <code class="formula-code">{node.latexFormula}</code>
+                      <div class="formula-rendered" set:html={renderFormula(node.latexFormula, true)} />
                     </div>
 
                     <!-- Key Theorems -->
@@ -123,7 +125,7 @@ const completedNodes = mathRoadmapStages.reduce(
                       <span class="sub-label">Định lý cốt lõi:</span>
                       <ul class="theorems-list">
                         {node.keyTheorems.map((thm) => (
-                          <li><span class="bullet">▹</span> {thm}</li>
+                          <li><span class="bullet">▹</span> <span set:html={renderMathInText(thm)} /></li>
                         ))}
                       </ul>
                     </div>
@@ -503,6 +505,17 @@ const completedNodes = mathRoadmapStages.reduce(
     text-transform: uppercase;
     color: #7b2cbf;
     margin-bottom: 4px;
+  }
+
+  .formula-rendered {
+    overflow-x: auto;
+    padding: 6px 0;
+    text-align: center;
+    color: var(--color-default);
+
+    :global(.katex-display) {
+      margin: 4px 0 !important;
+    }
   }
 
   .formula-code {

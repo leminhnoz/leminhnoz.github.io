@@ -6,6 +6,8 @@ import Footer from "../../../components/Footer.astro";
 import { Icon } from "astro-icon/components";
 import { urlFor } from "../../../utils/urlFor";
 import { mathProblems, mathCategories } from "../../../data/mathProblems";
+import { renderMathInText } from "../../../utils/renderMath";
+import "katex/dist/katex.min.css";
 
 const title = "Kho Đề Olympic | Math Olympiad Archive";
 const description = "Tuyển chọn các bài toán kinh điển từ IMO, VMO, USAMO, Putnam, RMM & APMO • Phân loại theo chuyên đề và thảo luận trên AoPS.";
@@ -108,15 +110,15 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
 
               <div class="card-main">
                 <div class="prob-code">{prob.code}</div>
-                <h2 class="prob-name">{prob.title}</h2>
+                <h2 class="prob-name" set:html={renderMathInText(prob.title)} />
                 <div class="prob-category-tag">{prob.category}</div>
-                <p class="prob-latex-desc">{prob.latexDescription}</p>
+                <div class="prob-latex-desc" set:html={renderMathInText(prob.latexDescription)} />
 
                 <div class="theorems-used">
                   <span class="th-label">Công cụ & Định lý then chốt:</span>
                   <div class="th-tags">
                     {prob.theorems.map((th) => (
-                      <span class="th-pill">{th}</span>
+                      <span class="th-pill" set:html={renderMathInText(th)} />
                     ))}
                   </div>
                 </div>
