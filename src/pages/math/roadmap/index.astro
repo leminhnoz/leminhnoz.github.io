@@ -1,0 +1,612 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import HeaderTitle from "../../../components/partial/HeaderTitle.astro";
+import HeaderSubTitle from "../../../components/partial/HeaderSubTitle.astro";
+import Footer from "../../../components/Footer.astro";
+import { Icon } from "astro-icon/components";
+import { urlFor } from "../../../utils/urlFor";
+import { mathRoadmapStages } from "../../../data/mathRoadmap";
+
+const title = "Lộ Trình Toán Học | Math Roadmap";
+const description = "Lộ trình học Toán học toàn diện: Lý thuyết số, Đại số tuyến tính, Tổ hợp, Hình học tính toán, Giải tích và Lý thuyết trò chơi.";
+
+const totalStages = mathRoadmapStages.length;
+const totalNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.length, 0);
+const completedNodes = mathRoadmapStages.reduce(
+  (sum, s) => sum + s.nodes.filter(n => n.blogSlug !== null).length,
+  0
+);
+---
+
+<BaseLayout realm="math" title={title} description={description}>
+  <HeaderTitle title="Math Roadmap" url={urlFor("math/roadmap")} slot="header" />
+  <HeaderSubTitle
+    subtitle="Lộ trình học Toán chuyên sâu • Từ lý thuyết hình thức đến thuật toán tính toán"
+    url={urlFor("math/roadmap")}
+    slot="header"
+  />
+
+  <section id="main" aria-label="Main content">
+    <div class="roadmap-wrapper" data-aos="fade-up">
+      <!-- Intro Header -->
+      <header class="roadmap-intro">
+        <div class="intro-content">
+          <div class="math-badge">
+            <Icon name="fa6-solid:square-root-variable" size={14} />
+            <span>CHUYÊN MỤC TOÁN HỌC & GIẢI THUẬT</span>
+          </div>
+          <h1 class="page-title">{title}</h1>
+          <p class="page-description">{description}</p>
+        </div>
+        <div class="intro-stats">
+          <div class="stats-badge">
+            <span class="stats-number">{totalStages}</span> Giai đoạn
+          </div>
+          <div class="stats-badge">
+            <span class="stats-number">{totalNodes}</span> Chủ đề
+          </div>
+          <div class="stats-badge highlight">
+            <span class="stats-number">{completedNodes}</span> Đã có Blog
+          </div>
+        </div>
+      </header>
+
+      <!-- Toolbar -->
+      <div class="roadmap-toolbar">
+        <div class="filter-group" role="tablist">
+          <button class="filter-btn active" data-filter="all" type="button">Tất cả ({totalNodes})</button>
+          <button class="filter-btn" data-filter="has_blog" type="button">Đã có Blog ({completedNodes})</button>
+          <button class="filter-btn" data-filter="advanced" type="button">Nâng cao & Master</button>
+        </div>
+        <div class="quick-jump">
+          <select id="stage-select" class="stage-dropdown" aria-label="Nhảy tới giai đoạn">
+            <option value="">-- Nhảy tới Giai đoạn --</option>
+            {mathRoadmapStages.map(stage => (
+              <option value={`stage-${stage.id}`}>Stage {stage.id}: {stage.subtitle}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <!-- Stages List -->
+      <div class="stages-container">
+        {mathRoadmapStages.map((stage) => (
+          <section id={`stage-${stage.id}`} class="stage-section" data-aos="fade-up">
+            <header class="stage-header">
+              <div class="stage-title-wrap">
+                <span class="stage-icon">
+                  <Icon name={stage.icon} size={22} />
+                </span>
+                <div>
+                  <h2 class="stage-name">{stage.name}</h2>
+                  <span class="stage-subtitle">{stage.subtitle}</span>
+                </div>
+              </div>
+              <p class="stage-desc">{stage.description}</p>
+            </header>
+
+            <div class="nodes-grid">
+              {stage.nodes.map((node) => (
+                <article
+                  class="node-card"
+                  data-status={node.status}
+                  data-has-blog={node.blogSlug ? "true" : "false"}
+                  data-difficulty={node.difficulty}
+                >
+                  <div class="node-header">
+                    <span class={`difficulty-badge ${node.difficulty.toLowerCase()}`}>
+                      {node.difficulty}
+                    </span>
+                    <span class={`status-badge ${node.status}`}>
+                      {node.blogSlug ? "Đã có Blog" : "Đang phát triển"}
+                    </span>
+                  </div>
+
+                  <h3 class="node-title">{node.title}</h3>
+                  <div class="node-vietnamese-title">{node.vietnameseTitle}</div>
+                  <p class="node-desc">{node.description}</p>
+
+                  <!-- Key Formula Box -->
+                  <div class="formula-box">
+                    <span class="formula-label">Công thức then chốt:</span>
+                    <code class="formula-code">{node.latexFormula}</code>
+                  </div>
+
+                  <!-- Key Theorems -->
+                  <div class="theorems-block">
+                    <span class="sub-label">Định lý cốt lõi:</span>
+                    <ul class="theorems-list">
+                      {node.keyTheorems.map((thm) => (
+                        <li><span class="bullet">▹</span> {thm}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <!-- Practice Problems -->
+                  {node.practiceProblems.length > 0 && (
+                    <div class="problems-block">
+                      <span class="sub-label">Bài toán ứng dụng:</span>
+                      <div class="problem-chips">
+                        {node.practiceProblems.map((prob) => (
+                          <a
+                            href={prob.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class={`prob-chip ${prob.judge.toLowerCase().replace(/\s+/g, '-')}`}
+                            title={`Nộp bài trên ${prob.judge} (${prob.difficulty})`}
+                          >
+                            <span class="judge-tag">{prob.judge}</span>
+                            <span class="prob-title">{prob.title}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <!-- Footer: Link to Blog -->
+                  <div class="node-footer">
+                    {node.blogSlug ? (
+                      <a href={urlFor(`blog/${node.blogSlug}`)} class="blog-link active">
+                        <Icon name="fa6-solid:book-open" size={13} />
+                        <span>Đọc bài hướng dẫn chi tiết</span>
+                        <Icon name="fa6-solid:arrow-right" size={11} />
+                      </a>
+                    ) : (
+                      <span class="blog-link pending">
+                        <Icon name="fa6-solid:pen" size={13} />
+                        <span>Chuyên đề đang được biên soạn</span>
+                      </span>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+  function setupFilters() {
+    const filterButtons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const nodeCards = document.querySelectorAll<HTMLElement>('.node-card');
+    const stageSelect = document.getElementById('stage-select') as HTMLSelectElement | null;
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+        nodeCards.forEach((card) => {
+          let visible = true;
+          if (filter === 'has_blog') {
+            visible = card.getAttribute('data-has-blog') === 'true';
+          } else if (filter === 'advanced') {
+            const diff = card.getAttribute('data-difficulty');
+            visible = diff === 'Advanced' || diff === 'Expert';
+          }
+          card.style.display = visible ? 'flex' : 'none';
+        });
+      });
+    });
+
+    if (stageSelect) {
+      stageSelect.addEventListener('change', () => {
+        const targetId = stageSelect.value;
+        if (targetId) {
+          const target = document.getElementById(targetId);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      });
+    }
+  }
+
+  document.addEventListener('astro:page-load', setupFilters);
+  setupFilters();
+</script>
+
+<style lang="stylus">
+  .roadmap-wrapper {
+    max-width: 1200px;
+    margin: 0 auto 36px auto;
+    padding: 0 16px;
+  }
+
+  .roadmap-intro {
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .math-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: rgba(123, 44, 191, 0.12);
+    color: #7b2cbf;
+    border: 1px solid rgba(123, 44, 191, 0.25);
+    margin-bottom: 12px;
+  }
+
+  .page-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--color-default);
+    margin: 0 0 8px 0;
+  }
+
+  .page-description {
+    font-size: 14.5px;
+    color: var(--grey-7);
+    margin: 0;
+  }
+
+  .intro-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .stats-badge {
+    background: rgba(123, 44, 191, 0.08);
+    border: 1px solid rgba(123, 44, 191, 0.2);
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--color-default);
+    font-weight: 500;
+
+    &.highlight {
+      background: linear-gradient(135deg, rgba(123, 44, 191, 0.15), rgba(157, 78, 221, 0.25));
+      border-color: rgba(157, 78, 221, 0.4);
+    }
+  }
+
+  .stats-number {
+    font-size: 18px;
+    font-weight: 700;
+    color: #7b2cbf;
+    margin-right: 4px;
+  }
+
+  /* Toolbar */
+  .roadmap-toolbar {
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: 12px 18px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--grey-7);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: #7b2cbf;
+      color: #7b2cbf;
+    }
+
+    &.active {
+      background: #7b2cbf;
+      color: #fff;
+      border-color: #7b2cbf;
+      box-shadow: 0 2px 8px rgba(123, 44, 191, 0.3);
+    }
+  }
+
+  .stage-dropdown {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-wrap);
+    color: var(--color-default);
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* Stages */
+  .stage-section {
+    margin-bottom: 36px;
+  }
+
+  .stage-header {
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-left: 5px solid #7b2cbf;
+    border-radius: 0 14px 14px 0;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .stage-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .stage-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(123, 44, 191, 0.12);
+    color: #7b2cbf;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .stage-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-default);
+    margin: 0;
+  }
+
+  .stage-subtitle {
+    font-size: 12.5px;
+    color: #7b2cbf;
+    font-weight: 600;
+  }
+
+  .stage-desc {
+    font-size: 13.5px;
+    color: var(--grey-7);
+    margin: 4px 0 0 0;
+    line-height: 1.5;
+  }
+
+  /* Nodes Grid */
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+  }
+
+  .node-card {
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: rgba(123, 44, 191, 0.4);
+    }
+  }
+
+  .node-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .difficulty-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+
+    &.beginner { background: rgba(46, 204, 113, 0.15); color: #27ae60; }
+    &.intermediate { background: rgba(52, 152, 219, 0.15); color: #2980b9; }
+    &.advanced { background: rgba(230, 126, 34, 0.15); color: #d35400; }
+    &.expert { background: rgba(155, 89, 182, 0.15); color: #8e44ad; }
+  }
+
+  .status-badge {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--grey-7);
+
+    &.completed { color: #27ae60; }
+  }
+
+  .node-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-default);
+    margin: 0 0 4px 0;
+  }
+
+  .node-vietnamese-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #7b2cbf;
+    margin-bottom: 10px;
+  }
+
+  .node-desc {
+    font-size: 13.5px;
+    color: var(--grey-7);
+    line-height: 1.5;
+    margin: 0 0 14px 0;
+  }
+
+  .formula-box {
+    background: rgba(123, 44, 191, 0.06);
+    border: 1px solid rgba(123, 44, 191, 0.15);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+
+  .formula-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #7b2cbf;
+    margin-bottom: 4px;
+  }
+
+  .formula-code {
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--color-default);
+    word-break: break-all;
+  }
+
+  .theorems-block, .problems-block {
+    margin-bottom: 14px;
+  }
+
+  .sub-label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--grey-7);
+    margin-bottom: 6px;
+  }
+
+  .theorems-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    li {
+      font-size: 12.5px;
+      color: var(--color-default);
+      line-height: 1.4;
+    }
+    .bullet { color: #7b2cbf; font-weight: bold; }
+  }
+
+  .problem-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .prob-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    text-decoration: none;
+    background: rgba(53, 90, 117, 0.08);
+    border: 1px solid var(--color-border);
+    color: var(--color-default);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #7b2cbf;
+      color: #fff;
+      border-color: #7b2cbf;
+      transform: translateY(-1px);
+    }
+  }
+
+  .judge-tag {
+    font-weight: 700;
+    font-size: 10px;
+    padding: 1px 4px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  /* Node Footer */
+  .node-footer {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .blog-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &.active {
+      color: #7b2cbf;
+      &:hover { color: #9d4edd; transform: translateX(2px); }
+    }
+
+    &.pending {
+      color: var(--grey-7);
+      opacity: 0.7;
+    }
+  }
+
+  :global([data-theme='dark']) {
+    .math-badge {
+      background: rgba(186, 104, 200, 0.15);
+      color: #ce93d8;
+    }
+    .stats-number { color: #ce93d8; }
+    .stage-icon {
+      background: rgba(186, 104, 200, 0.15);
+      color: #ce93d8;
+    }
+    .stage-subtitle { color: #ce93d8; }
+    .node-vietnamese-title { color: #ce93d8; }
+    .formula-box {
+      background: rgba(186, 104, 200, 0.1);
+      border-color: rgba(186, 104, 200, 0.25);
+    }
+    .formula-label { color: #ce93d8; }
+    .theorems-list .bullet { color: #ce93d8; }
+    .blog-link.active { color: #ce93d8; }
+  }
+</style>

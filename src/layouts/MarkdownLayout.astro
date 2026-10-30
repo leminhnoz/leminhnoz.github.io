@@ -32,7 +32,13 @@ const {
   cover,
   comment = true,
   toc = true,
+  tags = [],
+  categories = [],
 } = frontmatter;
+
+const isMathPost =
+  tags.some((t: string) => t.toLowerCase().includes("math") || t.toLowerCase().includes("linear algebra") || t.toLowerCase().includes("number theory") || t.toLowerCase().includes("geometry")) ||
+  categories.some((c: string) => c.toLowerCase().includes("math") || c.toLowerCase().includes("toán"));
 ---
 
 <BaseLayout
@@ -43,6 +49,7 @@ const {
   isPost={true}
   headings={headings}
   toc={toc}
+  realm={isMathPost ? "math" : "programming"}
 >
   <HeaderTitle title={title} url={urlFor("/")} slot="header" />
   <section id="main" aria-label="Main content">

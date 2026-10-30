@@ -1,0 +1,287 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import HeaderTitle from "../../../components/partial/HeaderTitle.astro";
+import HeaderSubTitle from "../../../components/partial/HeaderSubTitle.astro";
+import Footer from "../../../components/Footer.astro";
+import { Icon } from "astro-icon/components";
+import { urlFor } from "../../../utils/urlFor";
+import { formatDate } from "../../../utils/formatDate";
+import { wordCount, readingTime } from "../../../utils/wordCount";
+import { sortPosts } from "../../../utils/sortPosts";
+
+const title = "Chuyên Đề Toán | Math Articles";
+const description = "Tuyển tập các bài viết và chuyên đề Toán học chuyên sâu: Lý thuyết số, Đại số ma trận, Tổ hợp và Hình học tính toán.";
+
+// Math-related tags or keywords
+const mathKeywords = [
+  "math", "number theory", "linear algebra", "combinatorics",
+  "geometry", "convex hull", "gaussian elimination", "determinant",
+  "fibonacci", "binary exponentiation", "euclidean", "diophantine"
+];
+
+const allPosts = await getCollection("blog");
+const mathPosts = allPosts
+  .filter((post) => {
+    const tags = (post.data.tags || []).map(t => t.toLowerCase());
+    const cats = (post.data.categories || []).map(c => c.toLowerCase());
+    const title = post.data.title.toLowerCase();
+    return tags.some(t => mathKeywords.some(k => t.includes(k))) ||
+           cats.some(c => mathKeywords.some(k => c.includes(k))) ||
+           mathKeywords.some(k => title.includes(k));
+  })
+  .sort(sortPosts);
+---
+
+<BaseLayout realm="math" title={title} description={description}>
+  <HeaderTitle title="Math Articles" url={urlFor("math/articles")} slot="header" />
+  <HeaderSubTitle
+    subtitle="Chuyên đề & Bài giảng Toán học chuyên sâu • clearluv4ever_"
+    url={urlFor("math/articles")}
+    slot="header"
+  />
+
+  <section id="main" aria-label="Main content">
+    <div class="articles-wrapper" data-aos="fade-up">
+      <!-- Header Intro -->
+      <header class="articles-intro">
+        <div class="intro-content">
+          <div class="math-badge">
+            <Icon name="fa6-solid:book-open" size={14} />
+            <span>BÀI VIẾT & CHUYÊN ĐỀ TOÁN HỌC</span>
+          </div>
+          <h1 class="page-title">{title}</h1>
+          <p class="page-description">
+            Tổng hợp các bài phân tích toán học chuyên sâu từ lý thuyết hình thức, định lý, bổ đề đến thuật toán thực thi bằng C++.
+          </p>
+        </div>
+        <div class="intro-stats">
+          <div class="stat-pill">
+            <span class="stat-num">{mathPosts.length}</span> Chuyên đề đã đăng
+          </div>
+        </div>
+      </header>
+
+      <!-- Articles Grid -->
+      <div class="articles-grid">
+        {mathPosts.map((post) => (
+          <article class="article-card" data-aos="fade-up">
+            <a href={urlFor(`blog/${post.id}`)} class="card-link" aria-label={post.data.title}></a>
+
+            <div class="card-meta">
+              <span>
+                <Icon name="fa6-solid:calendar" size={12} />
+                {formatDate(post.data.pubDate)}
+              </span>
+              <span>
+                <Icon name="fa6-solid:hourglass-half" size={12} />
+                {readingTime(post.body || "")} phút đọc
+              </span>
+            </div>
+
+            <h2 class="card-title">{post.data.title}</h2>
+            <p class="card-excerpt">
+              {post.data.excerpt || (post.body ? post.body.slice(0, 160) + "..." : "")}
+            </p>
+
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="card-tags">
+                {post.data.tags.slice(0, 4).map((tag: string) => (
+                  <span class="tag-pill">{tag}</span>
+                ))}
+              </div>
+            )}
+
+            <div class="card-read-more">
+              <span>Đọc chuyên đề</span>
+              <Icon name="fa6-solid:arrow-right" size={12} />
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style lang="stylus">
+  .articles-wrapper {
+    max-width: 1200px;
+    margin: 0 auto 36px auto;
+    padding: 0 16px;
+  }
+
+  .articles-intro {
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .math-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: rgba(123, 44, 191, 0.12);
+    color: #7b2cbf;
+    border: 1px solid rgba(123, 44, 191, 0.25);
+    margin-bottom: 12px;
+  }
+
+  .page-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--color-default);
+    margin: 0 0 8px 0;
+  }
+
+  .page-description {
+    font-size: 14.5px;
+    color: var(--grey-7);
+    margin: 0;
+  }
+
+  .stat-pill {
+    background: linear-gradient(135deg, rgba(123, 44, 191, 0.12), rgba(157, 78, 221, 0.22));
+    border: 1px solid rgba(123, 44, 191, 0.3);
+    padding: 8px 18px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    color: var(--color-default);
+
+    .stat-num {
+      font-weight: 700;
+      color: #7b2cbf;
+      margin-right: 4px;
+    }
+  }
+
+  /* Articles Grid */
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+  }
+
+  .article-card {
+    position: relative;
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: rgba(123, 44, 191, 0.4);
+
+      .card-title {
+        color: #7b2cbf;
+      }
+      .card-read-more {
+        color: #7b2cbf;
+        transform: translateX(3px);
+      }
+    }
+  }
+
+  .card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 14px;
+    font-size: 12px;
+    color: var(--grey-7);
+    margin-bottom: 10px;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-default);
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+  }
+
+  .card-excerpt {
+    font-size: 13.5px;
+    color: var(--grey-7);
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    flex-grow: 1;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .tag-pill {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(123, 44, 191, 0.08);
+    border: 1px solid rgba(123, 44, 191, 0.18);
+    color: var(--color-default);
+  }
+
+  .card-read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--grey-7);
+    transition: all 0.2s ease;
+  }
+
+  :global([data-theme='dark']) {
+    .math-badge {
+      background: rgba(186, 104, 200, 0.15);
+      color: #ce93d8;
+    }
+    .stat-num { color: #ce93d8; }
+    .tag-pill {
+      background: rgba(186, 104, 200, 0.1);
+      border-color: rgba(186, 104, 200, 0.2);
+    }
+    .article-card:hover .card-title {
+      color: #ce93d8;
+    }
+    .article-card:hover .card-read-more {
+      color: #ce93d8;
+    }
+  }
+</style>

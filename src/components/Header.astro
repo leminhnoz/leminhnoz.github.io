@@ -20,20 +20,58 @@ import SearchBox from "./partial/SearchBox";
 type Props = {
   title?: string;
   cover?: string;
+  realm?: "programming" | "math";
 };
 
-const { title = SITE.title, cover } = Astro.props;
+const { title = SITE.title, cover, realm } = Astro.props;
+const currentPath = Astro.url.pathname;
+const isMath = realm === "math" || currentPath.startsWith("/math");
+
+const realmMenu = isMath
+  ? [
+      { name: "math_home", label: "Toán học", url: "/math" },
+      { name: "math_roadmap", label: "Lộ trình Toán", url: "/math/roadmap" },
+      { name: "math_problems", label: "Kho bài toán", url: "/math/problems" },
+      { name: "math_articles", label: "Chuyên đề", url: "/math/articles" },
+      { name: "about", label: "About", url: "/about" },
+    ]
+  : [
+      { name: "prog_home", label: "Lập trình", url: "/programming" },
+      { name: "roadmap", label: "Lộ trình ICPC", url: "/roadmap" },
+      { name: "problems", label: "Bài tập CP", url: "/problems" },
+      { name: "archives", label: "Archives", url: "/archives" },
+      { name: "about", label: "About", url: "/about" },
+    ];
 ---
 
 <div id="header-nav">
   <nav id="main-nav">
     {
-      MENU.map((item) => (
+      realmMenu.map((item) => (
         <HeaderLink href={urlFor(item.url)} aria-label={item.name}>
-          {__(item.name)}
+          {item.label}
         </HeaderLink>
       ))
     }
+    <div class="nav-realm-switcher">
+      {
+        isMath ? (
+          <a href={urlFor("programming")} class="nav-realm-pill to-prog" title="Chuyển sang phân hệ Lập trình">
+            <Icon name="fa6-solid:laptop-code" size={12} />
+            <span>Sang Lập trình</span>
+          </a>
+        ) : (
+          <a href={urlFor("math")} class="nav-realm-pill to-math" title="Chuyển sang phân hệ Toán học">
+            <Icon name="fa6-solid:square-root-variable" size={12} />
+            <span>Sang Toán học</span>
+          </a>
+        )
+      }
+      <a href={urlFor("/")} class="nav-portal-pill" title="Quay về cổng chọn phân hệ">
+        <Icon name="fa6-solid:door-open" size={12} />
+        <span>Đổi phân hệ</span>
+      </a>
+    </div>
     <span
       id="main-nav-toggle"
       class="nav-icon"
@@ -264,5 +302,87 @@ const { title = SITE.title, cover } = Astro.props;
     color: var(--color-header-background) !important;
     font-size: 28px;
     transition: 0.3s;
+  }
+  .nav-realm-switcher {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 10px;
+
+    @media screen and (max-width: 959px) {
+      display: none;
+    }
+  }
+
+  .nav-realm-pill, .nav-portal-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 14px;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+  }
+
+  .nav-realm-pill.to-prog {
+    background: rgba(0, 119, 182, 0.12);
+    color: #0077b6;
+    border: 1px solid rgba(0, 119, 182, 0.3);
+
+    &:hover {
+      background: #0096c7;
+      color: #fff;
+      transform: translateY(-1px);
+    }
+  }
+
+  .nav-realm-pill.to-math {
+    background: rgba(123, 44, 191, 0.12);
+    color: #7b2cbf;
+    border: 1px solid rgba(123, 44, 191, 0.3);
+
+    &:hover {
+      background: #8e24aa;
+      color: #fff;
+      transform: translateY(-1px);
+    }
+  }
+
+  .nav-portal-pill {
+    background: rgba(100, 116, 139, 0.1);
+    color: var(--grey-7);
+    border: 1px solid var(--color-border);
+
+    &:hover {
+      background: var(--red-1);
+      color: #fff;
+      border-color: var(--red-1);
+      transform: translateY(-1px);
+    }
+  }
+
+  :global([data-theme='dark']) {
+    .nav-realm-pill.to-prog {
+      background: rgba(0, 150, 199, 0.18);
+      color: #80d3f2;
+      border-color: rgba(0, 150, 199, 0.35);
+
+      &:hover {
+        background: #0288d1;
+        color: #fff;
+      }
+    }
+    .nav-realm-pill.to-math {
+      background: rgba(186, 104, 200, 0.18);
+      color: #ce93d8;
+      border-color: rgba(186, 104, 200, 0.35);
+
+      &:hover {
+        background: #ab47bc;
+        color: #fff;
+      }
+    }
   }
 </style>

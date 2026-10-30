@@ -24,6 +24,23 @@ const currentPath = Astro.url.pathname;
 const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1 
   ? currentPath.slice(0, -1) 
   : currentPath;
+
+const isMath = normalizedPath.startsWith('/math');
+const realmMenu = isMath
+  ? [
+      { name: "math_home", label: "Toán học", url: "/math" },
+      { name: "math_roadmap", label: "Lộ trình Toán", url: "/math/roadmap" },
+      { name: "math_problems", label: "Kho bài toán", url: "/math/problems" },
+      { name: "math_articles", label: "Chuyên đề", url: "/math/articles" },
+      { name: "about", label: "About", url: "/about" },
+    ]
+  : [
+      { name: "prog_home", label: "Lập trình", url: "/programming" },
+      { name: "roadmap", label: "Lộ trình ICPC", url: "/roadmap" },
+      { name: "problems", label: "Bài tập CP", url: "/problems" },
+      { name: "archives", label: "Archives", url: "/archives" },
+      { name: "about", label: "About", url: "/about" },
+    ];
 ---
 
 <div class="sidebar-author">
@@ -47,7 +64,7 @@ const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1
 
 <div class="sidebar-menu">
   {
-    MENU.map((item) => {
+    realmMenu.map((item) => {
       const itemUrl = urlFor(item.url);
       const normalizedItemUrl = itemUrl.endsWith('/') && itemUrl.length > 1 
         ? itemUrl.slice(0, -1) 
@@ -69,11 +86,40 @@ const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1
               decoding="async"
             />
           </div>
-          <div class="sidebar-menu-link">{__(item.name)}</div>
+          <div class="sidebar-menu-link">{item.label}</div>
         </div>
       );
     })
   }
+  <div class="sidebar-realm-divider"></div>
+  <div class="sidebar-menu-link-wrap" data-guitar-sound>
+    <a class="sidebar-menu-link-dummy" href={isMath ? urlFor("programming") : urlFor("math")} />
+    <div class="sidebar-menu-icon">
+      <img
+        src={urlFor("images/avatar.png")}
+        alt=""
+        width="24"
+        height="24"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+    <div class="sidebar-menu-link">{isMath ? "Sang Lập trình ➔" : "Sang Toán học ➔"}</div>
+  </div>
+  <div class="sidebar-menu-link-wrap" data-guitar-sound>
+    <a class="sidebar-menu-link-dummy" href={urlFor("/")} />
+    <div class="sidebar-menu-icon">
+      <img
+        src={urlFor("images/avatar.png")}
+        alt=""
+        width="24"
+        height="24"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+    <div class="sidebar-menu-link">Đổi phân hệ 🏠</div>
+  </div>
 </div>
 
 <style lang="stylus">
@@ -157,6 +203,13 @@ const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1
   .sidebar-menu {
     margin: 20px 0;
     width: 100%;
+  }
+
+  .sidebar-realm-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: 12px 20px;
+    opacity: 0.6;
   }
 
   .sidebar-menu-link-wrap {

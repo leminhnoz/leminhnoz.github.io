@@ -16,6 +16,7 @@ import Loader from "../components/partial/Loader.astro";
 import Sidebar from "../components/Sidebar.astro";
 import MobileNav from "../components/MobileNav.astro";
 import SidebarScript from "../components/sidebar/SidebarScript.astro";
+import ThemeBtn from "../components/partial/ThemeBtn";
 
 type Props = {
   title?: string;
@@ -29,6 +30,8 @@ type Props = {
     text: string;
   }>;
   toc?: boolean;
+  isGateway?: boolean;
+  realm?: "programming" | "math";
 };
 
 const {
@@ -39,6 +42,8 @@ const {
   isPost = false,
   headings = [],
   toc = true,
+  isGateway = false,
+  realm,
 } = Astro.props;
 
 const headerImage = cover || BANNER;
@@ -60,39 +65,79 @@ const headerImage = cover || BANNER;
         margin: 0 auto;
         overflow: visible;
       }
+      .gateway-fullscreen-layout {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        box-sizing: border-box;
+        position: relative;
+        background: radial-gradient(circle at 50% 20%, rgba(140, 206, 240, 0.15) 0%, transparent 60%);
+      }
+      .gateway-top-bar {
+        position: absolute;
+        top: 20px;
+        right: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 100;
+      }
+      .gateway-main-area {
+        width: 100%;
+        max-width: 1100px;
+        margin: auto;
+      }
     </style>
     <VendorScript />
     <ClientRouter />
   </head>
   <body>
     {PRELOADER.enable && <Loader />}
-    <Header title={title} cover={cover}>
-      <slot name="header" />
-    </Header>
+    {
+      isGateway ? (
+        <div class="gateway-fullscreen-layout">
+          <div class="gateway-top-bar">
+            <ThemeBtn client:load className="nav-icon" />
+          </div>
+          <main class="gateway-main-area">
+            <slot />
+          </main>
+        </div>
+      ) : (
+        <>
+          <Header title={title} cover={cover} realm={realm}>
+            <slot name="header" />
+          </Header>
 
-    <main
-      class={SIDEBAR.position === "left"
-        ? "sidebar-left"
-        : SIDEBAR.position === "right"
-          ? "sidebar-right"
-          : ""}
-    >
-      {
-        SIDEBAR.position === "left" && (
-          <Sidebar isPost={isPost} headings={headings} toc={toc} />
-        )
-      }
-      <slot />
-      {
-        SIDEBAR.position === "right" && (
-          <Sidebar isPost={isPost} headings={headings} toc={toc} />
-        )
-      }
-    </main>
-    <slot name="footer" />
-    <AfterFooter />
-    <ToTop client:load imageUrl={urlFor("images/avatar.png")} />
-    <MobileNav isPost={isPost} headings={headings} toc={toc} />
+          <main
+            class={SIDEBAR.position === "left"
+              ? "sidebar-left"
+              : SIDEBAR.position === "right"
+                ? "sidebar-right"
+                : ""}
+          >
+            {
+              SIDEBAR.position === "left" && (
+                <Sidebar isPost={isPost} headings={headings} toc={toc} />
+              )
+            }
+            <slot />
+            {
+              SIDEBAR.position === "right" && (
+                <Sidebar isPost={isPost} headings={headings} toc={toc} />
+              )
+            }
+          </main>
+          <slot name="footer" />
+          <AfterFooter />
+          <ToTop client:load imageUrl={urlFor("images/avatar.png")} />
+          <MobileNav isPost={isPost} headings={headings} toc={toc} />
+        </>
+      )
+    }
     <div id="mask" class="hide"></div>
     <SidebarScript />
     <script>

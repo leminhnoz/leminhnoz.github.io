@@ -1,4 +1,5 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import HeaderTitle from "../../components/partial/HeaderTitle.astro";
 import HeaderSubTitle from "../../components/partial/HeaderSubTitle.astro";
@@ -6,80 +7,38 @@ import Footer from "../../components/Footer.astro";
 import { Icon } from "astro-icon/components";
 import { SITE } from "../../utils/config";
 import { urlFor } from "../../utils/urlFor";
+import { formatDate } from "../../utils/formatDate";
+import { readingTime } from "../../utils/wordCount";
+import { sortPosts } from "../../utils/sortPosts";
+import { mathRoadmapStages } from "../../data/mathRoadmap";
+import { mathProblems } from "../../data/mathProblems";
 
 const title = "Toán Học | Mathematics Hub";
-const description = "Phân hệ Toán học: Lý thuyết số, Đại số tuyến tính, Tổ hợp rời rạc, Hình học & Giải tích số.";
+const description = "Không gian nghiên cứu và rèn luyện Toán học: Lý thuyết số, Đại số tuyến tính, Tổ hợp rời rạc, Hình học tính toán và Giải tích số.";
 
-const upcomingTopics = [
-  {
-    icon: "fa6-solid:infinity",
-    name: "Lý thuyết số (Number Theory)",
-    tag: "Upcoming",
-    desc: "Nghiên cứu cấu trúc số nguyên, ước số, đồng dư thức và mật mã học hiện đại.",
-    items: [
-      "Bổ đề Bézout & Phương trình Diophantine tuyến tính",
-      "Hàm Euler Phi φ(n) & Định lý Fermat nhỏ / Euler",
-      "Định lý số dư Trung Hoa (Chinese Remainder Theorem)",
-      "Căn nguyên thủy, Logarithm rời rạc (Baby-step Giant-step)",
-      "Kiểm tra số nguyên tố ngẫu nhiên Miller-Rabin"
-    ]
-  },
-  {
-    icon: "fa6-solid:cubes-stacked",
-    name: "Đại số tuyến tính (Linear Algebra)",
-    tag: "Upcoming",
-    desc: "Cốt lõi của đồ họa máy tính, học máy, mật mã và giải thuật ma trận nâng cao.",
-    items: [
-      "Hệ phương trình đại số tuyến tính & Phép khử Gauss-Jordan",
-      "Không gian vector, Độc lập tuyến tính & Hạng ma trận",
-      "Không gian vector F2 & Cơ sở XOR (XOR Basis)",
-      "Phân rã ma trận LU, Cholesky & Định thức ma trận",
-      "Trị riêng (Eigenvalues), Vector riêng (Eigenvectors) & SVD"
-    ]
-  },
-  {
-    icon: "fa6-solid:dice-d20",
-    name: "Tổ hợp rời rạc (Combinatorics)",
-    tag: "Upcoming",
-    desc: "Nghệ thuật đếm không trùng lặp, bài toán đếm cấu trúc và tối ưu tổ hợp.",
-    items: [
-      "Chỉnh hợp, Tổ hợp nCr mod p & Nghịch đảo Modular",
-      "Dãy số Catalan, Stirling, Bell & Ứng dụng dựng cây/ngoặc",
-      "Nguyên lý Bù trừ (Principle of Inclusion-Exclusion)",
-      "Bổ đề Burnside & Định lý đếm Polya trong cấu trúc đối xứng",
-      "Kỳ vọng toán học (Linearity of Expectation) & Biến ngẫu nhiên"
-    ]
-  },
-  {
-    icon: "fa6-solid:shapes",
-    name: "Hình học tính toán (Computational Geometry)",
-    tag: "Upcoming",
-    desc: "Mô hình hóa hình học trong không gian 2D/3D bằng đại số vector.",
-    items: [
-      "Tích có hướng (Cross Product), Điểm rẽ trái/phải (CCW test)",
-      "Bao lồi đa giác (Convex Hull: Graham Scan & Monotone Chain)",
-      "Giao điểm của tập đoạn thẳng (Sweep-line Algorithm)",
-      "Đa giác Voronoi, Phép tam giác hóa Delaunay",
-      "Giao của các nửa mặt phẳng (Half-plane Intersection)"
-    ]
-  },
-  {
-    icon: "fa6-solid:chart-line",
-    name: "Giải tích & Tối ưu hóa (Calculus & Optimization)",
-    tag: "Upcoming",
-    desc: "Xấp xỉ hàm, cực trị, giải tích số và giải thuật tìm kiếm nghiệm.",
-    items: [
-      "Khai triển chuỗi Taylor & Maclaurin trong xấp xỉ hàm",
-      "Gradient Descent & Tối ưu hóa hàm đa biến",
-      "Tìm nghiệm phi tuyến: Phương pháp Newton-Raphson",
-      "Tích phân số bằng công thức Simpson & Romberg",
-      "Thuật toán Heuristic & Tôi luyện kim loại (Simulated Annealing)"
-    ]
-  }
+const mathKeywords = [
+  "math", "number theory", "linear algebra", "combinatorics",
+  "geometry", "convex hull", "gaussian elimination", "determinant",
+  "fibonacci", "binary exponentiation", "euclidean", "diophantine"
 ];
+
+const allPosts = await getCollection("blog");
+const featuredMathPosts = allPosts
+  .filter((post) => {
+    const tags = (post.data.tags || []).map(t => t.toLowerCase());
+    const cats = (post.data.categories || []).map(c => c.toLowerCase());
+    const title = post.data.title.toLowerCase();
+    return tags.some(t => mathKeywords.some(k => t.includes(k))) ||
+           cats.some(c => mathKeywords.some(k => c.includes(k))) ||
+           mathKeywords.some(k => title.includes(k));
+  })
+  .sort(sortPosts)
+  .slice(0, 6);
+
+const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.length, 0);
 ---
 
-<BaseLayout title={`${SITE.title} | ${title}`} description={description}>
+<BaseLayout realm="math" title={`${SITE.title} | ${title}`} description={description}>
   <!-- Header -->
   <HeaderTitle title={SITE.title} url={urlFor("math")} slot="header" />
   <HeaderSubTitle
@@ -89,106 +48,174 @@ const upcomingTopics = [
   />
 
   <section id="main" aria-label="Main content">
-    <!-- Realm Switcher Bar -->
-    <div class="realm-banner" data-aos="fade-down">
-      <div class="realm-info">
-        <span class="realm-badge active-math">
-          <Icon name="fa6-solid:square-root-variable" size={14} />
-          Toán học (Mathematics)
-        </span>
-        <span class="realm-desc">Lý thuyết số • Đại số tuyến tính • Tổ hợp • Giải tích</span>
-      </div>
-      <div class="realm-actions">
-        <a href={urlFor("programming")} class="realm-switch-btn" title="Chuyển sang phân hệ Lập trình">
-          <Icon name="fa6-solid:code" size={14} />
-          <span>Sang Lập trình</span>
-        </a>
-        <a href={urlFor("/")} class="realm-portal-btn" title="Quay về cổng chọn phân hệ">
-          <Icon name="fa6-solid:door-open" size={14} />
-          <span>Đổi phân hệ</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- Math Main Hub Card -->
-    <div class="math-hub-card" data-aos="fade-up">
-      <div class="hub-header">
-        <div class="hub-icon-wrap">
-          <span class="math-sigmas">∑</span>
-          <span class="math-pis">π</span>
-          <span class="math-integrals">∫</span>
+    <div class="math-portal-wrap" data-aos="fade-up">
+      <!-- Realm Switcher Bar -->
+      <div class="realm-banner" data-aos="fade-down">
+        <div class="realm-info">
+          <span class="realm-badge active-math">
+            <Icon name="fa6-solid:square-root-variable" size={14} />
+            Phân hệ Toán học (Mathematics)
+          </span>
+          <span class="realm-desc">Lý thuyết số • Đại số ma trận • Tổ hợp • Hình học • Giải tích</span>
         </div>
-        <div class="hub-title-block">
-          <div class="status-pill">
-            <span class="pulse-dot"></span>
-            Đang phát triển nội dung (Under Construction)
+        <div class="realm-actions">
+          <a href={urlFor("programming")} class="realm-switch-btn" title="Chuyển sang phân hệ Lập trình">
+            <Icon name="fa6-solid:laptop-code" size={14} />
+            <span>Sang Lập trình</span>
+          </a>
+          <a href={urlFor("/")} class="realm-portal-btn" title="Quay về cổng chọn phân hệ">
+            <Icon name="fa6-solid:door-open" size={14} />
+            <span>Đổi phân hệ</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero Welcome Card -->
+      <div class="math-hero-card" data-aos="fade-up">
+        <div class="hero-left">
+          <div class="hero-tag">
+            <Icon name="fa6-solid:shapes" size={13} />
+            <span>KHÁM PHÁ BẢN CHẤT CỦA THUẬT TOÁN</span>
           </div>
-          <h1 class="hub-heading">Toán Học & Nền Tảng Khoa Học Máy Tính</h1>
-          <p class="hub-subtext">
-            Toán học là ngôn ngữ biểu đạt sự chặt chẽ của thế giới và bản chất của mọi cấu trúc thuật toán.
-            Phân hệ Toán học của <strong>clearluv4ever_</strong> đang trong quá trình biên soạn và sẽ ra mắt chuỗi chuyên đề chuyên sâu, kết hợp giữa tư duy toán thuần túy và mã nguồn thực thi.
+          <h1 class="hero-title">Toán Học & Nền Tảng Khoa Học Máy Tính</h1>
+          <p class="hero-desc">
+            Toán học không chỉ là công cụ tính toán mà là ngôn ngữ tư duy logic tối thượng.
+            Mọi cấu trúc dữ liệu tinh vi, thuật toán tối ưu hay mô hình AI hiện đại đều bắt nguồn từ các định lý toán học sâu sắc.
           </p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <span class="num">{mathRoadmapStages.length}</span>
+              <span class="lbl">Giai đoạn lộ trình</span>
+            </div>
+            <div class="hero-stat">
+              <span class="num">{totalRoadmapNodes}</span>
+              <span class="lbl">Chủ đề chuyên sâu</span>
+            </div>
+            <div class="hero-stat">
+              <span class="num">{mathProblems.length}</span>
+              <span class="lbl">Bài toán chọn lọc</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-art">
+          <div class="art-ring">
+            <span class="sym-art sym-1">∫</span>
+            <span class="sym-art sym-2">∑</span>
+            <span class="sym-art sym-3">π</span>
+            <span class="sym-art sym-4">√</span>
+            <span class="sym-art sym-5">∞</span>
+            <Icon name="fa6-solid:infinity" size={64} class="core-math-symbol" />
+          </div>
         </div>
       </div>
 
-      <!-- Quick Action Buttons -->
-      <div class="hub-cta-row">
-        <a href={urlFor("programming")} class="btn-primary-glow">
-          <Icon name="fa6-solid:code" size={16} />
-          <span>Khám phá 53+ bài viết Lập trình hiện có</span>
-          <Icon name="fa6-solid:arrow-right" size={14} />
-        </a>
-        <a href={urlFor("roadmap")} class="btn-secondary-outline">
-          <Icon name="fa6-solid:diagram-project" size={16} />
-          <span>Xem Lộ trình CP Roadmap</span>
-        </a>
-        <a href={urlFor("/")} class="btn-ghost">
-          <Icon name="fa6-solid:house" size={16} />
-          <span>Quay lại Cổng chọn</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- Syllabus Grid -->
-    <div class="syllabus-section" data-aos="fade-up">
-      <div class="section-title-wrap">
-        <h2 class="section-title">
-          <Icon name="fa6-solid:book-bookmark" size={20} />
-          Lộ trình các chuyên đề Toán sắp ra mắt
-        </h2>
-        <span class="section-caption">Được thiết kế trực quan, có chứng minh toán học và ví dụ minh họa bằng code C++</span>
-      </div>
-
-      <div class="syllabus-grid">
-        {upcomingTopics.map((topic, idx) => (
-          <div class="topic-card" data-aos="fade-up" data-aos-delay={idx * 60}>
-            <div class="topic-header">
-              <div class="topic-icon-box">
-                <Icon name={topic.icon} size={20} />
-              </div>
-              <span class="topic-tag">{topic.tag}</span>
-            </div>
-            <h3 class="topic-title">{topic.name}</h3>
-            <p class="topic-desc">{topic.desc}</p>
-            <ul class="topic-items">
-              {topic.items.map(item => (
-                <li>
-                  <span class="bullet">▹</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+      <!-- 3 Main Pillars -->
+      <div class="math-pillars-grid" data-aos="fade-up">
+        <!-- Pillar 1: Roadmap -->
+        <a href={urlFor("math/roadmap")} class="pillar-card pillar-roadmap">
+          <div class="pillar-icon-box">
+            <Icon name="fa6-solid:route" size={28} />
           </div>
-        ))}
-      </div>
-    </div>
+          <div class="pillar-body">
+            <span class="pillar-badge">Lộ trình học tập</span>
+            <h2 class="pillar-title">Lộ Trình Toán Học (Roadmap)</h2>
+            <p class="pillar-desc">
+              Lộ trình 6 giai đoạn từ Lý thuyết số sơ cấp, Đại số tuyến tính, Tổ hợp rời rạc, Hình học tính toán đến Giải tích số.
+            </p>
+          </div>
+          <div class="pillar-action">
+            <span>Khám phá Lộ trình Toán</span>
+            <Icon name="fa6-solid:arrow-right" size={14} />
+          </div>
+        </a>
 
-    <!-- Mathematics Philosophy Box -->
-    <div class="math-quote-box" data-aos="fade-up">
-      <blockquote class="quote-text">
-        "Mathematics is not about numbers, equations, computations, or algorithms: it is about understanding."
-      </blockquote>
-      <cite class="quote-author">— William Paul Thurston (Fields Medalist)</cite>
+        <!-- Pillar 2: Problems -->
+        <a href={urlFor("math/problems")} class="pillar-card pillar-problems">
+          <div class="pillar-icon-box">
+            <Icon name="fa6-solid:calculator" size={28} />
+          </div>
+          <div class="pillar-body">
+            <span class="pillar-badge">Luyện tập thực chiến</span>
+            <h2 class="pillar-title">Kho Bài Toán (Problems)</h2>
+            <p class="pillar-desc">
+              Tuyển chọn 33+ bài toán kinh điển từ Project Euler, CSES Math Set, Codeforces và VNOJ có link nộp bài trực tiếp.
+            </p>
+          </div>
+          <div class="pillar-action">
+            <span>Vào Kho Bài Toán</span>
+            <Icon name="fa6-solid:arrow-right" size={14} />
+          </div>
+        </a>
+
+        <!-- Pillar 3: Articles -->
+        <a href={urlFor("math/articles")} class="pillar-card pillar-articles">
+          <div class="pillar-icon-box">
+            <Icon name="fa6-solid:book-open" size={28} />
+          </div>
+          <div class="pillar-body">
+            <span class="pillar-badge">Bài giảng & Bổ đề</span>
+            <h2 class="pillar-title">Chuyên Đề Toán (Articles)</h2>
+            <p class="pillar-desc">
+              Các bài phân tích toán học chuyên sâu: Khử Gauss, Định thức ma trận, Lũy thừa nhị phân, Euclid mở rộng, Fibonacci secrets.
+            </p>
+          </div>
+          <div class="pillar-action">
+            <span>Đọc các Chuyên đề</span>
+            <Icon name="fa6-solid:arrow-right" size={14} />
+          </div>
+        </a>
+      </div>
+
+      <!-- Featured Math Articles Section -->
+      <div class="featured-articles-section" data-aos="fade-up">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <Icon name="fa6-solid:fire" size={20} class="flame-icon" />
+              Chuyên đề Toán học nổi bật
+            </h2>
+            <span class="section-sub">Các bài viết có mã nguồn C++ mẫu và chứng minh chặt chẽ</span>
+          </div>
+          <a href={urlFor("math/articles")} class="view-all-link">
+            <span>Xem tất cả ({allPosts.length})</span>
+            <Icon name="fa6-solid:arrow-right" size={12} />
+          </a>
+        </div>
+
+        <div class="featured-grid">
+          {featuredMathPosts.map((post) => (
+            <article class="featured-card">
+              <a href={urlFor(`blog/${post.id}`)} class="card-hitbox" aria-label={post.data.title}></a>
+              <div class="card-meta-line">
+                <span>
+                  <Icon name="fa6-solid:calendar" size={11} />
+                  {formatDate(post.data.pubDate)}
+                </span>
+                <span>
+                  <Icon name="fa6-solid:hourglass-half" size={11} />
+                  {readingTime(post.body || "")} phút
+                </span>
+              </div>
+              <h3 class="card-post-title">{post.data.title}</h3>
+              <p class="card-post-excerpt">
+                {post.data.excerpt || (post.body ? post.body.slice(0, 140) + "..." : "")}
+              </p>
+              <div class="read-link">
+                <span>Chi tiết chuyên đề</span>
+                <Icon name="fa6-solid:arrow-right" size={11} />
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <!-- Mathematical Philosophy Box -->
+      <div class="math-quote-box" data-aos="fade-up">
+        <blockquote class="quote-text">
+          "Pure mathematics is, in its way, the poetry of logical ideas."
+        </blockquote>
+        <cite class="quote-author">— Albert Einstein</cite>
+      </div>
     </div>
   </section>
 
@@ -197,14 +224,21 @@ const upcomingTopics = [
 </BaseLayout>
 
 <style lang="stylus">
+  .math-portal-wrap {
+    max-width: 1200px;
+    margin: 0 auto 36px auto;
+    padding: 0 16px;
+  }
+
+  /* Realm Switcher Bar */
   .realm-banner {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: var(--color-wrap);
     border: 1px solid var(--color-border);
-    border-radius: 12px;
-    padding: 12px 18px;
+    border-radius: 14px;
+    padding: 12px 20px;
     margin-bottom: 24px;
     box-shadow: var(--shadow-card);
     flex-wrap: wrap;
@@ -222,13 +256,13 @@ const upcomingTopics = [
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 12px;
+    padding: 5px 14px;
     border-radius: 20px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     background: linear-gradient(135deg, #7b2cbf, #9d4edd);
     color: #fff;
-    box-shadow: 0 2px 8px rgba(157, 78, 221, 0.35);
+    box-shadow: 0 2px 10px rgba(157, 78, 221, 0.35);
   }
 
   .realm-desc {
@@ -246,24 +280,24 @@ const upcomingTopics = [
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
-    border-radius: 8px;
+    padding: 6px 14px;
+    border-radius: 10px;
     font-size: 12.5px;
-    font-weight: 500;
+    font-weight: 600;
     text-decoration: none;
     transition: all 0.25s ease;
   }
 
   .realm-switch-btn {
-    background: rgba(0, 150, 199, 0.1);
+    background: rgba(0, 119, 182, 0.1);
     color: #0077b6;
-    border: 1px solid rgba(0, 150, 199, 0.25);
+    border: 1px solid rgba(0, 119, 182, 0.25);
 
     &:hover {
       background: #0096c7;
       color: #fff;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 150, 199, 0.25);
+      box-shadow: 0 4px 12px rgba(0, 150, 199, 0.3);
     }
   }
 
@@ -280,324 +314,347 @@ const upcomingTopics = [
     }
   }
 
-  /* Main Hub Card */
-  .math-hub-card {
+  /* Hero Card */
+  .math-hero-card {
     background: var(--color-wrap);
     border: 1px solid var(--color-border);
-    border-radius: 16px;
-    padding: 36px 32px;
+    border-radius: 20px;
+    padding: 40px 36px;
     margin-bottom: 32px;
     box-shadow: var(--shadow-card);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
     position: relative;
     overflow: hidden;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: -60px;
-      right: -60px;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(157, 78, 221, 0.15) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-  }
-
-  .hub-header {
-    display: flex;
-    gap: 24px;
-    align-items: flex-start;
-
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: 860px) {
       flex-direction: column;
-      gap: 16px;
+      padding: 28px 20px;
     }
   }
 
-  .hub-icon-wrap {
-    width: 72px;
-    height: 72px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, rgba(123, 44, 191, 0.15), rgba(157, 78, 221, 0.25));
-    border: 1px solid rgba(157, 78, 221, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    flex-shrink: 0;
-
-    .math-sigmas {
-      font-size: 28px;
-      font-weight: 700;
-      color: #7b2cbf;
-    }
-    .math-pis {
-      position: absolute;
-      top: 6px;
-      right: 8px;
-      font-size: 14px;
-      color: #9d4edd;
-      opacity: 0.8;
-    }
-    .math-integrals {
-      position: absolute;
-      bottom: 6px;
-      left: 10px;
-      font-size: 18px;
-      color: #7b2cbf;
-      opacity: 0.8;
-    }
-  }
-
-  .status-pill {
+  .hero-tag {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    font-size: 12.5px;
-    font-weight: 600;
-    color: #e67e22;
-    background: rgba(230, 126, 34, 0.12);
-    border: 1px solid rgba(230, 126, 34, 0.3);
+    gap: 6px;
     padding: 4px 12px;
     border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: rgba(123, 44, 191, 0.12);
+    color: #7b2cbf;
+    border: 1px solid rgba(123, 44, 191, 0.25);
     margin-bottom: 12px;
   }
 
-  .pulse-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #e67e22;
-    box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(0.95);
-      box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7);
-    }
-    70% {
-      transform: scale(1);
-      box-shadow: 0 0 0 6px rgba(230, 126, 34, 0);
-    }
-    100% {
-      transform: scale(0.95);
-      box-shadow: 0 0 0 0 rgba(230, 126, 34, 0);
-    }
-  }
-
-  .hub-heading {
-    font-size: 26px;
-    font-weight: 700;
+  .hero-title {
+    font-size: 28px;
+    font-weight: 800;
     color: var(--color-default);
     margin: 0 0 12px 0;
     line-height: 1.35;
   }
 
-  .hub-subtext {
+  .hero-desc {
     font-size: 15px;
     color: var(--grey-7);
-    line-height: 1.7;
-    margin: 0;
+    line-height: 1.65;
+    margin: 0 0 24px 0;
+    max-width: 640px;
   }
 
-  .hub-cta-row {
-    margin-top: 28px;
+  .hero-stats {
     display: flex;
-    gap: 12px;
+    gap: 20px;
     flex-wrap: wrap;
   }
 
-  .btn-primary-glow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    background: linear-gradient(135deg, #0077b6, #0096c7);
-    color: #fff;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 4px 14px rgba(0, 150, 199, 0.35);
-    transition: all 0.25s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 150, 199, 0.5);
-      color: #fff;
-    }
-  }
-
-  .btn-secondary-outline {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 18px;
-    background: var(--color-wrap);
-    color: var(--color-link);
-    border: 1px solid var(--color-link);
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.25s ease;
-
-    &:hover {
-      background: var(--color-link);
-      color: #fff;
-      transform: translateY(-2px);
-    }
-  }
-
-  .btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    color: var(--grey-7);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.25s ease;
-
-    &:hover {
-      background: rgba(100, 116, 139, 0.1);
-      color: var(--color-default);
-    }
-  }
-
-  /* Syllabus Section */
-  .syllabus-section {
-    margin-bottom: 32px;
-  }
-
-  .section-title-wrap {
-    margin-bottom: 20px;
-  }
-
-  .section-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--color-default);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0 0 6px 0;
-  }
-
-  .section-caption {
-    font-size: 13.5px;
-    color: var(--grey-7);
-  }
-
-  .syllabus-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
-  }
-
-  .topic-card {
-    background: var(--color-wrap);
-    border: 1px solid var(--color-border);
-    border-radius: 14px;
-    padding: 22px;
-    box-shadow: var(--shadow-card);
-    transition: all 0.3s ease;
+  .hero-stat {
     display: flex;
     flex-direction: column;
 
-    &:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-card-hover);
-      border-color: rgba(157, 78, 221, 0.4);
+    .num {
+      font-size: 26px;
+      font-weight: 800;
+      color: #7b2cbf;
+    }
+    .lbl {
+      font-size: 12px;
+      color: var(--grey-7);
     }
   }
 
-  .topic-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+  .hero-art {
+    flex-shrink: 0;
   }
 
-  .topic-icon-box {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
+  .art-ring {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(123, 44, 191, 0.15) 0%, rgba(157, 78, 221, 0.05) 70%);
+    border: 2px dashed rgba(157, 78, 221, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: #7b2cbf;
+    animation: rotateSlow 40s linear infinite;
+  }
+
+  @keyframes rotateSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .core-math-symbol {
+    animation: counterRotate 40s linear infinite;
+  }
+
+  @keyframes counterRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+  }
+
+  .sym-art {
+    position: absolute;
+    font-weight: 700;
+    color: #9d4edd;
+    opacity: 0.6;
+
+    &.sym-1 { top: 10px; left: 24px; font-size: 18px; }
+    &.sym-2 { top: 12px; right: 28px; font-size: 20px; }
+    &.sym-3 { bottom: 16px; left: 24px; font-size: 16px; }
+    &.sym-4 { bottom: 18px; right: 28px; font-size: 18px; }
+    &.sym-5 { top: 50%; right: 6px; transform: translateY(-50%); font-size: 16px; }
+  }
+
+  /* 3 Main Pillars */
+  .math-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 36px;
+
+    @media screen and (max-width: 959px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .pillar-card {
+    background: var(--color-wrap);
+    border: 2px solid var(--color-border);
+    border-radius: 20px;
+    padding: 28px 24px;
+    box-shadow: var(--shadow-card);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+    &:hover {
+      transform: translateY(-6px);
+      border-color: #7b2cbf;
+      box-shadow: 0 16px 36px rgba(123, 44, 191, 0.2);
+
+      .pillar-action {
+        color: #7b2cbf;
+        transform: translateX(4px);
+      }
+      .pillar-icon-box {
+        transform: scale(1.08);
+      }
+    }
+  }
+
+  .pillar-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
     background: rgba(123, 44, 191, 0.1);
     color: #7b2cbf;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-bottom: 18px;
+    transition: transform 0.25s ease;
   }
 
-  .topic-tag {
+  .pillar-badge {
+    display: inline-block;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    padding: 3px 8px;
-    border-radius: 12px;
-    background: rgba(123, 44, 191, 0.12);
     color: #7b2cbf;
+    margin-bottom: 6px;
   }
 
-  .topic-title {
+  .pillar-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--color-default);
+    margin: 0 0 10px 0;
+  }
+
+  .pillar-desc {
+    font-size: 13.5px;
+    color: var(--grey-7);
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+  }
+
+  .pillar-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--grey-7);
+    transition: all 0.2s ease;
+  }
+
+  /* Featured Articles Grid */
+  .featured-articles-section {
+    margin-bottom: 36px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .section-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--color-default);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 4px 0;
+  }
+
+  .flame-icon {
+    color: #e67e22;
+  }
+
+  .section-sub {
+    font-size: 13px;
+    color: var(--grey-7);
+  }
+
+  .view-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #7b2cbf;
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #9d4edd;
+      transform: translateX(2px);
+    }
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .featured-card {
+    position: relative;
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: rgba(123, 44, 191, 0.35);
+
+      .card-post-title { color: #7b2cbf; }
+      .read-link { color: #7b2cbf; transform: translateX(3px); }
+    }
+  }
+
+  .card-hitbox {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+  }
+
+  .card-meta-line {
+    display: flex;
+    gap: 12px;
+    font-size: 11.5px;
+    color: var(--grey-7);
+    margin-bottom: 8px;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+  }
+
+  .card-post-title {
     font-size: 16.5px;
     font-weight: 700;
     color: var(--color-default);
     margin: 0 0 8px 0;
+    line-height: 1.4;
+    transition: color 0.2s ease;
   }
 
-  .topic-desc {
+  .card-post-excerpt {
     font-size: 13px;
     color: var(--grey-7);
-    line-height: 1.5;
+    line-height: 1.55;
     margin: 0 0 14px 0;
+    flex-grow: 1;
   }
 
-  .topic-items {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    li {
-      font-size: 13px;
-      color: var(--color-default);
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      line-height: 1.45;
-    }
-
-    .bullet {
-      color: #7b2cbf;
-      font-size: 11px;
-      flex-shrink: 0;
-    }
+  .read-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--grey-7);
+    transition: all 0.2s ease;
   }
 
   /* Quote Box */
   .math-quote-box {
     background: var(--color-wrap);
     border-left: 4px solid #7b2cbf;
-    border-radius: 0 12px 12px 0;
-    padding: 20px 24px;
+    border-radius: 0 14px 14px 0;
+    padding: 22px 26px;
     box-shadow: var(--shadow-card);
-    margin-top: 16px;
   }
 
   .quote-text {
     margin: 0 0 8px 0;
-    font-size: 15px;
+    font-size: 15.5px;
     font-style: italic;
     color: var(--color-default);
     line-height: 1.6;
@@ -611,22 +668,30 @@ const upcomingTopics = [
   }
 
   :global([data-theme='dark']) {
-    .topic-icon-box {
+    .realm-badge.active-math {
+      background: linear-gradient(135deg, #8e24aa, #ba68c8);
+    }
+    .hero-stat .num { color: #ce93d8; }
+    .art-ring {
+      background: radial-gradient(circle, rgba(186, 104, 200, 0.2) 0%, transparent 70%);
+      border-color: rgba(186, 104, 200, 0.4);
+      color: #ce93d8;
+    }
+    .sym-art { color: #ce93d8; }
+    .pillar-icon-box {
       background: rgba(186, 104, 200, 0.15);
       color: #ce93d8;
     }
-    .topic-tag {
-      background: rgba(186, 104, 200, 0.2);
-      color: #ce93d8;
+    .pillar-badge { color: #ce93d8; }
+    .pillar-card:hover {
+      border-color: #ce93d8;
+      .pillar-action { color: #ce93d8; }
     }
-    .topic-items .bullet {
-      color: #ce93d8;
-    }
-    .hub-icon-wrap .math-sigmas, .hub-icon-wrap .math-integrals {
-      color: #ce93d8;
-    }
-    .hub-icon-wrap .math-pis {
-      color: #e1bee7;
+    .view-all-link { color: #ce93d8; }
+    .featured-card:hover {
+      border-color: rgba(186, 104, 200, 0.4);
+      .card-post-title { color: #ce93d8; }
+      .read-link { color: #ce93d8; }
     }
     .math-quote-box {
       border-left-color: #ab47bc;
