@@ -1,0 +1,635 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeaderTitle from "../../components/partial/HeaderTitle.astro";
+import HeaderSubTitle from "../../components/partial/HeaderSubTitle.astro";
+import Footer from "../../components/Footer.astro";
+import { Icon } from "astro-icon/components";
+import { SITE } from "../../utils/config";
+import { urlFor } from "../../utils/urlFor";
+
+const title = "Toán Học | Mathematics Hub";
+const description = "Phân hệ Toán học: Lý thuyết số, Đại số tuyến tính, Tổ hợp rời rạc, Hình học & Giải tích số.";
+
+const upcomingTopics = [
+  {
+    icon: "fa6-solid:infinity",
+    name: "Lý thuyết số (Number Theory)",
+    tag: "Upcoming",
+    desc: "Nghiên cứu cấu trúc số nguyên, ước số, đồng dư thức và mật mã học hiện đại.",
+    items: [
+      "Bổ đề Bézout & Phương trình Diophantine tuyến tính",
+      "Hàm Euler Phi φ(n) & Định lý Fermat nhỏ / Euler",
+      "Định lý số dư Trung Hoa (Chinese Remainder Theorem)",
+      "Căn nguyên thủy, Logarithm rời rạc (Baby-step Giant-step)",
+      "Kiểm tra số nguyên tố ngẫu nhiên Miller-Rabin"
+    ]
+  },
+  {
+    icon: "fa6-solid:cubes-stacked",
+    name: "Đại số tuyến tính (Linear Algebra)",
+    tag: "Upcoming",
+    desc: "Cốt lõi của đồ họa máy tính, học máy, mật mã và giải thuật ma trận nâng cao.",
+    items: [
+      "Hệ phương trình đại số tuyến tính & Phép khử Gauss-Jordan",
+      "Không gian vector, Độc lập tuyến tính & Hạng ma trận",
+      "Không gian vector F2 & Cơ sở XOR (XOR Basis)",
+      "Phân rã ma trận LU, Cholesky & Định thức ma trận",
+      "Trị riêng (Eigenvalues), Vector riêng (Eigenvectors) & SVD"
+    ]
+  },
+  {
+    icon: "fa6-solid:dice-d20",
+    name: "Tổ hợp rời rạc (Combinatorics)",
+    tag: "Upcoming",
+    desc: "Nghệ thuật đếm không trùng lặp, bài toán đếm cấu trúc và tối ưu tổ hợp.",
+    items: [
+      "Chỉnh hợp, Tổ hợp nCr mod p & Nghịch đảo Modular",
+      "Dãy số Catalan, Stirling, Bell & Ứng dụng dựng cây/ngoặc",
+      "Nguyên lý Bù trừ (Principle of Inclusion-Exclusion)",
+      "Bổ đề Burnside & Định lý đếm Polya trong cấu trúc đối xứng",
+      "Kỳ vọng toán học (Linearity of Expectation) & Biến ngẫu nhiên"
+    ]
+  },
+  {
+    icon: "fa6-solid:shapes",
+    name: "Hình học tính toán (Computational Geometry)",
+    tag: "Upcoming",
+    desc: "Mô hình hóa hình học trong không gian 2D/3D bằng đại số vector.",
+    items: [
+      "Tích có hướng (Cross Product), Điểm rẽ trái/phải (CCW test)",
+      "Bao lồi đa giác (Convex Hull: Graham Scan & Monotone Chain)",
+      "Giao điểm của tập đoạn thẳng (Sweep-line Algorithm)",
+      "Đa giác Voronoi, Phép tam giác hóa Delaunay",
+      "Giao của các nửa mặt phẳng (Half-plane Intersection)"
+    ]
+  },
+  {
+    icon: "fa6-solid:chart-line",
+    name: "Giải tích & Tối ưu hóa (Calculus & Optimization)",
+    tag: "Upcoming",
+    desc: "Xấp xỉ hàm, cực trị, giải tích số và giải thuật tìm kiếm nghiệm.",
+    items: [
+      "Khai triển chuỗi Taylor & Maclaurin trong xấp xỉ hàm",
+      "Gradient Descent & Tối ưu hóa hàm đa biến",
+      "Tìm nghiệm phi tuyến: Phương pháp Newton-Raphson",
+      "Tích phân số bằng công thức Simpson & Romberg",
+      "Thuật toán Heuristic & Tôi luyện kim loại (Simulated Annealing)"
+    ]
+  }
+];
+---
+
+<BaseLayout title={`${SITE.title} | ${title}`} description={description}>
+  <!-- Header -->
+  <HeaderTitle title={SITE.title} url={urlFor("math")} slot="header" />
+  <HeaderSubTitle
+    subtitle="Phân hệ Toán học • Mathematics & Theoretical Computer Science"
+    url={urlFor("math")}
+    slot="header"
+  />
+
+  <section id="main" aria-label="Main content">
+    <!-- Realm Switcher Bar -->
+    <div class="realm-banner" data-aos="fade-down">
+      <div class="realm-info">
+        <span class="realm-badge active-math">
+          <Icon name="fa6-solid:square-root-variable" size={14} />
+          Toán học (Mathematics)
+        </span>
+        <span class="realm-desc">Lý thuyết số • Đại số tuyến tính • Tổ hợp • Giải tích</span>
+      </div>
+      <div class="realm-actions">
+        <a href={urlFor("programming")} class="realm-switch-btn" title="Chuyển sang phân hệ Lập trình">
+          <Icon name="fa6-solid:code" size={14} />
+          <span>Sang Lập trình</span>
+        </a>
+        <a href={urlFor("/")} class="realm-portal-btn" title="Quay về cổng chọn phân hệ">
+          <Icon name="fa6-solid:door-open" size={14} />
+          <span>Đổi phân hệ</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Math Main Hub Card -->
+    <div class="math-hub-card" data-aos="fade-up">
+      <div class="hub-header">
+        <div class="hub-icon-wrap">
+          <span class="math-sigmas">∑</span>
+          <span class="math-pis">π</span>
+          <span class="math-integrals">∫</span>
+        </div>
+        <div class="hub-title-block">
+          <div class="status-pill">
+            <span class="pulse-dot"></span>
+            Đang phát triển nội dung (Under Construction)
+          </div>
+          <h1 class="hub-heading">Toán Học & Nền Tảng Khoa Học Máy Tính</h1>
+          <p class="hub-subtext">
+            Toán học là ngôn ngữ biểu đạt sự chặt chẽ của thế giới và bản chất của mọi cấu trúc thuật toán.
+            Phân hệ Toán học của <strong>clearluv4ever_</strong> đang trong quá trình biên soạn và sẽ ra mắt chuỗi chuyên đề chuyên sâu, kết hợp giữa tư duy toán thuần túy và mã nguồn thực thi.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="hub-cta-row">
+        <a href={urlFor("programming")} class="btn-primary-glow">
+          <Icon name="fa6-solid:code" size={16} />
+          <span>Khám phá 53+ bài viết Lập trình hiện có</span>
+          <Icon name="fa6-solid:arrow-right" size={14} />
+        </a>
+        <a href={urlFor("roadmap")} class="btn-secondary-outline">
+          <Icon name="fa6-solid:diagram-project" size={16} />
+          <span>Xem Lộ trình CP Roadmap</span>
+        </a>
+        <a href={urlFor("/")} class="btn-ghost">
+          <Icon name="fa6-solid:house" size={16} />
+          <span>Quay lại Cổng chọn</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Syllabus Grid -->
+    <div class="syllabus-section" data-aos="fade-up">
+      <div class="section-title-wrap">
+        <h2 class="section-title">
+          <Icon name="fa6-solid:book-bookmark" size={20} />
+          Lộ trình các chuyên đề Toán sắp ra mắt
+        </h2>
+        <span class="section-caption">Được thiết kế trực quan, có chứng minh toán học và ví dụ minh họa bằng code C++</span>
+      </div>
+
+      <div class="syllabus-grid">
+        {upcomingTopics.map((topic, idx) => (
+          <div class="topic-card" data-aos="fade-up" data-aos-delay={idx * 60}>
+            <div class="topic-header">
+              <div class="topic-icon-box">
+                <Icon name={topic.icon} size={20} />
+              </div>
+              <span class="topic-tag">{topic.tag}</span>
+            </div>
+            <h3 class="topic-title">{topic.name}</h3>
+            <p class="topic-desc">{topic.desc}</p>
+            <ul class="topic-items">
+              {topic.items.map(item => (
+                <li>
+                  <span class="bullet">▹</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Mathematics Philosophy Box -->
+    <div class="math-quote-box" data-aos="fade-up">
+      <blockquote class="quote-text">
+        "Mathematics is not about numbers, equations, computations, or algorithms: it is about understanding."
+      </blockquote>
+      <cite class="quote-author">— William Paul Thurston (Fields Medalist)</cite>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style lang="stylus">
+  .realm-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .realm-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .realm-badge.active-math {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(157, 78, 221, 0.35);
+  }
+
+  .realm-desc {
+    font-size: 13px;
+    color: var(--grey-7);
+  }
+
+  .realm-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .realm-switch-btn, .realm-portal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s ease;
+  }
+
+  .realm-switch-btn {
+    background: rgba(0, 150, 199, 0.1);
+    color: #0077b6;
+    border: 1px solid rgba(0, 150, 199, 0.25);
+
+    &:hover {
+      background: #0096c7;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 150, 199, 0.25);
+    }
+  }
+
+  .realm-portal-btn {
+    background: rgba(100, 116, 139, 0.1);
+    color: var(--grey-7);
+    border: 1px solid var(--color-border);
+
+    &:hover {
+      background: var(--red-1);
+      color: #fff;
+      border-color: var(--red-1);
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Main Hub Card */
+  .math-hub-card {
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(157, 78, 221, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+  }
+
+  .hub-header {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+
+    @media screen and (max-width: 767px) {
+      flex-direction: column;
+      gap: 16px;
+    }
+  }
+
+  .hub-icon-wrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(123, 44, 191, 0.15), rgba(157, 78, 221, 0.25));
+    border: 1px solid rgba(157, 78, 221, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+
+    .math-sigmas {
+      font-size: 28px;
+      font-weight: 700;
+      color: #7b2cbf;
+    }
+    .math-pis {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 14px;
+      color: #9d4edd;
+      opacity: 0.8;
+    }
+    .math-integrals {
+      position: absolute;
+      bottom: 6px;
+      left: 10px;
+      font-size: 18px;
+      color: #7b2cbf;
+      opacity: 0.8;
+    }
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #e67e22;
+    background: rgba(230, 126, 34, 0.12);
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e67e22;
+    box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 6px rgba(230, 126, 34, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(230, 126, 34, 0);
+    }
+  }
+
+  .hub-heading {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--color-default);
+    margin: 0 0 12px 0;
+    line-height: 1.35;
+  }
+
+  .hub-subtext {
+    font-size: 15px;
+    color: var(--grey-7);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .hub-cta-row {
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary-glow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #0077b6, #0096c7);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(0, 150, 199, 0.35);
+    transition: all 0.25s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 150, 199, 0.5);
+      color: #fff;
+    }
+  }
+
+  .btn-secondary-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--color-wrap);
+    color: var(--color-link);
+    border: 1px solid var(--color-link);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: var(--color-link);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    color: var(--grey-7);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: rgba(100, 116, 139, 0.1);
+      color: var(--color-default);
+    }
+  }
+
+  /* Syllabus Section */
+  .syllabus-section {
+    margin-bottom: 32px;
+  }
+
+  .section-title-wrap {
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-default);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 6px 0;
+  }
+
+  .section-caption {
+    font-size: 13.5px;
+    color: var(--grey-7);
+  }
+
+  .syllabus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .topic-card {
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: rgba(157, 78, 221, 0.4);
+    }
+  }
+
+  .topic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .topic-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(123, 44, 191, 0.1);
+    color: #7b2cbf;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .topic-tag {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background: rgba(123, 44, 191, 0.12);
+    color: #7b2cbf;
+  }
+
+  .topic-title {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: var(--color-default);
+    margin: 0 0 8px 0;
+  }
+
+  .topic-desc {
+    font-size: 13px;
+    color: var(--grey-7);
+    line-height: 1.5;
+    margin: 0 0 14px 0;
+  }
+
+  .topic-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    li {
+      font-size: 13px;
+      color: var(--color-default);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      line-height: 1.45;
+    }
+
+    .bullet {
+      color: #7b2cbf;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+  }
+
+  /* Quote Box */
+  .math-quote-box {
+    background: var(--color-wrap);
+    border-left: 4px solid #7b2cbf;
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    box-shadow: var(--shadow-card);
+    margin-top: 16px;
+  }
+
+  .quote-text {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--color-default);
+    line-height: 1.6;
+  }
+
+  .quote-author {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--grey-7);
+    display: block;
+  }
+
+  :global([data-theme='dark']) {
+    .topic-icon-box {
+      background: rgba(186, 104, 200, 0.15);
+      color: #ce93d8;
+    }
+    .topic-tag {
+      background: rgba(186, 104, 200, 0.2);
+      color: #ce93d8;
+    }
+    .topic-items .bullet {
+      color: #ce93d8;
+    }
+    .hub-icon-wrap .math-sigmas, .hub-icon-wrap .math-integrals {
+      color: #ce93d8;
+    }
+    .hub-icon-wrap .math-pis {
+      color: #e1bee7;
+    }
+    .math-quote-box {
+      border-left-color: #ab47bc;
+    }
+  }
+</style>

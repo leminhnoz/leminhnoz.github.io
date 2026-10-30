@@ -22,6 +22,8 @@ export default {
   toc: "見出し",
 
   home: "ホーム",
+  programming: "プログラミング",
+  math: "数学",
   about: "プロフィール",
   friend: "フレンド",
   archives: "アーカイブ",

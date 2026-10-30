@@ -22,6 +22,8 @@ export default {
   toc: "Contents",
 
   home: "Home",
+  programming: "Programming",
+  math: "Math",
   about: "About",
   friend: "Friend",
   archives: "Archives",

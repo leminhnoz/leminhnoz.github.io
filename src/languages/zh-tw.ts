@@ -22,6 +22,8 @@ export default {
   toc: "文章目錄",
 
   home: "首頁",
+  programming: "編程",
+  math: "數學",
   about: "關於",
   friend: "友鏈",
   archives: "歸檔",

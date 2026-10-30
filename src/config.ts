@@ -17,10 +17,12 @@ export default {
 
   menu: [
     { name: "home", url: "/" },
-    { name: "archives", url: "/archives" },
-    { name: "about", url: "/about" },
+    { name: "programming", url: "/programming" },
+    { name: "math", url: "/math" },
     { name: "roadmap", url: "/roadmap" },
     { name: "problems", url: "/problems" },
+    { name: "archives", url: "/archives" },
+    { name: "about", url: "/about" },
   ],
 
   banner: "/images/banner.png",

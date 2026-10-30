@@ -3,19 +3,19 @@ import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
 
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { SITE, HOME_CATEGORIES, BANNER } from "../utils/config";
-import randomCover from "../utils/randomCover";
-import { _p } from "../utils/i18n";
-import { wordCount, readingTime } from "../utils/wordCount";
-import Footer from "../components/Footer.astro";
-import Pagination from "../components/Pagination.astro";
-import HeaderTitle from "../components/partial/HeaderTitle.astro";
-import HeaderSubTitle from "../components/partial/HeaderSubTitle.astro";
-import HomeCategories from "../components/HomeCategories.astro";
-import { formatDate } from "../utils/formatDate";
-import { urlFor } from "../utils/urlFor";
-import { sortPosts } from "../utils/sortPosts";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { SITE, HOME_CATEGORIES, BANNER } from "../../utils/config";
+import randomCover from "../../utils/randomCover";
+import { _p } from "../../utils/i18n";
+import { wordCount, readingTime } from "../../utils/wordCount";
+import Footer from "../../components/Footer.astro";
+import Pagination from "../../components/Pagination.astro";
+import HeaderTitle from "../../components/partial/HeaderTitle.astro";
+import HeaderSubTitle from "../../components/partial/HeaderSubTitle.astro";
+import HomeCategories from "../../components/HomeCategories.astro";
+import { formatDate } from "../../utils/formatDate";
+import { urlFor } from "../../utils/urlFor";
+import { sortPosts } from "../../utils/sortPosts";
 
 type Props = {
   page: {
@@ -39,20 +39,41 @@ export async function getStaticPaths({ paginate }: { paginate: Function }) {
 const { page } = Astro.props;
 ---
 
-<BaseLayout>
+<BaseLayout
+  title={`${SITE.title} | Programming & CP`}
+  description="Phân hệ Lập trình: Thuật toán, Cấu trúc dữ liệu và Lộ trình luyện thi ICPC."
+>
   <!-- Header -->
-  <HeaderTitle title={SITE.title} url={urlFor("/")} slot="header" />
-  {
-    SITE.subtitle && (
-      <HeaderSubTitle
-        subtitle={SITE.subtitle}
-        url={urlFor("/")}
-        slot="header"
-      />
-    )
-  }
+  <HeaderTitle title={SITE.title} url={urlFor("programming")} slot="header" />
+  <HeaderSubTitle
+    subtitle="Phân hệ Lập trình • Algorithms & Competitive Programming"
+    url={urlFor("programming")}
+    slot="header"
+  />
+
   <!-- Content -->
   <section id="main" aria-label="Main content">
+    <!-- Realm Switcher Bar -->
+    <div class="realm-banner" data-aos="fade-down">
+      <div class="realm-info">
+        <span class="realm-badge active">
+          <Icon name="fa6-solid:code" size={14} />
+          Lập trình (Programming)
+        </span>
+        <span class="realm-desc">53 bài viết thuật toán • Lộ trình 7 giai đoạn • 128 bài tập</span>
+      </div>
+      <div class="realm-actions">
+        <a href={urlFor("math")} class="realm-switch-btn" title="Chuyển sang phân hệ Toán">
+          <Icon name="fa6-solid:square-root-variable" size={14} />
+          <span>Sang Toán học</span>
+        </a>
+        <a href={urlFor("/")} class="realm-portal-btn" title="Quay về cổng chọn phân hệ">
+          <Icon name="fa6-solid:door-open" size={14} />
+          <span>Đổi phân hệ</span>
+        </a>
+      </div>
+    </div>
+
     {
       HOME_CATEGORIES.enable && (
         <HomeCategories content={HOME_CATEGORIES.content} />
@@ -115,6 +136,7 @@ const { page } = Astro.props;
       nextUrl={page.url.next}
       currentPage={page.currentPage}
       lastPage={page.lastPage}
+      url="/programming"
     />
   </section>
   <!-- Footer -->
@@ -122,6 +144,89 @@ const { page } = Astro.props;
 </BaseLayout>
 
 <style lang="stylus">
+  .realm-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .realm-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .realm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #0077b6, #0096c7);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 150, 199, 0.35);
+  }
+
+  .realm-desc {
+    font-size: 13px;
+    color: var(--grey-7);
+  }
+
+  .realm-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .realm-switch-btn, .realm-portal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s ease;
+  }
+
+  .realm-switch-btn {
+    background: rgba(138, 43, 226, 0.1);
+    color: #8a2be2;
+    border: 1px solid rgba(138, 43, 226, 0.25);
+
+    &:hover {
+      background: #8a2be2;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(138, 43, 226, 0.25);
+    }
+  }
+
+  .realm-portal-btn {
+    background: rgba(100, 116, 139, 0.1);
+    color: var(--grey-7);
+    border: 1px solid var(--color-border);
+
+    &:hover {
+      background: var(--red-1);
+      color: #fff;
+      border-color: var(--red-1);
+      transform: translateY(-1px);
+    }
+  }
+
   :global(.post-link) {
     position: absolute;
     top: 0;
@@ -158,6 +263,16 @@ const { page } = Astro.props;
   :global([data-theme='dark'])  {
     .post-wrap.left, .post-wrap.right {
       box-shadow: var(--shadow-card);
+    }
+    .realm-switch-btn {
+      background: rgba(186, 104, 200, 0.15);
+      color: #ce93d8;
+      border-color: rgba(186, 104, 200, 0.3);
+
+      &:hover {
+        background: #ab47bc;
+        color: #fff;
+      }
     }
   }
 

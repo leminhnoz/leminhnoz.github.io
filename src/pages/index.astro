@@ -1,0 +1,552 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeaderTitle from "../components/partial/HeaderTitle.astro";
+import HeaderSubTitle from "../components/partial/HeaderSubTitle.astro";
+import Footer from "../components/Footer.astro";
+import { Icon } from "astro-icon/components";
+import { SITE } from "../utils/config";
+import { urlFor } from "../utils/urlFor";
+
+const title = "Chọn Phân Hệ | Select Your Realm";
+const description = "Chào mừng bạn đến với clearluv4ever_. Chọn phân hệ bạn muốn khám phá: Toán học (Mathematics) hoặc Lập trình (Programming & ICPC).";
+---
+
+<BaseLayout title={`${SITE.title} | ${title}`} description={description}>
+  <!-- Header -->
+  <HeaderTitle title={SITE.title} url={urlFor("/")} slot="header" />
+  <HeaderSubTitle
+    subtitle="Không gian tri thức số • Chọn phân hệ để bắt đầu hành trình"
+    url={urlFor("/")}
+    slot="header"
+  />
+
+  <section id="main" aria-label="Main content">
+    <div class="gateway-container" data-aos="fade-up">
+      <!-- Portal Intro -->
+      <div class="gateway-header">
+        <div class="portal-badge">
+          <Icon name="fa6-solid:compass" size={14} />
+          <span>CỔNG ĐIỀU HƯỚNG TRI THỨC</span>
+        </div>
+        <h1 class="gateway-title">Chào mừng bạn đến với không gian của clearluv4ever_</h1>
+        <p class="gateway-subtitle">
+          Vui lòng lựa chọn một trong hai phân hệ dưới đây để tiếp tục. Bạn có thể tự do chuyển đổi qua lại bất kỳ lúc nào thông qua thanh menu điều hướng.
+        </p>
+      </div>
+
+      <!-- Two Selection Cards -->
+      <div class="options-grid">
+        <!-- Option 1: Math -->
+        <div class="option-card math-card" data-aos="zoom-in" data-aos-delay="100">
+          <a href={urlFor("math")} class="card-link" aria-label="Khám phá phân hệ Toán học"></a>
+          
+          <div class="card-status-pill upcoming">
+            <span class="status-dot"></span>
+            <span>Đang phát triển (Coming Soon)</span>
+          </div>
+
+          <div class="card-icon-area math-icon-area">
+            <div class="math-floating-symbols">
+              <span class="sym-1">∫</span>
+              <span class="sym-2">∑</span>
+              <span class="sym-3">π</span>
+              <span class="sym-4">√</span>
+            </div>
+            <div class="center-icon">
+              <Icon name="fa6-solid:square-root-variable" size={44} />
+            </div>
+          </div>
+
+          <div class="card-body">
+            <h2 class="card-title">1. Toán Học (Math)</h2>
+            <p class="card-desc">
+              Khám phá vẻ đẹp thuần khiết và tư duy chặt chẽ của thế giới toán học: Lý thuyết số sơ cấp, Đại số tuyến tính, Tổ hợp rời rạc, Hình học tính toán & Giải tích số.
+            </p>
+
+            <div class="card-highlights">
+              <div class="highlight-item">
+                <span class="dot math-dot"></span>
+                <span>Chuyên đề lý thuyết & chứng minh trực quan</span>
+              </div>
+              <div class="highlight-item">
+                <span class="dot math-dot"></span>
+                <span>Nền tảng toán học cho Khoa học máy tính</span>
+              </div>
+              <div class="highlight-item">
+                <span class="dot math-dot"></span>
+                <span>Chuỗi bài viết đang được hoàn thiện</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-action">
+            <span class="action-btn math-btn">
+              <span>Khám phá phân hệ Toán</span>
+              <Icon name="fa6-solid:arrow-right" size={14} />
+            </span>
+          </div>
+        </div>
+
+        <!-- Option 2: Programming -->
+        <div class="option-card prog-card" data-aos="zoom-in" data-aos-delay="200">
+          <a href={urlFor("programming")} class="card-link" aria-label="Khám phá phân hệ Lập trình"></a>
+          
+          <div class="card-status-pill active">
+            <span class="status-dot green"></span>
+            <span>Đang hoạt động (53+ Bài viết)</span>
+          </div>
+
+          <div class="card-icon-area prog-icon-area">
+            <div class="prog-floating-symbols">
+              <span class="psym-1">&lt;/&gt;</span>
+              <span class="psym-2">{`{...}`}</span>
+              <span class="psym-3">O(N log N)</span>
+            </div>
+            <div class="center-icon">
+              <Icon name="fa6-solid:laptop-code" size={44} />
+            </div>
+          </div>
+
+          <div class="card-body">
+            <h2 class="card-title">2. Lập Trình (Programming)</h2>
+            <p class="card-desc">
+              Kho tàng thuật toán và giải thuật thi đấu (Competitive Programming): Cấu trúc dữ liệu nâng cao, Quy hoạch động, Đồ thị, Xâu ký tự và Lộ trình ICPC hoàn chỉnh.
+            </p>
+
+            <div class="card-highlights">
+              <div class="highlight-item">
+                <span class="dot prog-dot"></span>
+                <span>53 bài blog masterclass C++ giải thích chi tiết</span>
+              </div>
+              <div class="highlight-item">
+                <span class="dot prog-dot"></span>
+                <span>Interactive Roadmap 7 giai đoạn & 27 chủ đề</span>
+              </div>
+              <div class="highlight-item">
+                <span class="dot prog-dot"></span>
+                <span>Kho 128 bài tập tuyển chọn CSES / Codeforces</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-action">
+            <span class="action-btn prog-btn">
+              <span>Vào phân hệ Lập trình</span>
+              <Icon name="fa6-solid:arrow-right" size={14} />
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Fast Track Links -->
+      <div class="gateway-footer-nav" data-aos="fade-up" data-aos-delay="300">
+        <span class="nav-hint">Truy cập nhanh các phân mục khác:</span>
+        <div class="quick-links">
+          <a href={urlFor("programming")} class="quick-link">
+            <Icon name="fa6-solid:newspaper" size={13} />
+            <span>Tất cả bài viết</span>
+          </a>
+          <a href={urlFor("roadmap")} class="quick-link">
+            <Icon name="fa6-solid:diagram-project" size={13} />
+            <span>Lộ trình Roadmap</span>
+          </a>
+          <a href={urlFor("problems")} class="quick-link">
+            <Icon name="fa6-solid:list-check" size={13} />
+            <span>Kho bài tập Problems</span>
+          </a>
+          <a href={urlFor("archives")} class="quick-link">
+            <Icon name="fa6-solid:box-archive" size={13} />
+            <span>Lưu trữ Archives</span>
+          </a>
+          <a href={urlFor("about")} class="quick-link">
+            <Icon name="fa6-solid:user" size={13} />
+            <span>Về tác giả</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style lang="stylus">
+  .gateway-container {
+    max-width: 1080px;
+    margin: 0 auto 36px auto;
+    padding: 0 12px;
+  }
+
+  .gateway-header {
+    text-align: center;
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 36px 24px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .portal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(53, 122, 189, 0.1);
+    color: var(--color-link);
+    border: 1px solid rgba(53, 122, 189, 0.25);
+    margin-bottom: 14px;
+  }
+
+  .gateway-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-default);
+    margin: 0 0 12px 0;
+    line-height: 1.35;
+
+    @media screen and (max-width: 767px) {
+      font-size: 22px;
+    }
+  }
+
+  .gateway-subtitle {
+    font-size: 15px;
+    color: var(--grey-7);
+    line-height: 1.65;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  /* Two Selection Cards Grid */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 32px;
+
+    @media screen and (max-width: 860px) {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+
+  .option-card {
+    position: relative;
+    background: var(--color-wrap);
+    border: 2px solid var(--color-border);
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 36px rgba(53, 90, 117, 0.16);
+    }
+  }
+
+  .card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+  }
+
+  .card-status-pill {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    z-index: 2;
+
+    &.upcoming {
+      background: rgba(230, 126, 34, 0.12);
+      color: #e67e22;
+      border: 1px solid rgba(230, 126, 34, 0.3);
+    }
+
+    &.active {
+      background: rgba(46, 204, 113, 0.12);
+      color: #27ae60;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #e67e22;
+
+    &.green {
+      background: #27ae60;
+      box-shadow: 0 0 6px rgba(46, 204, 113, 0.6);
+    }
+  }
+
+  /* Card Icons Area */
+  .card-icon-area {
+    position: relative;
+    height: 120px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+
+  .math-card {
+    &:hover {
+      border-color: #9d4edd;
+      box-shadow: 0 16px 36px rgba(157, 78, 221, 0.2);
+
+      .math-icon-area {
+        background: linear-gradient(135deg, rgba(123, 44, 191, 0.22), rgba(157, 78, 221, 0.32));
+      }
+      .math-btn {
+        background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+        color: #fff;
+        box-shadow: 0 6px 18px rgba(157, 78, 221, 0.4);
+      }
+    }
+  }
+
+  .math-icon-area {
+    background: linear-gradient(135deg, rgba(123, 44, 191, 0.1), rgba(157, 78, 221, 0.18));
+    border: 1px solid rgba(157, 78, 221, 0.25);
+    color: #7b2cbf;
+    transition: all 0.3s ease;
+  }
+
+  .math-floating-symbols {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    font-weight: 700;
+
+    .sym-1 { position: absolute; top: 12px; left: 24px; font-size: 24px; opacity: 0.35; color: #7b2cbf; }
+    .sym-2 { position: absolute; top: 16px; right: 28px; font-size: 26px; opacity: 0.35; color: #9d4edd; }
+    .sym-3 { position: absolute; bottom: 12px; left: 32px; font-size: 20px; opacity: 0.35; color: #7b2cbf; }
+    .sym-4 { position: absolute; bottom: 14px; right: 36px; font-size: 22px; opacity: 0.35; color: #9d4edd; }
+  }
+
+  .prog-card {
+    &:hover {
+      border-color: #0096c7;
+      box-shadow: 0 16px 36px rgba(0, 150, 199, 0.2);
+
+      .prog-icon-area {
+        background: linear-gradient(135deg, rgba(0, 119, 182, 0.22), rgba(0, 150, 199, 0.32));
+      }
+      .prog-btn {
+        background: linear-gradient(135deg, #0077b6, #0096c7);
+        color: #fff;
+        box-shadow: 0 6px 18px rgba(0, 150, 199, 0.4);
+      }
+    }
+  }
+
+  .prog-icon-area {
+    background: linear-gradient(135deg, rgba(0, 119, 182, 0.1), rgba(0, 150, 199, 0.18));
+    border: 1px solid rgba(0, 150, 199, 0.25);
+    color: #0077b6;
+    transition: all 0.3s ease;
+  }
+
+  .prog-floating-symbols {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    font-family: monospace;
+    font-weight: 700;
+
+    .psym-1 { position: absolute; top: 14px; left: 20px; font-size: 15px; opacity: 0.4; color: #0077b6; }
+    .psym-2 { position: absolute; bottom: 14px; left: 24px; font-size: 16px; opacity: 0.4; color: #0096c7; }
+    .psym-3 { position: absolute; top: 16px; right: 20px; font-size: 13px; opacity: 0.45; color: #0077b6; }
+  }
+
+  /* Card Body */
+  .card-body {
+    flex-grow: 1;
+    margin-bottom: 24px;
+  }
+
+  .card-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-default);
+    margin: 0 0 10px 0;
+  }
+
+  .card-desc {
+    font-size: 14.5px;
+    color: var(--grey-7);
+    line-height: 1.6;
+    margin: 0 0 18px 0;
+  }
+
+  .card-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--color-default);
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    &.math-dot {
+      background: #9d4edd;
+    }
+
+    &.prog-dot {
+      background: #0096c7;
+    }
+  }
+
+  /* Card Actions */
+  .card-action {
+    z-index: 2;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+
+    &.math-btn {
+      background: rgba(123, 44, 191, 0.1);
+      color: #7b2cbf;
+      border: 1px solid rgba(123, 44, 191, 0.3);
+    }
+
+    &.prog-btn {
+      background: rgba(0, 119, 182, 0.1);
+      color: #0077b6;
+      border: 1px solid rgba(0, 119, 182, 0.3);
+    }
+  }
+
+  /* Quick Navigation */
+  .gateway-footer-nav {
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: 18px 24px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .nav-hint {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--grey-7);
+  }
+
+  .quick-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .quick-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: var(--color-link);
+    background: rgba(53, 122, 189, 0.08);
+    border: 1px solid rgba(53, 122, 189, 0.15);
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--color-link);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+  }
+
+  :global([data-theme='dark']) {
+    .math-icon-area {
+      background: rgba(157, 78, 221, 0.15);
+      border-color: rgba(157, 78, 221, 0.3);
+      color: #ce93d8;
+    }
+    .math-floating-symbols span {
+      color: #ce93d8;
+    }
+    .prog-icon-area {
+      background: rgba(0, 150, 199, 0.15);
+      border-color: rgba(0, 150, 199, 0.3);
+      color: #80d3f2;
+    }
+    .prog-floating-symbols span {
+      color: #80d3f2;
+    }
+    .math-card:hover {
+      border-color: #ce93d8;
+      .math-btn {
+        background: linear-gradient(135deg, #8e24aa, #ba68c8);
+      }
+    }
+    .prog-card:hover {
+      border-color: #4fc3f7;
+      .prog-btn {
+        background: linear-gradient(135deg, #0288d1, #29b6f6);
+      }
+    }
+    .action-btn.math-btn {
+      background: rgba(186, 104, 200, 0.15);
+      color: #ce93d8;
+      border-color: rgba(186, 104, 200, 0.3);
+    }
+    .action-btn.prog-btn {
+      background: rgba(79, 195, 247, 0.15);
+      color: #80d3f2;
+      border-color: rgba(79, 195, 247, 0.3);
+    }
+  }
+</style>

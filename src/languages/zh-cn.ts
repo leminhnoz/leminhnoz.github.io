@@ -22,6 +22,8 @@ export default {
   toc: "文章目录",
 
   home: "首页",
+  programming: "编程",
+  math: "数学",
   about: "关于",
   friend: "友链",
   archives: "归档",
