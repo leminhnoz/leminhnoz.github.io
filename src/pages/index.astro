@@ -13,7 +13,7 @@ const description = "Không gian tri thức số của clearluv4ever_. Chọn ph
   title={`${SITE.title} | ${title}`}
   description={description}
 >
-  <div class="gateway-screen" data-aos="fade-up">
+  <div class="gateway-screen">
     <!-- Center Avatar & Branding -->
     <div class="gateway-hero">
       <div class="avatar-ring">
@@ -34,7 +34,7 @@ const description = "Không gian tri thức số của clearluv4ever_. Chọn ph
     <!-- The 2 Only Choices -->
     <div class="gateway-options">
       <!-- Option 1: Math -->
-      <a href={urlFor("math")} class="realm-box math-box" data-aos="zoom-in" data-aos-delay="100">
+      <a href={urlFor("math")} class="realm-box math-box">
         <div class="realm-box-glow"></div>
         <div class="box-top">
           <span class="realm-tag math-tag">
@@ -75,7 +75,7 @@ const description = "Không gian tri thức số của clearluv4ever_. Chọn ph
       </a>
 
       <!-- Option 2: Programming -->
-      <a href={urlFor("programming")} class="realm-box prog-box" data-aos="zoom-in" data-aos-delay="200">
+      <a href={urlFor("programming")} class="realm-box prog-box">
         <div class="realm-box-glow"></div>
         <div class="box-top">
           <span class="realm-tag prog-tag">
@@ -116,13 +116,24 @@ const description = "Không gian tri thức số của clearluv4ever_. Chọn ph
     </div>
 
     <!-- Minimal Bottom Tip -->
-    <div class="gateway-footer-tip" data-aos="fade-up" data-aos-delay="300">
+    <div class="gateway-footer-tip">
       <span>💡 Sau khi vào một phân hệ, thanh điều hướng trên cùng sẽ xuất hiện và bạn có thể chuyển đổi qua lại bất kỳ lúc nào.</span>
     </div>
   </div>
 </BaseLayout>
 
 <style lang="stylus">
+  @keyframes gatewayFadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .gateway-screen {
     width: 100%;
     max-width: 1040px;
@@ -130,6 +141,8 @@ const description = "Không gian tri thức số của clearluv4ever_. Chọn ph
     display: flex;
     flex-direction: column;
     align-items: center;
+    opacity: 1 !important;
+    animation: gatewayFadeUp 0.45s ease-out forwards;
   }
 
   /* Hero Section */
@@ -208,6 +221,7 @@ const description = "Không gian tri thức số của clearluv4ever_. Chọn ph
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
+    opacity: 1 !important;
 
     &:hover {
       transform: translateY(-8px);
@@ -425,6 +439,7 @@ const description = "Không gian tri thức số của clearluv4ever_. Chọn ph
     padding: 10px 20px;
     border-radius: 20px;
     box-shadow: var(--shadow-card);
+    opacity: 1 !important;
   }
 
   :global([data-theme='dark']) {

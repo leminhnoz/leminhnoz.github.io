@@ -67,6 +67,7 @@ const headerImage = cover || BANNER;
       }
       .gateway-fullscreen-layout {
         min-height: 100vh;
+        width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -95,7 +96,7 @@ const headerImage = cover || BANNER;
     <ClientRouter />
   </head>
   <body>
-    {PRELOADER.enable && <Loader />}
+    {!isGateway && PRELOADER.enable && <Loader />}
     {
       isGateway ? (
         <div class="gateway-fullscreen-layout">
