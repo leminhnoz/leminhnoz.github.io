@@ -7,19 +7,20 @@ import { Icon } from "astro-icon/components";
 import { urlFor } from "../../../utils/urlFor";
 import { mathProblems, mathCategories } from "../../../data/mathProblems";
 
-const title = "Kho Bài Toán | Math Problems";
-const description = "Tuyển chọn 33+ bài toán kinh điển từ Project Euler, CSES Math và Olympic: Lý thuyết số, Ma trận, Tổ hợp, Hình học và Trò chơi.";
+const title = "Kho Đề Olympic | Math Olympiad Archive";
+const description = "Tuyển chọn các bài toán kinh điển từ IMO, VMO, USAMO, Putnam, RMM & APMO • Phân loại theo chuyên đề và thảo luận trên AoPS.";
 
 const totalProblems = mathProblems.length;
-const peCount = mathProblems.filter(p => p.source === "Project Euler").length;
-const csesCount = mathProblems.filter(p => p.source === "CSES").length;
-const cfCount = mathProblems.filter(p => p.source === "Codeforces").length;
+const imoCount = mathProblems.filter(p => p.source === "IMO").length;
+const vmoCount = mathProblems.filter(p => p.source === "VMO").length;
+const usamoCount = mathProblems.filter(p => p.source === "USAMO").length;
+const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
 ---
 
 <BaseLayout realm="math" title={title} description={description}>
-  <HeaderTitle title="Math Problems" url={urlFor("math/problems")} slot="header" />
+  <HeaderTitle title="Math Olympiad" url={urlFor("math/problems")} slot="header" />
   <HeaderSubTitle
-    subtitle="Kho bài toán tuyển chọn • Rèn luyện tư duy toán học và giải thuật máy tính"
+    subtitle="Kho bài toán Olympic quốc tế & quốc gia • Độc lập với tin học • Tư duy suy luận thuần túy"
     url={urlFor("math/problems")}
     slot="header"
   />
@@ -30,8 +31,8 @@ const cfCount = mathProblems.filter(p => p.source === "Codeforces").length;
       <header class="problems-intro">
         <div class="intro-left">
           <div class="math-badge">
-            <Icon name="fa6-solid:calculator" size={14} />
-            <span>KHO BÀI TOÁN CHỌN LỌC</span>
+            <Icon name="fa6-solid:award" size={14} />
+            <span>KHO ĐỀ OLYMPIC KINH ĐIỂN</span>
           </div>
           <h1 class="page-title">{title}</h1>
           <p class="page-description">{description}</p>
@@ -40,14 +41,17 @@ const cfCount = mathProblems.filter(p => p.source === "Codeforces").length;
           <div class="stat-pill">
             <span class="stat-num">{totalProblems}</span> Bài toán
           </div>
-          <div class="stat-pill cses-stat">
-            <span class="stat-num">{csesCount}</span> CSES
+          <div class="stat-pill imo-stat">
+            <span class="stat-num">{imoCount}</span> IMO
           </div>
-          <div class="stat-pill pe-stat">
-            <span class="stat-num">{peCount}</span> Project Euler
+          <div class="stat-pill vmo-stat">
+            <span class="stat-num">{vmoCount}</span> VMO
           </div>
-          <div class="stat-pill cf-stat">
-            <span class="stat-num">{cfCount}</span> Codeforces
+          <div class="stat-pill usamo-stat">
+            <span class="stat-num">{usamoCount}</span> USAMO
+          </div>
+          <div class="stat-pill putnam-stat">
+            <span class="stat-num">{putnamCount}</span> Putnam
           </div>
         </div>
       </header>
@@ -59,7 +63,7 @@ const cfCount = mathProblems.filter(p => p.source === "Codeforces").length;
           <input
             type="text"
             id="problem-search"
-            placeholder="Tìm theo tên bài toán, định lý, mã bài (vd: Euler, Diophantine, 1095)..."
+            placeholder="Tìm theo tên bài toán, định lý, mã bài (vd: Vieta, IMO 1988, LTE, Pascal, VMO)..."
             aria-label="Tìm bài toán"
           />
         </div>
@@ -79,53 +83,60 @@ const cfCount = mathProblems.filter(p => p.source === "Codeforces").length;
 
       <!-- Problems Grid -->
       <div class="problems-grid" id="problems-list">
-        {mathProblems.map((prob) => (
-          <article
-            class="problem-card"
-            data-category={prob.category}
-            data-source={prob.source}
-            data-difficulty={prob.difficulty}
-            data-search={`${prob.code} ${prob.title} ${prob.category} ${prob.theorems.join(" ")}`.toLowerCase()}
-          >
-            <div class="card-top-row">
-              <span class={`source-badge ${prob.source.toLowerCase().replace(/\s+/g, '-')}`}>
-                {prob.source}
-              </span>
-              <span class={`diff-badge ${prob.difficulty.toLowerCase()}`}>
-                {prob.difficulty}
-              </span>
-            </div>
+        {mathProblems.map((prob) => {
+          const diffClass = prob.difficulty
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, "-");
+          return (
+            <article
+              class="problem-card"
+              data-category={prob.category}
+              data-source={prob.source}
+              data-difficulty={prob.difficulty}
+              data-search={`${prob.code} ${prob.title} ${prob.category} ${prob.theorems.join(" ")}`.toLowerCase()}
+            >
+              <div class="card-top-row">
+                <span class={`source-badge ${prob.source.toLowerCase()}`}>
+                  {prob.source} • {prob.year}
+                </span>
+                <span class={`diff-badge ${diffClass}`}>
+                  {prob.difficulty}
+                </span>
+              </div>
 
-            <div class="card-main">
-              <div class="prob-code">{prob.code}</div>
-              <h2 class="prob-name">{prob.title}</h2>
-              <div class="prob-category-tag">{prob.category}</div>
-              <p class="prob-latex-desc">{prob.latexDescription}</p>
+              <div class="card-main">
+                <div class="prob-code">{prob.code}</div>
+                <h2 class="prob-name">{prob.title}</h2>
+                <div class="prob-category-tag">{prob.category}</div>
+                <p class="prob-latex-desc">{prob.latexDescription}</p>
 
-              <div class="theorems-used">
-                <span class="th-label">Công cụ & Định lý:</span>
-                <div class="th-tags">
-                  {prob.theorems.map((th) => (
-                    <span class="th-pill">{th}</span>
-                  ))}
+                <div class="theorems-used">
+                  <span class="th-label">Công cụ & Định lý then chốt:</span>
+                  <div class="th-tags">
+                    {prob.theorems.map((th) => (
+                      <span class="th-pill">{th}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="card-bottom">
-              <a
-                href={prob.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="solve-btn"
-                title={`Mở bài toán trên ${prob.source}`}
-              >
-                <span>Giải bài trên {prob.source}</span>
-                <Icon name="fa6-solid:arrow-up-right-from-square" size={12} />
-              </a>
-            </div>
-          </article>
-        ))}
+              <div class="card-bottom">
+                <a
+                  href={prob.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="solve-btn"
+                  title={`Xem đề bài và lời giải thảo luận của ${prob.code} trên Art of Problem Solving`}
+                >
+                  <span>Thảo luận & Lời giải trên AoPS</span>
+                  <Icon name="fa6-solid:arrow-up-right-from-square" size={12} />
+                </a>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   </section>
@@ -246,9 +257,10 @@ const cfCount = mathProblems.filter(p => p.source === "Codeforces").length;
       margin-right: 4px;
     }
 
-    &.cses-stat .stat-num { color: #0077b6; }
-    &.pe-stat .stat-num { color: #d35400; }
-    &.cf-stat .stat-num { color: #27ae60; }
+    &.imo-stat .stat-num { color: #e74c3c; }
+    &.vmo-stat .stat-num { color: #d4ac0d; }
+    &.usamo-stat .stat-num { color: #2980b9; }
+    &.putnam-stat .stat-num { color: #8e44ad; }
   }
 
   /* Toolbar */
@@ -375,10 +387,12 @@ const cfCount = mathProblems.filter(p => p.source === "Codeforces").length;
     border-radius: 8px;
     text-transform: uppercase;
 
-    &.cses { background: rgba(0, 119, 182, 0.12); color: #0077b6; }
-    &.project-euler { background: rgba(211, 84, 0, 0.12); color: #d35400; }
-    &.codeforces { background: rgba(39, 174, 96, 0.12); color: #27ae60; }
-    &.vnoj { background: rgba(155, 89, 182, 0.12); color: #8e44ad; }
+    &.imo { background: rgba(231, 76, 60, 0.12); color: #e74c3c; }
+    &.vmo { background: rgba(241, 196, 15, 0.15); color: #b7950b; }
+    &.usamo { background: rgba(52, 152, 219, 0.12); color: #2980b9; }
+    &.putnam { background: rgba(155, 89, 182, 0.12); color: #8e44ad; }
+    &.rmm { background: rgba(230, 126, 34, 0.12); color: #d35400; }
+    &.apmo { background: rgba(26, 188, 156, 0.12); color: #16a085; }
   }
 
   .diff-badge {
@@ -387,10 +401,10 @@ const cfCount = mathProblems.filter(p => p.source === "Codeforces").length;
     padding: 3px 8px;
     border-radius: 8px;
 
-    &.easy { background: rgba(46, 204, 113, 0.12); color: #27ae60; }
-    &.medium { background: rgba(52, 152, 219, 0.12); color: #2980b9; }
-    &.hard { background: rgba(230, 126, 34, 0.12); color: #d35400; }
-    &.master { background: rgba(155, 89, 182, 0.12); color: #8e44ad; }
+    &.co-ban-olympic { background: rgba(46, 204, 113, 0.12); color: #27ae60; }
+    &.chuyen-sau-vmo { background: rgba(52, 152, 219, 0.12); color: #2980b9; }
+    &.nang-cao-tst { background: rgba(230, 126, 34, 0.12); color: #d35400; }
+    &.dinh-cao-imo { background: rgba(192, 57, 43, 0.15); color: #c0392b; font-weight: 700; }
   }
 
   .prob-code {

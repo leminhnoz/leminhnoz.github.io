@@ -13,13 +13,13 @@ import { sortPosts } from "../../utils/sortPosts";
 import { mathRoadmapStages } from "../../data/mathRoadmap";
 import { mathProblems } from "../../data/mathProblems";
 
-const title = "Toán Học | Mathematics Hub";
-const description = "Không gian nghiên cứu và rèn luyện Toán học: Lý thuyết số, Đại số tuyến tính, Tổ hợp rời rạc, Hình học tính toán và Giải tích số.";
+const title = "Toán Học Olympic | Mathematical Olympiad Hub";
+const description = "Không gian Toán học Olympic: IMO, VMO, USAMO, Putnam • Tứ trụ Olympic: Số học, Đại số & PT hàm, Hình học phẳng, Tổ hợp & Đồ thị • Độc lập hoàn toàn với Tin học.";
 
 const mathKeywords = [
-  "math", "number theory", "linear algebra", "combinatorics",
-  "geometry", "convex hull", "gaussian elimination", "determinant",
-  "fibonacci", "binary exponentiation", "euclidean", "diophantine"
+  "math", "olympiad", "imo", "vmo", "usamo", "number theory",
+  "geometry", "combinatorics", "inequality", "functional equation",
+  "putnam", "euclidean", "diophantine"
 ];
 
 const allPosts = await getCollection("blog");
@@ -42,7 +42,7 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
   <!-- Header -->
   <HeaderTitle title={SITE.title} url={urlFor("math")} slot="header" />
   <HeaderSubTitle
-    subtitle="Phân hệ Toán học • Mathematics & Theoretical Computer Science"
+    subtitle="Phân hệ Toán học Olympic • IMO • VMO • USAMO • Putnam"
     url={urlFor("math")}
     slot="header"
   />
@@ -53,10 +53,10 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
       <div class="realm-banner" data-aos="fade-down">
         <div class="realm-info">
           <span class="realm-badge active-math">
-            <Icon name="fa6-solid:square-root-variable" size={14} />
-            Phân hệ Toán học (Mathematics)
+            <Icon name="fa6-solid:award" size={14} />
+            Phân hệ Toán Olympic (Pure Mathematics)
           </span>
-          <span class="realm-desc">Lý thuyết số • Đại số ma trận • Tổ hợp • Hình học • Giải tích</span>
+          <span class="realm-desc">Số học (NT) • Đại số & PT hàm • Hình học phẳng • Tổ hợp (COMB) • Bất đẳng thức</span>
         </div>
         <div class="realm-actions">
           <a href={urlFor("programming")} class="realm-switch-btn" title="Chuyển sang phân hệ Lập trình">
@@ -75,25 +75,25 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
         <div class="hero-left">
           <div class="hero-tag">
             <Icon name="fa6-solid:shapes" size={13} />
-            <span>KHÁM PHÁ BẢN CHẤT CỦA THUẬT TOÁN</span>
+            <span>ĐỘC LẬP HOÀN TOÀN VỚI TIN HỌC • TƯ DUY SUY LUẬN THUẦN TÚY</span>
           </div>
-          <h1 class="hero-title">Toán Học & Nền Tảng Khoa Học Máy Tính</h1>
+          <h1 class="hero-title">Toán Học Olympic & Nghệ Thuật Chứng Minh</h1>
           <p class="hero-desc">
-            Toán học không chỉ là công cụ tính toán mà là ngôn ngữ tư duy logic tối thượng.
-            Mọi cấu trúc dữ liệu tinh vi, thuật toán tối ưu hay mô hình AI hiện đại đều bắt nguồn từ các định lý toán học sâu sắc.
+            Không lập trình, không thuật toán máy tính — nơi đây dành riêng cho vẻ đẹp thuần khiết của <strong>Toán học Olympic</strong>. 
+            Từ những bài toán số học huyền thoại của IMO, phương trình hàm trừu tượng, hình học xạ ảnh điều hòa đến tổ hợp rời rạc và các bài thi VMO, USAMO, Putnam danh giá.
           </p>
           <div class="hero-stats">
             <div class="hero-stat">
               <span class="num">{mathRoadmapStages.length}</span>
-              <span class="lbl">Giai đoạn lộ trình</span>
+              <span class="lbl">Giai đoạn Olympic</span>
             </div>
             <div class="hero-stat">
               <span class="num">{totalRoadmapNodes}</span>
-              <span class="lbl">Chủ đề chuyên sâu</span>
+              <span class="lbl">Chuyên đề & Bổ đề</span>
             </div>
             <div class="hero-stat">
               <span class="num">{mathProblems.length}</span>
-              <span class="lbl">Bài toán chọn lọc</span>
+              <span class="lbl">Bài thi IMO/VMO chọn lọc</span>
             </div>
           </div>
         </div>
@@ -118,9 +118,9 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
           </div>
           <div class="pillar-body">
             <span class="pillar-badge">Lộ trình học tập</span>
-            <h2 class="pillar-title">Lộ Trình Toán Học (Roadmap)</h2>
+            <h2 class="pillar-title">Lộ Trình IMO / VMO (Roadmap)</h2>
             <p class="pillar-desc">
-              Lộ trình 6 giai đoạn từ Lý thuyết số sơ cấp, Đại số tuyến tính, Tổ hợp rời rạc, Hình học tính toán đến Giải tích số.
+              Hệ thống 6 giai đoạn chuẩn thi Olympic: Số học (LTE, Vieta Jumping), Đại số & PT hàm, Hình học phẳng (Hàng điều hòa, Pascal), Tổ hợp cực hạn và BĐT.
             </p>
           </div>
           <div class="pillar-action">
@@ -132,17 +132,17 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
         <!-- Pillar 2: Problems -->
         <a href={urlFor("math/problems")} class="pillar-card pillar-problems">
           <div class="pillar-icon-box">
-            <Icon name="fa6-solid:calculator" size={28} />
+            <Icon name="fa6-solid:award" size={28} />
           </div>
           <div class="pillar-body">
-            <span class="pillar-badge">Luyện tập thực chiến</span>
-            <h2 class="pillar-title">Kho Bài Toán (Problems)</h2>
+            <span class="pillar-badge">Đề thi kinh điển</span>
+            <h2 class="pillar-title">Kho Đề Olympic (Problems)</h2>
             <p class="pillar-desc">
-              Tuyển chọn 33+ bài toán kinh điển từ Project Euler, CSES Math Set, Codeforces và VNOJ có link nộp bài trực tiếp.
+              Tuyển chọn {mathProblems.length}+ bài toán kinh điển từ IMO, VMO, USAMO, Putnam, RMM kèm liên kết thảo luận và lời giải chi tiết trên Art of Problem Solving (AoPS).
             </p>
           </div>
           <div class="pillar-action">
-            <span>Vào Kho Bài Toán</span>
+            <span>Vào Kho Đề Olympic</span>
             <Icon name="fa6-solid:arrow-right" size={14} />
           </div>
         </a>
@@ -156,7 +156,7 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
             <span class="pillar-badge">Bài giảng & Bổ đề</span>
             <h2 class="pillar-title">Chuyên Đề Toán (Articles)</h2>
             <p class="pillar-desc">
-              Các bài phân tích toán học chuyên sâu: Khử Gauss, Định thức ma trận, Lũy thừa nhị phân, Euclid mở rộng, Fibonacci secrets.
+              Các bài phân tích bổ đề toán học chuyên sâu: Bổ đề Bézout, Phương trình Diophantine, Hệ số đồng dư, Dãy số Fibonacci và Đại số ma trận.
             </p>
           </div>
           <div class="pillar-action">
@@ -174,7 +174,7 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
               <Icon name="fa6-solid:fire" size={20} class="flame-icon" />
               Chuyên đề Toán học nổi bật
             </h2>
-            <span class="section-sub">Các bài viết có mã nguồn C++ mẫu và chứng minh chặt chẽ</span>
+            <span class="section-sub">Các bài viết có chứng minh chặt chẽ và công thức KaTeX chi tiết</span>
           </div>
           <a href={urlFor("math/articles")} class="view-all-link">
             <span>Xem tất cả ({allPosts.length})</span>
@@ -241,8 +241,8 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
     padding: 12px 20px;
     margin-bottom: 24px;
     box-shadow: var(--shadow-card);
+    gap: 16px;
     flex-wrap: wrap;
-    gap: 12px;
   }
 
   .realm-info {
@@ -252,28 +252,32 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
     flex-wrap: wrap;
   }
 
-  .realm-badge.active-math {
+  .realm-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 14px;
+    padding: 5px 12px;
     border-radius: 20px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
-    background: linear-gradient(135deg, #7b2cbf, #9d4edd);
-    color: #fff;
-    box-shadow: 0 2px 10px rgba(157, 78, 221, 0.35);
+
+    &.active-math {
+      background: rgba(123, 44, 191, 0.12);
+      color: #7b2cbf;
+      border: 1px solid rgba(123, 44, 191, 0.25);
+    }
   }
 
   .realm-desc {
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--grey-7);
+    font-weight: 500;
   }
 
   .realm-actions {
     display: flex;
+    gap: 10px;
     align-items: center;
-    gap: 8px;
   }
 
   .realm-switch-btn, .realm-portal-btn {
@@ -285,54 +289,63 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
     font-size: 12.5px;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
   }
 
   .realm-switch-btn {
-    background: rgba(0, 119, 182, 0.1);
-    color: #0077b6;
-    border: 1px solid rgba(0, 119, 182, 0.25);
+    background: rgba(30, 144, 255, 0.1);
+    color: #1e90ff;
+    border: 1px solid rgba(30, 144, 255, 0.25);
 
     &:hover {
-      background: #0096c7;
+      background: #1e90ff;
       color: #fff;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 150, 199, 0.3);
     }
   }
 
   .realm-portal-btn {
-    background: rgba(100, 116, 139, 0.1);
+    background: transparent;
     color: var(--grey-7);
     border: 1px solid var(--color-border);
 
     &:hover {
-      background: var(--red-1);
-      color: #fff;
-      border-color: var(--red-1);
-      transform: translateY(-1px);
+      border-color: #7b2cbf;
+      color: #7b2cbf;
     }
   }
 
-  /* Hero Card */
+  /* Hero Welcome Card */
   .math-hero-card {
     background: var(--color-wrap);
     border: 1px solid var(--color-border);
     border-radius: 20px;
-    padding: 40px 36px;
-    margin-bottom: 32px;
-    box-shadow: var(--shadow-card);
+    padding: 38px 36px;
+    margin-bottom: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 32px;
     position: relative;
     overflow: hidden;
+    box-shadow: var(--shadow-card);
 
-    @media screen and (max-width: 860px) {
-      flex-direction: column;
-      padding: 28px 20px;
+    &::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(123, 44, 191, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
     }
+  }
+
+  .hero-left {
+    flex: 1;
+    max-width: 680px;
   }
 
   .hero-tag {
@@ -348,7 +361,7 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
     background: rgba(123, 44, 191, 0.12);
     color: #7b2cbf;
     border: 1px solid rgba(123, 44, 191, 0.25);
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   .hero-title {
@@ -356,53 +369,64 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
     font-weight: 800;
     color: var(--color-default);
     margin: 0 0 12px 0;
-    line-height: 1.35;
+    line-height: 1.25;
   }
 
   .hero-desc {
     font-size: 15px;
-    color: var(--grey-7);
     line-height: 1.65;
+    color: var(--grey-7);
     margin: 0 0 24px 0;
-    max-width: 640px;
+
+    strong {
+      color: var(--color-default);
+    }
   }
 
   .hero-stats {
     display: flex;
-    gap: 20px;
+    gap: 24px;
     flex-wrap: wrap;
   }
 
   .hero-stat {
     display: flex;
     flex-direction: column;
+    gap: 2px;
 
     .num {
       font-size: 26px;
       font-weight: 800;
       color: #7b2cbf;
+      line-height: 1;
     }
     .lbl {
       font-size: 12px;
       color: var(--grey-7);
+      font-weight: 500;
     }
   }
 
   .hero-art {
-    flex-shrink: 0;
-  }
-
-  .art-ring {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(123, 44, 191, 0.15) 0%, rgba(157, 78, 221, 0.05) 70%);
-    border: 2px dashed rgba(157, 78, 221, 0.35);
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-right: 20px;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .art-ring {
     position: relative;
-    color: #7b2cbf;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 2px dashed rgba(123, 44, 191, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     animation: rotateSlow 40s linear infinite;
   }
 
@@ -412,77 +436,74 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
   }
 
   .core-math-symbol {
-    animation: counterRotate 40s linear infinite;
+    color: #7b2cbf;
+    opacity: 0.9;
+    animation: pulseSymbol 3s ease-in-out infinite alternate;
   }
 
-  @keyframes counterRotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(-360deg); }
+  @keyframes pulseSymbol {
+    from { transform: scale(0.92); opacity: 0.75; }
+    to { transform: scale(1.05); opacity: 1; }
   }
 
   .sym-art {
     position: absolute;
-    font-weight: 700;
-    color: #9d4edd;
-    opacity: 0.6;
+    font-size: 18px;
+    font-weight: 800;
+    color: #7b2cbf;
+    opacity: 0.7;
 
-    &.sym-1 { top: 10px; left: 24px; font-size: 18px; }
-    &.sym-2 { top: 12px; right: 28px; font-size: 20px; }
-    &.sym-3 { bottom: 16px; left: 24px; font-size: 16px; }
-    &.sym-4 { bottom: 18px; right: 28px; font-size: 18px; }
-    &.sym-5 { top: 50%; right: 6px; transform: translateY(-50%); font-size: 16px; }
+    &.sym-1 { top: -10px; left: 58px; }
+    &.sym-2 { top: 40px; right: -12px; }
+    &.sym-3 { bottom: -10px; right: 52px; }
+    &.sym-4 { bottom: 40px; left: -10px; }
+    &.sym-5 { top: 18px; left: 10px; }
   }
 
-  /* 3 Main Pillars */
+  /* 3 Pillars Grid */
   .math-pillars-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-bottom: 36px;
-
-    @media screen and (max-width: 959px) {
-      grid-template-columns: 1fr;
-    }
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 22px;
+    margin-bottom: 34px;
   }
 
   .pillar-card {
     background: var(--color-wrap);
-    border: 2px solid var(--color-border);
-    border-radius: 20px;
-    padding: 28px 24px;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    padding: 26px 24px;
     box-shadow: var(--shadow-card);
-    text-decoration: none;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    text-decoration: none;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
 
     &:hover {
-      transform: translateY(-6px);
-      border-color: #7b2cbf;
-      box-shadow: 0 16px 36px rgba(123, 44, 191, 0.2);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: rgba(123, 44, 191, 0.4);
 
       .pillar-action {
         color: #7b2cbf;
         transform: translateX(4px);
       }
-      .pillar-icon-box {
-        transform: scale(1.08);
-      }
     }
   }
 
   .pillar-icon-box {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border-radius: 14px;
-    background: rgba(123, 44, 191, 0.1);
-    color: #7b2cbf;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 18px;
-    transition: transform 0.25s ease;
+    background: rgba(123, 44, 191, 0.1);
+    color: #7b2cbf;
   }
 
   .pillar-badge {
@@ -490,61 +511,68 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     color: #7b2cbf;
+    letter-spacing: 0.5px;
     margin-bottom: 6px;
   }
 
   .pillar-title {
     font-size: 19px;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--color-default);
-    margin: 0 0 10px 0;
+    margin: 0 0 8px 0;
   }
 
   .pillar-desc {
     font-size: 13.5px;
+    line-height: 1.55;
     color: var(--grey-7);
-    line-height: 1.6;
     margin: 0 0 20px 0;
   }
 
   .pillar-action {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
     font-size: 13.5px;
     font-weight: 600;
-    color: var(--grey-7);
+    color: var(--color-default);
     transition: all 0.2s ease;
   }
 
-  /* Featured Articles Grid */
+  /* Featured Articles Section */
   .featured-articles-section {
-    margin-bottom: 36px;
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 30px 28px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-card);
   }
 
   .section-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
     flex-wrap: wrap;
     gap: 12px;
   }
 
   .section-title {
-    font-size: 21px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 800;
     color: var(--color-default);
+    margin: 0 0 4px 0;
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin: 0 0 4px 0;
-  }
+    gap: 8px;
 
-  .flame-icon {
-    color: #e67e22;
+    .flame-icon {
+      color: #e67e22;
+    }
   }
 
   .section-sub {
@@ -560,46 +588,47 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
     font-weight: 600;
     color: #7b2cbf;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease;
 
     &:hover {
-      color: #9d4edd;
-      transform: translateX(2px);
+      transform: translateX(3px);
     }
   }
 
   .featured-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
   }
 
   .featured-card {
-    position: relative;
-    background: var(--color-wrap);
+    background: rgba(53, 90, 117, 0.04);
     border: 1px solid var(--color-border);
-    border-radius: 16px;
-    padding: 22px;
-    box-shadow: var(--shadow-card);
-    transition: all 0.25s ease;
+    border-radius: 14px;
+    padding: 20px;
+    position: relative;
+    transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
     &:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-card-hover);
+      transform: translateY(-3px);
       border-color: rgba(123, 44, 191, 0.35);
+      background: var(--color-wrap);
+      box-shadow: var(--shadow-card);
 
-      .card-post-title { color: #7b2cbf; }
-      .read-link { color: #7b2cbf; transform: translateX(3px); }
+      .read-link {
+        color: #7b2cbf;
+        transform: translateX(4px);
+      }
     }
   }
 
   .card-hitbox {
     position: absolute;
     inset: 0;
-    z-index: 5;
+    z-index: 1;
   }
 
   .card-meta-line {
@@ -617,84 +646,70 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
   }
 
   .card-post-title {
-    font-size: 16.5px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--color-default);
     margin: 0 0 8px 0;
     line-height: 1.4;
-    transition: color 0.2s ease;
   }
 
   .card-post-excerpt {
     font-size: 13px;
     color: var(--grey-7);
-    line-height: 1.55;
-    margin: 0 0 14px 0;
-    flex-grow: 1;
+    line-height: 1.5;
+    margin: 0 0 16px 0;
   }
 
   .read-link {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     font-size: 12.5px;
     font-weight: 600;
-    color: var(--grey-7);
+    color: var(--color-default);
     transition: all 0.2s ease;
   }
 
-  /* Quote Box */
+  /* Mathematical Quote Box */
   .math-quote-box {
-    background: var(--color-wrap);
-    border-left: 4px solid #7b2cbf;
-    border-radius: 0 14px 14px 0;
-    padding: 22px 26px;
+    background: linear-gradient(135deg, rgba(123, 44, 191, 0.08) 0%, rgba(157, 78, 221, 0.03) 100%);
+    border: 1px solid rgba(123, 44, 191, 0.2);
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: center;
     box-shadow: var(--shadow-card);
   }
 
   .quote-text {
-    margin: 0 0 8px 0;
-    font-size: 15.5px;
+    font-size: 17px;
     font-style: italic;
     color: var(--color-default);
-    line-height: 1.6;
+    margin: 0 0 8px 0;
+    line-height: 1.5;
+    font-weight: 500;
   }
 
   .quote-author {
     font-size: 13px;
-    font-weight: 600;
-    color: var(--grey-7);
-    display: block;
+    color: #7b2cbf;
+    font-weight: 700;
+    letter-spacing: 0.5px;
   }
 
   :global([data-theme='dark']) {
-    .realm-badge.active-math {
-      background: linear-gradient(135deg, #8e24aa, #ba68c8);
-    }
-    .hero-stat .num { color: #ce93d8; }
-    .art-ring {
-      background: radial-gradient(circle, rgba(186, 104, 200, 0.2) 0%, transparent 70%);
-      border-color: rgba(186, 104, 200, 0.4);
+    .math-badge, .hero-tag, .pillar-badge {
+      background: rgba(186, 104, 200, 0.15);
       color: #ce93d8;
     }
+    .hero-stat .num { color: #ce93d8; }
+    .core-math-symbol { color: #ce93d8; }
+    .art-ring { border-color: rgba(186, 104, 200, 0.3); }
     .sym-art { color: #ce93d8; }
     .pillar-icon-box {
       background: rgba(186, 104, 200, 0.15);
       color: #ce93d8;
     }
-    .pillar-badge { color: #ce93d8; }
-    .pillar-card:hover {
-      border-color: #ce93d8;
-      .pillar-action { color: #ce93d8; }
-    }
     .view-all-link { color: #ce93d8; }
-    .featured-card:hover {
-      border-color: rgba(186, 104, 200, 0.4);
-      .card-post-title { color: #ce93d8; }
-      .read-link { color: #ce93d8; }
-    }
-    .math-quote-box {
-      border-left-color: #ab47bc;
-    }
+    .quote-author { color: #ce93d8; }
   }
 </style>
