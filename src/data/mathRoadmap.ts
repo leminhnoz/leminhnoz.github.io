@@ -57,7 +57,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "VMO 2021 Bài 3: Chia hết và ước nguyên tố", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
           { title: "USAMO 2003 Problem 1: Tính chất số nguyên", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Easy" }
         ],
-        blogSlug: "2026-04-02-extended-euclidean-algorithm"
+        blogSlug: "2026-01-10-olympiad-nt-divisibility-euclid-bezout"
       },
       {
         id: "nt-congruence-euler-fermat",
@@ -78,7 +78,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 2005 Problem 4: Dãy số và ước đồng dư", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
           { title: "USAMO 2018 Problem 2: Ước nguyên tố phân biệt", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Hard" }
         ],
-        blogSlug: "2026-03-08-binary-exponentiation"
+        blogSlug: "2026-01-15-olympiad-nt-congruence-euler-fermat"
       },
       {
         id: "nt-wilson-crt",
@@ -98,7 +98,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "Vietnam TST 2021 Bài 6: Đồng dư và CRT", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Hard" },
           { title: "RMM 2018 Problem 1: Ước chung đa thức", judge: "RMM", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-01-20-olympiad-nt-wilson-chinese-remainder-theorem"
       },
       {
         id: "nt-order-primitive-roots",
@@ -119,7 +119,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO Shortlist 2006 N5: Cấp của số nguyên", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
           { title: "VMO 2021 Bài 3: Cấp của số nguyên", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-01-25-olympiad-nt-order-primitive-roots"
       },
       {
         id: "nt-lte-lemma",
@@ -140,7 +140,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "USA TST 2018 Problem 5: Ứng dụng LTE", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Hard" },
           { title: "IMO Shortlist 2007 N5: Chia hết số mũ", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-02-01-olympiad-nt-lifting-the-exponent-lte"
       },
       {
         id: "nt-quadratic-reciprocity",
@@ -161,7 +161,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "USAMO 2008 Problem 1: Thặng dư bậc hai", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Medium" },
           { title: "RMM 2018 Problem 1: Ký hiệu Legendre", judge: "RMM", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-02-05-olympiad-nt-quadratic-reciprocity-gauss"
       },
       {
         id: "nt-vieta-jumping",
@@ -181,7 +181,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 1988 Problem 6: Huyền thoại Vieta Jumping", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
           { title: "IMO 2007 Problem 5: Bước nhảy Vieta nâng cao", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-02-10-olympiad-nt-vieta-jumping-infinite-descent"
       },
       {
         id: "nt-zsigmondy-cyclotomic",
@@ -201,7 +201,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 2012 Problem 3: Ứng dụng Zsigmondy", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
           { title: "USA TST 2014 Problem 1: Ước nguyên tố nguyên thủy", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-02-15-olympiad-nt-zsigmondy-cyclotomic-hensel"
       }
     ]
   },
@@ -235,7 +235,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "USAMO 2003 Problem 1: Đa thức nguyên", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Easy" },
           { title: "VMO 2019 Bài 2: Đa thức nghiệm thực", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-02-20-olympiad-alg-polynomial-foundations-vieta"
       },
       {
         id: "alg-roots-irreducibility-eisenstein",
@@ -256,7 +256,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO Shortlist 2008 A1: Đa thức nguyên", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
           { title: "Putnam 2020 Problem A1: Đa thức nhân tính", judge: "Putnam", url: "https://artofproblemsolving.com/community/c4380_putnam", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-02-25-olympiad-alg-roots-irreducibility-eisenstein"
       },
       {
         id: "alg-sequences-limits-recurrence",
@@ -277,7 +277,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "VMO 2019 Bài 1: Giới hạn dãy số truy hồi", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
           { title: "VMO 2020 Bài 1: Dãy số hữu tỉ", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
         ],
-        blogSlug: "2026-04-27-fibonacci-numbers-secrets"
+        blogSlug: "2026-03-01-olympiad-alg-sequences-recurrence-limits"
       },
       {
         id: "alg-cauchy-jensen-fe",
@@ -298,7 +298,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "VMO 2022 Bài 2: Phương trình hàm trên R", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
           { title: "USAMO 2019 Problem 4: PT hàm Cauchy", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-03-05-olympiad-alg-functional-equations-cauchy"
       },
       {
         id: "alg-advanced-fe-imo",
@@ -319,7 +319,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 2019 Problem 1: PT hàm số học f(2a) + 2f(b) = f(f(a+b))", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
           { title: "IMO 1977 Problem 6: f(f(n)) < f(n+1)", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-03-10-olympiad-alg-advanced-functional-equations-imo"
       }
     ]
   },
@@ -353,7 +353,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 2014 Problem 4: Điểm liên kết tam giác", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
           { title: "VMO 2017 Bài 2: Cấu hình đồng quy", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-03-15-olympiad-geo-ceva-menelaus-euler-line"
       },
       {
         id: "geo-power-radical-axis",
@@ -373,7 +373,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 2008 Problem 4: Trục đẳng phương và tứ giác nội tiếp", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
           { title: "USAMO 2014 Problem 1: Phương tích và tiếp tuyến", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-03-20-olympiad-geo-power-radical-axis"
       },
       {
         id: "geo-harmonic-bundles",
@@ -395,7 +395,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "VMO 2020 Bài 4: Hàng điểm điều hòa và trực tâm", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Hard" },
           { title: "IMO 2016 Problem 1: Tứ giác điều hòa", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-03-25-olympiad-geo-harmonic-bundles-poles"
       },
       {
         id: "geo-projective-theorems",
@@ -416,7 +416,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "Vietnam TST 2018 Bài 2: Cấu hình Desargues và cực đối cực", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Hard" },
           { title: "IMO Shortlist 2011 G4: Định lý Pascal", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-04-01-olympiad-geo-projective-pascal-desargues"
       },
       {
         id: "geo-inversion-spiral-similarity",
@@ -437,7 +437,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 2015 Problem 3: Nghịch đảo và đường tròn", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
           { title: "RMM 2020 Problem 3: Điểm Miquel và vị tự quay", judge: "RMM", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-04-05-olympiad-geo-inversion-spiral-similarity"
       }
     ]
   },
@@ -471,7 +471,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "USAMO 2015 Problem 1: Nguyên lý cực hạn lưới", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Medium" },
           { title: "IMO 2011 Problem 2: Windmill (Cối xay gió tổ hợp)", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-04-10-olympiad-comb-pigeonhole-extremal-principle"
       },
       {
         id: "comb-invariants-monovariants-coloring",
@@ -492,7 +492,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "VMO 2023 Bài 5: Bất biến phân hoạch", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
           { title: "IMO Shortlist 2014 C1: Trạng thái tiền xu", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-04-15-olympiad-comb-invariants-monovariants-coloring"
       },
       {
         id: "comb-double-counting-identities",
@@ -513,7 +513,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 1998 Problem 2: Đếm hai cách thi đấu", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
           { title: "IMO 1989 Problem 3: Đếm số bộ ba điểm", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-04-20-olympiad-comb-double-counting-identities"
       },
       {
         id: "comb-graph-theory-turan-ramsey",
@@ -535,7 +535,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "Vietnam TST 2020 Bài 3: Định lý Ramsey và tô màu cạnh", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Hard" },
           { title: "IMO 2017 Problem 3: Thỏ và thợ săn trên đồ thị", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-04-25-olympiad-comb-graph-theory-turan-ramsey"
       },
       {
         id: "comb-games-windmill-imo",
@@ -556,7 +556,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 2011 Problem 2: The Windmill Problem (Terence Tao)", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
           { title: "USAMO 2015 Problem 1: Trò chơi trên lưới", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-05-01-olympiad-comb-games-windmill-terence-tao"
       }
     ]
   },
@@ -590,7 +590,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "VMO 2018 Bài 3: Bất đẳng thức 3 biến phân thức", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
           { title: "APMO 2021 Problem 2: BĐT 3 biến đối xứng", judge: "APMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-05-05-olympiad-ineq-amgm-cauchy-schwarz-engel"
       },
       {
         id: "ineq-holder-minkowski-chebyshev",
@@ -611,7 +611,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 2001 Problem 2: BĐT hoán vị phân thức căn bậc hai", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
           { title: "Putnam 2017 Problem B1: BĐT tích phân Cauchy-Schwarz", judge: "Putnam", url: "https://artofproblemsolving.com/community/c4380_putnam", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-05-10-olympiad-ineq-holder-minkowski-chebyshev"
       },
       {
         id: "ineq-schur-pqr-method",
@@ -632,7 +632,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "USA TST 2015 Problem 2: BĐT Schur và p, q, r", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Hard" },
           { title: "VMO 2018 Bài 3: Bất đẳng thức p, q, r", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
         ],
-        blogSlug: null
+        blogSlug: "2026-05-15-olympiad-ineq-schur-pqr-method"
       },
       {
         id: "ineq-sos-ev-karamata",
@@ -653,7 +653,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 2020 Problem 2: Bất đẳng thức 4 biến thực", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
           { title: "IMO 2005 Problem 3: Bất đẳng thức phân thức IMO", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
-        blogSlug: null
+        blogSlug: "2026-05-20-olympiad-ineq-sos-equal-variables-karamata"
       }
     ]
   }
