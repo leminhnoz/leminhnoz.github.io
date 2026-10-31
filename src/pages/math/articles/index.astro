@@ -9,27 +9,14 @@ import { urlFor } from "../../../utils/urlFor";
 import { formatDate } from "../../../utils/formatDate";
 import { wordCount, readingTime } from "../../../utils/wordCount";
 import { sortPosts } from "../../../utils/sortPosts";
+import { isPureMathPost } from "../../../utils/mathFilter";
 
 const title = "Chuyên Đề Toán Olympic | Math Articles";
-const description = "Tuyển tập các bài viết và chuyên đề Toán học Olympic chuyên sâu: Số học hình thức, Bổ đề Bézout, Phương trình Diophantine, Đại số ma trận và Dãy số.";
-
-// Math-related tags or keywords
-const mathKeywords = [
-  "math", "number theory", "linear algebra", "combinatorics",
-  "geometry", "convex hull", "gaussian elimination", "determinant",
-  "fibonacci", "binary exponentiation", "euclidean", "diophantine"
-];
+const description = "Tuyển tập 27 chuyên đề Toán học Olympic chuyên sâu: Số học (LTE, Vieta Jumping, Thặng dư bậc hai), Đại số & PT hàm IMO, Hình học phẳng (Hàng điều hòa, Pascal), Bất đẳng thức (SOS, Schur) và Tổ hợp rời rạc.";
 
 const allPosts = await getCollection("blog");
 const mathPosts = allPosts
-  .filter((post) => {
-    const tags = (post.data.tags || []).map(t => t.toLowerCase());
-    const cats = (post.data.categories || []).map(c => c.toLowerCase());
-    const title = post.data.title.toLowerCase();
-    return tags.some(t => mathKeywords.some(k => t.includes(k))) ||
-           cats.some(c => mathKeywords.some(k => c.includes(k))) ||
-           mathKeywords.some(k => title.includes(k));
-  })
+  .filter(isPureMathPost)
   .sort(sortPosts);
 ---
 

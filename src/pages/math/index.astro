@@ -12,28 +12,17 @@ import { readingTime } from "../../utils/wordCount";
 import { sortPosts } from "../../utils/sortPosts";
 import { mathRoadmapStages } from "../../data/mathRoadmap";
 import { mathProblems } from "../../data/mathProblems";
+import { isPureMathPost } from "../../utils/mathFilter";
 
 const title = "Toán Học Olympic | Mathematical Olympiad Hub";
 const description = "Không gian Toán học Olympic: IMO, VMO, USAMO, Putnam • Tứ trụ Olympic: Số học, Đại số & PT hàm, Hình học phẳng, Tổ hợp & Đồ thị • Độc lập hoàn toàn với Tin học.";
 
-const mathKeywords = [
-  "math", "olympiad", "imo", "vmo", "usamo", "number theory",
-  "geometry", "combinatorics", "inequality", "functional equation",
-  "putnam", "euclidean", "diophantine"
-];
-
 const allPosts = await getCollection("blog");
-const featuredMathPosts = allPosts
-  .filter((post) => {
-    const tags = (post.data.tags || []).map(t => t.toLowerCase());
-    const cats = (post.data.categories || []).map(c => c.toLowerCase());
-    const title = post.data.title.toLowerCase();
-    return tags.some(t => mathKeywords.some(k => t.includes(k))) ||
-           cats.some(c => mathKeywords.some(k => c.includes(k))) ||
-           mathKeywords.some(k => title.includes(k));
-  })
-  .sort(sortPosts)
-  .slice(0, 6);
+const pureMathPosts = allPosts
+  .filter(isPureMathPost)
+  .sort(sortPosts);
+
+const featuredMathPosts = pureMathPosts.slice(0, 6);
 
 const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.length, 0);
 ---
@@ -156,7 +145,7 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
             <span class="pillar-badge">Bài giảng & Bổ đề</span>
             <h2 class="pillar-title">Chuyên Đề Toán (Articles)</h2>
             <p class="pillar-desc">
-              Các bài phân tích bổ đề toán học chuyên sâu: Bổ đề Bézout, Phương trình Diophantine, Hệ số đồng dư, Dãy số Fibonacci và Đại số ma trận.
+              Các bài phân tích chuyên sâu: Bổ đề Bézout, Bổ đề LTE, Vieta Jumping, Hàng điểm điều hòa, Bất đẳng thức SOS và Phương trình hàm IMO.
             </p>
           </div>
           <div class="pillar-action">
@@ -177,7 +166,7 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
             <span class="section-sub">Các bài viết có chứng minh chặt chẽ và công thức KaTeX chi tiết</span>
           </div>
           <a href={urlFor("math/articles")} class="view-all-link">
-            <span>Xem tất cả ({allPosts.length})</span>
+            <span>Xem tất cả ({pureMathPosts.length})</span>
             <Icon name="fa6-solid:arrow-right" size={12} />
           </a>
         </div>
