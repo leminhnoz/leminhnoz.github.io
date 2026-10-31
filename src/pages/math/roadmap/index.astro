@@ -135,18 +135,20 @@ const completedNodes = mathRoadmapStages.reduce(
                       <div class="problems-block">
                         <span class="sub-label">Bài toán Olympic thực tế:</span>
                         <div class="problem-chips">
-                          {node.practiceProblems.map((prob) => (
-                            <a
-                              href={prob.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              class={`prob-chip ${prob.judge.toLowerCase().replace(/\s+/g, '-')}`}
-                              title={`Xem bài toán ${prob.title} trên ${prob.judge} (${prob.difficulty})`}
-                            >
-                              <span class="judge-tag">{prob.judge}</span>
-                              <span class="prob-title">{prob.title}</span>
-                            </a>
-                          ))}
+                          {node.practiceProblems.map((prob) => {
+                            const searchKeyword = prob.title.split(':')[0].trim();
+                            return (
+                              <a
+                                href={urlFor(`math/problems?search=${encodeURIComponent(searchKeyword)}`)}
+                                class={`prob-chip ${prob.judge.toLowerCase().replace(/\s+/g, '-')}`}
+                                title={`Xem đề bài chi tiết & phương pháp giải của ${prob.title} trong Kho đề Olympic`}
+                              >
+                                <span class="judge-tag">{prob.judge}</span>
+                                <span class="prob-title">{prob.title}</span>
+                                <Icon name="fa6-solid:arrow-right" size={9} />
+                              </a>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
