@@ -4,8 +4,8 @@ import { Icon } from "astro-icon/components";
 import { SITE } from "../utils/config";
 import { urlFor } from "../utils/urlFor";
 
-const title = "Chọn Phân Hệ | Math or Programming";
-const description = "Không gian tri thức số của clearluv4ever_. Chọn phân hệ bạn muốn khám phá: Toán học (Mathematics) hoặc Lập trình (Programming & ICPC).";
+const title = "Home";
+const description = "Blog và ghi chép cá nhân về lập trình thi đấu và toán học.";
 ---
 
 <BaseLayout
@@ -14,456 +14,210 @@ const description = "Không gian tri thức số của clearluv4ever_. Chọn ph
   description={description}
 >
   <div class="gateway-screen">
-    <!-- Center Avatar & Branding -->
+    <!-- Center Avatar & Minimal Branding -->
     <div class="gateway-hero">
-      <div class="avatar-ring">
+      <div class="avatar-wrap">
         <img
           src={urlFor("images/avatar.png")}
           alt="clearluv4ever_"
           class="gateway-avatar"
-          width="90"
-          height="90"
+          width="84"
+          height="84"
         />
       </div>
       <h1 class="gateway-name">clearluv4ever_</h1>
       <p class="gateway-tagline">
-        Chuyên đề Toán học Olympic (IMO • VMO) & Lập trình thuật toán thi đấu (ICPC). Chọn phân hệ để truy cập:
+        Ghi chép về lập trình thi đấu và toán học.
       </p>
     </div>
 
-    <!-- The 2 Only Choices -->
+    <!-- 2 Clean Monochrome Cards -->
     <div class="gateway-options">
       <!-- Option 1: Math -->
-      <a href={urlFor("math")} class="realm-box math-box">
-        <div class="realm-box-glow"></div>
-        <div class="box-top">
-          <span class="realm-tag math-tag">
-            <Icon name="fa6-solid:award" size={12} />
-            Toán Olympic (IMO • VMO)
-          </span>
-          <span class="status-indicator">Độc lập với Tin học</span>
-        </div>
-
-        <div class="realm-icon-banner math-theme">
-          <div class="math-math-bg">
-            <span class="f-sym">∫</span>
-            <span class="f-sym">∑</span>
-            <span class="f-sym">π</span>
-            <span class="f-sym">√</span>
+      <a href={urlFor("math")} class="realm-card">
+        <div class="card-top">
+          <div class="card-icon">
+            <Icon name="fa6-solid:square-root-variable" size={18} />
           </div>
-          <Icon name="fa6-solid:infinity" size={54} class="core-icon" />
-        </div>
-
-        <div class="box-content">
-          <h2 class="box-title">1. Toán Olympic (Pure Math)</h2>
-          <p class="box-desc">
-            Không gian Toán học Olympic độc lập: Số học nâng cao (LTE, Vieta Jumping), Đại số & PT hàm, Hình học phẳng điều hòa, Tổ hợp rời rạc và Bất đẳng thức.
-          </p>
-          <ul class="box-features">
-            <li><span class="bullet-dot math-dot"></span>Lộ trình chuẩn Olympic 6 giai đoạn (IMO, VMO, USAMO, Putnam)</li>
-            <li><span class="bullet-dot math-dot"></span>Kho 55+ đề thi Olympic kinh điển hiển thị đề trực tiếp & KaTeX cùng gợi ý giải tại chỗ</li>
-            <li><span class="bullet-dot math-dot"></span>Tập trung tư duy suy luận logic thuần túy & nghệ thuật chứng minh</li>
-          </ul>
-        </div>
-
-        <div class="box-footer">
-          <span class="enter-btn math-enter">
-            <span>Vào phân hệ Toán học</span>
-            <Icon name="fa6-solid:arrow-right" size={14} />
+          <span class="card-arrow">
+            <Icon name="fa6-solid:arrow-right" size={12} />
           </span>
+        </div>
+        <div class="card-main">
+          <h2 class="card-title">Toán học</h2>
+          <p class="card-desc">
+            Số học, đại số, hình học phẳng, tổ hợp và kho đề Olympic chọn lọc.
+          </p>
+          <div class="card-meta">
+            <span>6 giai đoạn</span>
+            <span class="dot">•</span>
+            <span>55 bài tập</span>
+          </div>
         </div>
       </a>
 
       <!-- Option 2: Programming -->
-      <a href={urlFor("programming")} class="realm-box prog-box">
-        <div class="realm-box-glow"></div>
-        <div class="box-top">
-          <span class="realm-tag prog-tag">
-            <Icon name="fa6-solid:code" size={12} />
-            Chuyên mục Tin
-          </span>
-          <span class="status-indicator active">53+ Bài viết</span>
-        </div>
-
-        <div class="realm-icon-banner prog-theme">
-          <div class="prog-code-bg">
-            <span class="f-code">&lt;/&gt;</span>
-            <span class="f-code">{`{...}`}</span>
-            <span class="f-code">O(N log N)</span>
+      <a href={urlFor("programming")} class="realm-card">
+        <div class="card-top">
+          <div class="card-icon">
+            <Icon name="fa6-solid:code" size={18} />
           </div>
-          <Icon name="fa6-solid:laptop-code" size={54} class="core-icon" />
-        </div>
-
-        <div class="box-content">
-          <h2 class="box-title">2. Lập Trình (Programming)</h2>
-          <p class="box-desc">
-            Cấu trúc dữ liệu & Giải thuật nâng cao, Lộ trình ICPC 7 giai đoạn, 128 bài tập tuyển chọn và 53 bài blog masterclass C++.
-          </p>
-          <ul class="box-features">
-            <li><span class="bullet-dot prog-dot"></span>Lộ trình Competitive Programming 27 node tương tác</li>
-            <li><span class="bullet-dot prog-dot"></span>Kho 128 bài tập luyện thi CSES & Codeforces</li>
-            <li><span class="bullet-dot prog-dot"></span>53 bài phân tích thuật toán chuyên sâu C++17/20</li>
-          </ul>
-        </div>
-
-        <div class="box-footer">
-          <span class="enter-btn prog-enter">
-            <span>Vào phân hệ Lập trình</span>
-            <Icon name="fa6-solid:arrow-right" size={14} />
+          <span class="card-arrow">
+            <Icon name="fa6-solid:arrow-right" size={12} />
           </span>
+        </div>
+        <div class="card-main">
+          <h2 class="card-title">Lập trình</h2>
+          <p class="card-desc">
+            Thuật toán, cấu trúc dữ liệu, lộ trình ICPC và bài tập giải thuật.
+          </p>
+          <div class="card-meta">
+            <span>53 bài viết</span>
+            <span class="dot">•</span>
+            <span>128 bài tập</span>
+          </div>
         </div>
       </a>
-    </div>
-
-    <!-- Minimal Bottom Tip -->
-    <div class="gateway-footer-tip">
-      <span>💡 Sau khi vào một phân hệ, thanh điều hướng trên cùng sẽ xuất hiện và bạn có thể chuyển đổi qua lại bất kỳ lúc nào.</span>
     </div>
   </div>
 </BaseLayout>
 
 <style lang="stylus">
-  @keyframes gatewayFadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   .gateway-screen {
     width: 100%;
-    max-width: 1040px;
+    max-width: 720px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    opacity: 1 !important;
-    animation: gatewayFadeUp 0.45s ease-out forwards;
+    padding: 20px 16px;
   }
 
-  /* Hero Section */
   .gateway-hero {
     text-align: center;
-    margin-bottom: 36px;
+    margin-bottom: 32px;
   }
 
-  .avatar-ring {
-    width: 104px;
-    height: 104px;
-    border-radius: 50%;
+  .avatar-wrap {
+    width: 88px;
+    height: 88px;
     margin: 0 auto 16px auto;
-    padding: 4px;
-    background: linear-gradient(135deg, #73bce8, #b7e4fa, #8a2be2);
-    box-shadow: 0 8px 24px rgba(115, 188, 232, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease;
+    border-radius: 50%;
+    border: 2px solid var(--color-border);
+    padding: 3px;
+    background: var(--color-wrap);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transition: transform 0.25s ease;
 
     &:hover {
-      transform: scale(1.05) rotate(4deg);
+      transform: scale(1.05);
     }
   }
 
   .gateway-avatar {
-    width: 96px;
-    height: 96px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    background: #fff;
     display: block;
   }
 
   .gateway-name {
-    font-size: 32px;
-    font-weight: 800;
+    font-size: 26px;
+    font-weight: 700;
     color: var(--color-default);
-    margin: 0 0 10px 0;
-    letter-spacing: 0.5px;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.5px;
   }
 
   .gateway-tagline {
-    font-size: 16px;
+    font-size: 14.5px;
     color: var(--grey-7);
-    margin: 0 auto;
-    max-width: 560px;
-    line-height: 1.6;
+    margin: 0;
+    line-height: 1.5;
   }
 
-  /* Two Realm Boxes */
   .gateway-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 32px;
+    gap: 16px;
     width: 100%;
-    margin-bottom: 30px;
 
-    @media screen and (max-width: 820px) {
+    @media screen and (max-width: 600px) {
       grid-template-columns: 1fr;
-      gap: 24px;
     }
   }
 
-  .realm-box {
-    position: relative;
-    background: var(--color-wrap);
-    border: 2px solid var(--color-border);
-    border-radius: 24px;
-    padding: 32px 28px;
-    text-decoration: none;
-    box-shadow: var(--shadow-card);
-    transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden;
-    opacity: 1 !important;
-
-    &:hover {
-      transform: translateY(-8px);
-    }
-  }
-
-  /* Math Box Theme */
-  .math-box {
-    &:hover {
-      border-color: #8e24aa;
-      box-shadow: 0 20px 40px rgba(142, 36, 170, 0.2);
-
-      .math-enter {
-        background: linear-gradient(135deg, #7b2cbf, #9d4edd);
-        color: #fff;
-        box-shadow: 0 6px 20px rgba(123, 44, 191, 0.4);
-      }
-      .core-icon {
-        transform: scale(1.1) rotate(-5deg);
-      }
-    }
-  }
-
-  /* Programming Box Theme */
-  .prog-box {
-    &:hover {
-      border-color: #0077b6;
-      box-shadow: 0 20px 40px rgba(0, 119, 182, 0.2);
-
-      .prog-enter {
-        background: linear-gradient(135deg, #0077b6, #0096c7);
-        color: #fff;
-        box-shadow: 0 6px 20px rgba(0, 119, 182, 0.4);
-      }
-      .core-icon {
-        transform: scale(1.1) rotate(5deg);
-      }
-    }
-  }
-
-  .box-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .realm-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-
-    &.math-tag {
-      background: rgba(123, 44, 191, 0.12);
-      color: #7b2cbf;
-      border: 1px solid rgba(123, 44, 191, 0.25);
-    }
-
-    &.prog-tag {
-      background: rgba(0, 119, 182, 0.12);
-      color: #0077b6;
-      border: 1px solid rgba(0, 119, 182, 0.25);
-    }
-  }
-
-  .status-indicator {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--grey-7);
-
-    &.active {
-      color: #27ae60;
-    }
-  }
-
-  /* Icon Banners */
-  .realm-icon-banner {
-    position: relative;
-    height: 120px;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 24px;
-    overflow: hidden;
-
-    &.math-theme {
-      background: linear-gradient(135deg, rgba(123, 44, 191, 0.08), rgba(157, 78, 221, 0.18));
-      border: 1px solid rgba(123, 44, 191, 0.2);
-      color: #7b2cbf;
-    }
-
-    &.prog-theme {
-      background: linear-gradient(135deg, rgba(0, 119, 182, 0.08), rgba(0, 150, 199, 0.18));
-      border: 1px solid rgba(0, 119, 182, 0.2);
-      color: #0077b6;
-    }
-
-    .core-icon {
-      transition: transform 0.35s ease;
-      z-index: 2;
-    }
-  }
-
-  .math-math-bg {
-    position: absolute;
-    inset: 0;
-    font-weight: 700;
-    pointer-events: none;
-
-    .f-sym:nth-child(1) { position: absolute; top: 10px; left: 24px; font-size: 26px; opacity: 0.3; }
-    .f-sym:nth-child(2) { position: absolute; top: 14px; right: 28px; font-size: 28px; opacity: 0.3; }
-    .f-sym:nth-child(3) { position: absolute; bottom: 12px; left: 32px; font-size: 22px; opacity: 0.3; }
-    .f-sym:nth-child(4) { position: absolute; bottom: 14px; right: 36px; font-size: 24px; opacity: 0.3; }
-  }
-
-  .prog-code-bg {
-    position: absolute;
-    inset: 0;
-    font-family: monospace;
-    font-weight: 700;
-    pointer-events: none;
-
-    .f-code:nth-child(1) { position: absolute; top: 14px; left: 20px; font-size: 15px; opacity: 0.35; }
-    .f-code:nth-child(2) { position: absolute; bottom: 14px; left: 24px; font-size: 16px; opacity: 0.35; }
-    .f-code:nth-child(3) { position: absolute; top: 16px; right: 20px; font-size: 13px; opacity: 0.4; }
-  }
-
-  /* Content */
-  .box-content {
-    flex-grow: 1;
-    margin-bottom: 24px;
-  }
-
-  .box-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--color-default);
-    margin: 0 0 10px 0;
-  }
-
-  .box-desc {
-    font-size: 14.5px;
-    color: var(--grey-7);
-    line-height: 1.6;
-    margin: 0 0 18px 0;
-  }
-
-  .box-features {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-
-    li {
-      font-size: 13.5px;
-      color: var(--color-default);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-  }
-
-  .bullet-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-
-    &.math-dot { background: #9d4edd; }
-    &.prog-dot { background: #0096c7; }
-  }
-
-  /* Enter Button */
-  .enter-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 13px 20px;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: 600;
-    transition: all 0.25s ease;
-    box-sizing: border-box;
-
-    &.math-enter {
-      background: rgba(123, 44, 191, 0.1);
-      color: #7b2cbf;
-      border: 1px solid rgba(123, 44, 191, 0.3);
-    }
-
-    &.prog-enter {
-      background: rgba(0, 119, 182, 0.1);
-      color: #0077b6;
-      border: 1px solid rgba(0, 119, 182, 0.3);
-    }
-  }
-
-  .gateway-footer-tip {
-    font-size: 13px;
-    color: var(--grey-7);
-    text-align: center;
+  .realm-card {
     background: var(--color-wrap);
     border: 1px solid var(--color-border);
-    padding: 10px 20px;
-    border-radius: 20px;
-    box-shadow: var(--shadow-card);
-    opacity: 1 !important;
+    border-radius: 12px;
+    padding: 22px 20px;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--color-default);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+      .card-arrow {
+        transform: translateX(3px);
+        color: var(--color-default);
+      }
+    }
   }
 
-  :global([data-theme='dark']) {
-    .realm-icon-banner.math-theme {
-      background: rgba(123, 44, 191, 0.15);
-      border-color: rgba(157, 78, 221, 0.3);
-      color: #ce93d8;
-    }
-    .realm-icon-banner.prog-theme {
-      background: rgba(0, 119, 182, 0.15);
-      border-color: rgba(0, 150, 199, 0.3);
-      color: #80d3f2;
-    }
-    .math-math-bg span { color: #ce93d8; }
-    .prog-code-bg span { color: #80d3f2; }
-    .enter-btn.math-enter {
-      background: rgba(186, 104, 200, 0.15);
-      color: #ce93d8;
-      border-color: rgba(186, 104, 200, 0.3);
-    }
-    .enter-btn.prog-enter {
-      background: rgba(79, 195, 247, 0.15);
-      color: #80d3f2;
-      border-color: rgba(79, 195, 247, 0.3);
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--color-border);
+    color: var(--color-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-arrow {
+    color: var(--grey-7);
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .card-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--color-default);
+    margin: 0 0 6px 0;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--grey-7);
+    line-height: 1.5;
+    margin: 0 0 12px 0;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--grey-7);
+
+    .dot {
+      opacity: 0.5;
     }
   }
 </style>

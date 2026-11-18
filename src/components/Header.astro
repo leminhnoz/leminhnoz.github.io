@@ -29,16 +29,16 @@ const isMath = realm === "math" || currentPath.startsWith("/math");
 
 const realmMenu = isMath
   ? [
-      { name: "math_home", label: "Toán Olympic", url: "/math" },
-      { name: "math_roadmap", label: "Lộ trình IMO/VMO", url: "/math/roadmap" },
-      { name: "math_problems", label: "Kho đề Olympic", url: "/math/problems" },
+      { name: "math_home", label: "Toán học", url: "/math" },
+      { name: "math_roadmap", label: "Lộ trình", url: "/math/roadmap" },
+      { name: "math_problems", label: "Bài tập", url: "/math/problems" },
       { name: "math_articles", label: "Chuyên đề", url: "/math/articles" },
       { name: "about", label: "About", url: "/about" },
     ]
   : [
       { name: "prog_home", label: "Lập trình", url: "/programming" },
-      { name: "roadmap", label: "Lộ trình ICPC", url: "/roadmap" },
-      { name: "problems", label: "Bài tập CP", url: "/problems" },
+      { name: "roadmap", label: "Lộ trình", url: "/roadmap" },
+      { name: "problems", label: "Bài tập", url: "/problems" },
       { name: "archives", label: "Archives", url: "/archives" },
       { name: "about", label: "About", url: "/about" },
     ];
@@ -323,66 +323,25 @@ const realmMenu = isMath
     font-size: 11.5px;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.25s ease;
-  }
-
-  .nav-realm-pill.to-prog {
-    background: rgba(0, 119, 182, 0.12);
-    color: #0077b6;
-    border: 1px solid rgba(0, 119, 182, 0.3);
+    transition: all 0.2s ease;
+    background: var(--color-wrap);
+    color: var(--color-default);
+    border: 1px solid var(--color-border);
 
     &:hover {
-      background: #0096c7;
-      color: #fff;
-      transform: translateY(-1px);
-    }
-  }
-
-  .nav-realm-pill.to-math {
-    background: rgba(123, 44, 191, 0.12);
-    color: #7b2cbf;
-    border: 1px solid rgba(123, 44, 191, 0.3);
-
-    &:hover {
-      background: #8e24aa;
-      color: #fff;
+      background: var(--color-default);
+      color: var(--color-wrap);
       transform: translateY(-1px);
     }
   }
 
   .nav-portal-pill {
-    background: rgba(100, 116, 139, 0.1);
-    color: var(--grey-7);
-    border: 1px solid var(--color-border);
+    opacity: 0.8;
 
     &:hover {
-      background: var(--red-1);
-      color: #fff;
-      border-color: var(--red-1);
-      transform: translateY(-1px);
-    }
-  }
-
-  :global([data-theme='dark']) {
-    .nav-realm-pill.to-prog {
-      background: rgba(0, 150, 199, 0.18);
-      color: #80d3f2;
-      border-color: rgba(0, 150, 199, 0.35);
-
-      &:hover {
-        background: #0288d1;
-        color: #fff;
-      }
-    }
-    .nav-realm-pill.to-math {
-      background: rgba(186, 104, 200, 0.18);
-      color: #ce93d8;
-      border-color: rgba(186, 104, 200, 0.35);
-
-      &:hover {
-        background: #ab47bc;
-        color: #fff;
-      }
+      opacity: 1;
+      background: var(--color-default);
+      color: var(--color-wrap);
     }
   }
 </style>

@@ -11,8 +11,8 @@ import { wordCount, readingTime } from "../../../utils/wordCount";
 import { sortPosts } from "../../../utils/sortPosts";
 import { isPureMathPost } from "../../../utils/mathFilter";
 
-const title = "Chuyên Đề Toán Olympic | Math Articles";
-const description = "Tuyển tập 27 chuyên đề Toán học Olympic chuyên sâu: Số học (LTE, Vieta Jumping, Thặng dư bậc hai), Đại số & PT hàm IMO, Hình học phẳng (Hàng điều hòa, Pascal), Bất đẳng thức (SOS, Schur) và Tổ hợp rời rạc.";
+const title = "Chuyên đề Toán học";
+const description = "Tổng hợp các bài viết lý thuyết và chuyên đề Toán học.";
 
 const allPosts = await getCollection("blog");
 const mathPosts = allPosts
@@ -23,7 +23,7 @@ const mathPosts = allPosts
 <BaseLayout realm="math" title={title} description={description}>
   <HeaderTitle title="Math Articles" url={urlFor("math/articles")} slot="header" />
   <HeaderSubTitle
-    subtitle="Chuyên đề & Bài giảng Toán học Olympic • Độc lập với tin học • Tư duy suy luận thuần túy"
+    subtitle="Tổng hợp các bài viết và chuyên đề Toán học"
     url={urlFor("math/articles")}
     slot="header"
   />
@@ -34,12 +34,12 @@ const mathPosts = allPosts
       <header class="articles-intro">
         <div class="intro-content">
           <div class="math-badge">
-            <Icon name="fa6-solid:book-open" size={14} />
-            <span>BÀI VIẾT & CHUYÊN ĐỀ TOÁN HỌC OLYMPIC</span>
+            <Icon name="fa6-solid:book-open" size={13} />
+            <span>Chuyên đề</span>
           </div>
           <h1 class="page-title">{title}</h1>
           <p class="page-description">
-            Tổng hợp các bài phân tích toán học chuyên sâu từ lý thuyết hình thức, định lý, bổ đề và các phương pháp chứng minh kinh điển.
+            Tổng hợp các bài phân tích lý thuyết, định lý và phương pháp chứng minh.
           </p>
         </div>
         <div class="intro-stats">
@@ -120,12 +120,11 @@ const mathPosts = allPosts
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 11.5px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-weight: 600;
     text-transform: uppercase;
-    background: rgba(123, 44, 191, 0.12);
-    color: #7b2cbf;
-    border: 1px solid rgba(123, 44, 191, 0.25);
+    background: var(--color-wrap);
+    color: var(--color-default);
+    border: 1px solid var(--color-border);
     margin-bottom: 12px;
   }
 
@@ -143,8 +142,8 @@ const mathPosts = allPosts
   }
 
   .stat-pill {
-    background: linear-gradient(135deg, rgba(123, 44, 191, 0.12), rgba(157, 78, 221, 0.22));
-    border: 1px solid rgba(123, 44, 191, 0.3);
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
     padding: 8px 18px;
     border-radius: 12px;
     font-size: 13.5px;
@@ -152,7 +151,7 @@ const mathPosts = allPosts
 
     .stat-num {
       font-weight: 700;
-      color: #7b2cbf;
+      color: var(--color-default);
       margin-right: 4px;
     }
   }
@@ -177,15 +176,12 @@ const mathPosts = allPosts
     justify-content: space-between;
 
     &:hover {
-      transform: translateY(-4px);
+      transform: translateY(-2px);
       box-shadow: var(--shadow-card-hover);
-      border-color: rgba(123, 44, 191, 0.4);
+      border-color: var(--color-default);
 
-      .card-title {
-        color: #7b2cbf;
-      }
       .card-read-more {
-        color: #7b2cbf;
+        color: var(--color-default);
         transform: translateX(3px);
       }
     }
@@ -239,9 +235,9 @@ const mathPosts = allPosts
     font-size: 11px;
     padding: 3px 8px;
     border-radius: 6px;
-    background: rgba(123, 44, 191, 0.08);
-    border: 1px solid rgba(123, 44, 191, 0.18);
-    color: var(--color-default);
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
+    color: var(--grey-7);
   }
 
   .card-read-more {
@@ -252,23 +248,5 @@ const mathPosts = allPosts
     font-weight: 600;
     color: var(--grey-7);
     transition: all 0.2s ease;
-  }
-
-  :global([data-theme='dark']) {
-    .math-badge {
-      background: rgba(186, 104, 200, 0.15);
-      color: #ce93d8;
-    }
-    .stat-num { color: #ce93d8; }
-    .tag-pill {
-      background: rgba(186, 104, 200, 0.1);
-      border-color: rgba(186, 104, 200, 0.2);
-    }
-    .article-card:hover .card-title {
-      color: #ce93d8;
-    }
-    .article-card:hover .card-read-more {
-      color: #ce93d8;
-    }
   }
 </style>

@@ -14,8 +14,8 @@ import { mathRoadmapStages } from "../../data/mathRoadmap";
 import { mathProblems } from "../../data/mathProblems";
 import { isPureMathPost } from "../../utils/mathFilter";
 
-const title = "Toán Học Olympic | Mathematical Olympiad Hub";
-const description = "Không gian Toán học Olympic: IMO, VMO, USAMO, Putnam • Tứ trụ Olympic: Số học, Đại số & PT hàm, Hình học phẳng, Tổ hợp & Đồ thị • Độc lập hoàn toàn với Tin học.";
+const title = "Toán học";
+const description = "Chuyên đề và bài tập số học, đại số, hình học phẳng và tổ hợp.";
 
 const allPosts = await getCollection("blog");
 const pureMathPosts = allPosts
@@ -23,7 +23,6 @@ const pureMathPosts = allPosts
   .sort(sortPosts);
 
 const featuredMathPosts = pureMathPosts.slice(0, 6);
-
 const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.length, 0);
 ---
 
@@ -31,7 +30,7 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
   <!-- Header -->
   <HeaderTitle title={SITE.title} url={urlFor("math")} slot="header" />
   <HeaderSubTitle
-    subtitle="Phân hệ Toán học Olympic • IMO • VMO • USAMO • Putnam"
+    subtitle="Olympiad Mathematics & Notes"
     url={urlFor("math")}
     slot="header"
   />
@@ -41,116 +40,101 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
       <!-- Realm Switcher Bar -->
       <div class="realm-banner" data-aos="fade-down">
         <div class="realm-info">
-          <span class="realm-badge active-math">
-            <Icon name="fa6-solid:award" size={14} />
-            Phân hệ Toán Olympic (Pure Mathematics)
+          <span class="realm-badge">
+            <Icon name="fa6-solid:square-root-variable" size={13} />
+            Toán học
           </span>
-          <span class="realm-desc">Số học (NT) • Đại số & PT hàm • Hình học phẳng • Tổ hợp (COMB) • Bất đẳng thức</span>
+          <span class="realm-desc">Số học • Đại số • Hình học • Tổ hợp</span>
         </div>
         <div class="realm-actions">
-          <a href={urlFor("programming")} class="realm-switch-btn" title="Chuyển sang phân hệ Lập trình">
-            <Icon name="fa6-solid:laptop-code" size={14} />
-            <span>Sang Lập trình</span>
+          <a href={urlFor("programming")} class="realm-switch-btn" title="Chuyển sang mục Lập trình">
+            <Icon name="fa6-solid:code" size={13} />
+            <span>Mục Tin</span>
           </a>
-          <a href={urlFor("/")} class="realm-portal-btn" title="Quay về cổng chọn phân hệ">
-            <Icon name="fa6-solid:door-open" size={14} />
-            <span>Đổi phân hệ</span>
+          <a href={urlFor("/")} class="realm-portal-btn" title="Quay về trang chủ">
+            <Icon name="fa6-solid:door-open" size={13} />
+            <span>Trang chủ</span>
           </a>
         </div>
       </div>
 
-      <!-- Hero Welcome Card -->
-      <div class="math-hero-card" data-aos="fade-up">
+      <!-- Clean Minimal Header -->
+      <div class="math-hero-clean" data-aos="fade-up">
         <div class="hero-left">
-          <div class="hero-tag">
-            <Icon name="fa6-solid:shapes" size={13} />
-            <span>ĐỘC LẬP HOÀN TOÀN VỚI TIN HỌC • TƯ DUY SUY LUẬN THUẦN TÚY</span>
-          </div>
-          <h1 class="hero-title">Toán Học Olympic & Nghệ Thuật Chứng Minh</h1>
+          <h1 class="hero-title">Toán học</h1>
           <p class="hero-desc">
-            Không lập trình, không thuật toán máy tính — nơi đây dành riêng cho vẻ đẹp thuần khiết của <strong>Toán học Olympic</strong>. 
-            Từ những bài toán số học huyền thoại của IMO, phương trình hàm trừu tượng, hình học xạ ảnh điều hòa đến tổ hợp rời rạc và các bài thi VMO, USAMO, Putnam danh giá.
+            Tổng hợp chuyên đề và bài tập số học, đại số, hình học phẳng và tổ hợp.
           </p>
-          <div class="hero-stats">
-            <div class="hero-stat">
-              <span class="num">{mathRoadmapStages.length}</span>
-              <span class="lbl">Giai đoạn Olympic</span>
-            </div>
-            <div class="hero-stat">
-              <span class="num">{totalRoadmapNodes}</span>
-              <span class="lbl">Chuyên đề & Bổ đề</span>
-            </div>
-            <div class="hero-stat">
-              <span class="num">{mathProblems.length}</span>
-              <span class="lbl">Bài thi IMO/VMO chọn lọc</span>
-            </div>
-          </div>
         </div>
-        <div class="hero-art">
-          <div class="art-ring">
-            <span class="sym-art sym-1">∫</span>
-            <span class="sym-art sym-2">∑</span>
-            <span class="sym-art sym-3">π</span>
-            <span class="sym-art sym-4">√</span>
-            <span class="sym-art sym-5">∞</span>
-            <Icon name="fa6-solid:infinity" size={64} class="core-math-symbol" />
+        <div class="hero-stats">
+          <div class="stat-pill">
+            <span class="stat-val">{mathRoadmapStages.length}</span>
+            <span class="stat-txt">Giai đoạn</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-val">{totalRoadmapNodes}</span>
+            <span class="stat-txt">Chủ đề</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-val">{mathProblems.length}</span>
+            <span class="stat-txt">Bài tập</span>
           </div>
         </div>
       </div>
 
-      <!-- 3 Main Pillars -->
+      <!-- 3 Pillars (Clean Monochrome) -->
       <div class="math-pillars-grid" data-aos="fade-up">
         <!-- Pillar 1: Roadmap -->
-        <a href={urlFor("math/roadmap")} class="pillar-card pillar-roadmap">
-          <div class="pillar-icon-box">
-            <Icon name="fa6-solid:route" size={28} />
+        <a href={urlFor("math/roadmap")} class="pillar-card">
+          <div class="pillar-top">
+            <div class="pillar-icon">
+              <Icon name="fa6-solid:route" size={18} />
+            </div>
+            <span class="pillar-arrow">
+              <Icon name="fa6-solid:arrow-right" size={12} />
+            </span>
           </div>
-          <div class="pillar-body">
-            <span class="pillar-badge">Lộ trình học tập</span>
-            <h2 class="pillar-title">Lộ Trình IMO / VMO (Roadmap)</h2>
+          <div class="pillar-content">
+            <h2 class="pillar-title">Lộ trình (Roadmap)</h2>
             <p class="pillar-desc">
-              Hệ thống 6 giai đoạn chuẩn thi Olympic: Số học (LTE, Vieta Jumping), Đại số & PT hàm, Hình học phẳng (Hàng điều hòa, Pascal), Tổ hợp cực hạn và BĐT.
+              Lộ trình 6 giai đoạn chuẩn bị cho các kỳ thi Olympic Toán.
             </p>
-          </div>
-          <div class="pillar-action">
-            <span>Khám phá Lộ trình Toán</span>
-            <Icon name="fa6-solid:arrow-right" size={14} />
           </div>
         </a>
 
         <!-- Pillar 2: Problems -->
-        <a href={urlFor("math/problems")} class="pillar-card pillar-problems">
-          <div class="pillar-icon-box">
-            <Icon name="fa6-solid:award" size={28} />
+        <a href={urlFor("math/problems")} class="pillar-card">
+          <div class="pillar-top">
+            <div class="pillar-icon">
+              <Icon name="fa6-solid:award" size={18} />
+            </div>
+            <span class="pillar-arrow">
+              <Icon name="fa6-solid:arrow-right" size={12} />
+            </span>
           </div>
-          <div class="pillar-body">
-            <span class="pillar-badge">Đề thi kinh điển</span>
-            <h2 class="pillar-title">Kho Đề Olympic (Problems)</h2>
+          <div class="pillar-content">
+            <h2 class="pillar-title">Kho đề (Problems)</h2>
             <p class="pillar-desc">
-              Tuyển tập {mathProblems.length}+ bài toán kinh điển từ IMO, VMO, USAMO, Putnam, RMM với đề bài chi tiết trực tiếp, công thức KaTeX chuẩn mực và gợi ý phương pháp giải tại chỗ.
+              Tuyển tập {mathProblems.length}+ bài toán Olympic chọn lọc kèm lời giải chi tiết.
             </p>
-          </div>
-          <div class="pillar-action">
-            <span>Vào Kho Đề Olympic</span>
-            <Icon name="fa6-solid:arrow-right" size={14} />
           </div>
         </a>
 
         <!-- Pillar 3: Articles -->
-        <a href={urlFor("math/articles")} class="pillar-card pillar-articles">
-          <div class="pillar-icon-box">
-            <Icon name="fa6-solid:book-open" size={28} />
+        <a href={urlFor("math/articles")} class="pillar-card">
+          <div class="pillar-top">
+            <div class="pillar-icon">
+              <Icon name="fa6-solid:book-open" size={18} />
+            </div>
+            <span class="pillar-arrow">
+              <Icon name="fa6-solid:arrow-right" size={12} />
+            </span>
           </div>
-          <div class="pillar-body">
-            <span class="pillar-badge">Bài giảng & Bổ đề</span>
-            <h2 class="pillar-title">Chuyên Đề Toán (Articles)</h2>
+          <div class="pillar-content">
+            <h2 class="pillar-title">Chuyên đề (Articles)</h2>
             <p class="pillar-desc">
-              Các bài phân tích chuyên sâu: Bổ đề Bézout, Bổ đề LTE, Vieta Jumping, Hàng điểm điều hòa, Bất đẳng thức SOS và Phương trình hàm IMO.
+              Các bài viết lý thuyết, bổ đề và phương pháp chứng minh.
             </p>
-          </div>
-          <div class="pillar-action">
-            <span>Đọc các Chuyên đề</span>
-            <Icon name="fa6-solid:arrow-right" size={14} />
           </div>
         </a>
       </div>
@@ -158,15 +142,9 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
       <!-- Featured Math Articles Section -->
       <div class="featured-articles-section" data-aos="fade-up">
         <div class="section-header">
-          <div>
-            <h2 class="section-title">
-              <Icon name="fa6-solid:fire" size={20} class="flame-icon" />
-              Chuyên đề Toán học nổi bật
-            </h2>
-            <span class="section-sub">Các bài viết có chứng minh chặt chẽ và công thức KaTeX chi tiết</span>
-          </div>
+          <h2 class="section-title">Chuyên đề nổi bật</h2>
           <a href={urlFor("math/articles")} class="view-all-link">
-            <span>Xem tất cả ({pureMathPosts.length})</span>
+            <span>Tất cả ({pureMathPosts.length})</span>
             <Icon name="fa6-solid:arrow-right" size={12} />
           </a>
         </div>
@@ -187,23 +165,15 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
               </div>
               <h3 class="card-post-title">{post.data.title}</h3>
               <p class="card-post-excerpt">
-                {post.data.excerpt || (post.body ? post.body.slice(0, 140) + "..." : "")}
+                {post.data.excerpt || (post.body ? post.body.slice(0, 130) + "..." : "")}
               </p>
               <div class="read-link">
-                <span>Chi tiết chuyên đề</span>
+                <span>Đọc bài</span>
                 <Icon name="fa6-solid:arrow-right" size={11} />
               </div>
             </article>
           ))}
         </div>
-      </div>
-
-      <!-- Mathematical Philosophy Box -->
-      <div class="math-quote-box" data-aos="fade-up">
-        <blockquote class="quote-text">
-          "Pure mathematics is, in its way, the poetry of logical ideas."
-        </blockquote>
-        <cite class="quote-author">— Albert Einstein</cite>
       </div>
     </div>
   </section>
@@ -226,18 +196,18 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
     align-items: center;
     background: var(--color-wrap);
     border: 1px solid var(--color-border);
-    border-radius: 14px;
-    padding: 12px 20px;
+    border-radius: 10px;
+    padding: 10px 16px;
     margin-bottom: 24px;
-    box-shadow: var(--shadow-card);
-    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    gap: 12px;
     flex-wrap: wrap;
   }
 
   .realm-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
   }
 
@@ -245,27 +215,22 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-
-    &.active-math {
-      background: rgba(123, 44, 191, 0.12);
-      color: #7b2cbf;
-      border: 1px solid rgba(123, 44, 191, 0.25);
-    }
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    background: var(--color-default);
+    color: var(--color-wrap);
   }
 
   .realm-desc {
-    font-size: 12.5px;
+    font-size: 13px;
     color: var(--grey-7);
-    font-weight: 500;
   }
 
   .realm-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
   }
 
@@ -273,343 +238,225 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 14px;
-    border-radius: 10px;
-    font-size: 12.5px;
-    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
     text-decoration: none;
+    border: 1px solid var(--color-border);
+    background: var(--color-wrap);
+    color: var(--color-default);
     transition: all 0.2s ease;
-  }
-
-  .realm-switch-btn {
-    background: rgba(30, 144, 255, 0.1);
-    color: #1e90ff;
-    border: 1px solid rgba(30, 144, 255, 0.25);
 
     &:hover {
-      background: #1e90ff;
-      color: #fff;
+      background: var(--color-border);
       transform: translateY(-1px);
     }
   }
 
-  .realm-portal-btn {
-    background: transparent;
-    color: var(--grey-7);
-    border: 1px solid var(--color-border);
-
-    &:hover {
-      border-color: #7b2cbf;
-      color: #7b2cbf;
-    }
-  }
-
-  /* Hero Welcome Card */
-  .math-hero-card {
+  /* Clean Hero */
+  .math-hero-clean {
     background: var(--color-wrap);
     border: 1px solid var(--color-border);
-    border-radius: 20px;
-    padding: 38px 36px;
-    margin-bottom: 30px;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 32px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow-card);
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: -60px;
-      right: -60px;
-      width: 240px;
-      height: 240px;
-      background: radial-gradient(circle, rgba(123, 44, 191, 0.12) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
+    gap: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    flex-wrap: wrap;
   }
 
   .hero-left {
     flex: 1;
-    max-width: 680px;
-  }
-
-  .hero-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 11.5px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    background: rgba(123, 44, 191, 0.12);
-    color: #7b2cbf;
-    border: 1px solid rgba(123, 44, 191, 0.25);
-    margin-bottom: 14px;
+    min-width: 260px;
   }
 
   .hero-title {
-    font-size: 28px;
-    font-weight: 800;
+    font-size: 22px;
+    font-weight: 700;
     color: var(--color-default);
-    margin: 0 0 12px 0;
-    line-height: 1.25;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.3px;
   }
 
   .hero-desc {
-    font-size: 15px;
-    line-height: 1.65;
+    font-size: 13.5px;
     color: var(--grey-7);
-    margin: 0 0 24px 0;
-
-    strong {
-      color: var(--color-default);
-    }
+    margin: 0;
+    line-height: 1.5;
   }
 
   .hero-stats {
     display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
+    gap: 8px;
   }
 
-  .hero-stat {
+  .stat-pill {
+    background: var(--color-border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    min-width: 72px;
 
-    .num {
-      font-size: 26px;
-      font-weight: 800;
-      color: #7b2cbf;
-      line-height: 1;
+    .stat-val {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-default);
+      line-height: 1.2;
     }
-    .lbl {
-      font-size: 12px;
+
+    .stat-txt {
+      font-size: 11px;
       color: var(--grey-7);
-      font-weight: 500;
+      margin-top: 2px;
     }
-  }
-
-  .hero-art {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-right: 20px;
-
-    @media (max-width: 768px) {
-      display: none;
-    }
-  }
-
-  .art-ring {
-    position: relative;
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    border: 2px dashed rgba(123, 44, 191, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: rotateSlow 40s linear infinite;
-  }
-
-  @keyframes rotateSlow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .core-math-symbol {
-    color: #7b2cbf;
-    opacity: 0.9;
-    animation: pulseSymbol 3s ease-in-out infinite alternate;
-  }
-
-  @keyframes pulseSymbol {
-    from { transform: scale(0.92); opacity: 0.75; }
-    to { transform: scale(1.05); opacity: 1; }
-  }
-
-  .sym-art {
-    position: absolute;
-    font-size: 18px;
-    font-weight: 800;
-    color: #7b2cbf;
-    opacity: 0.7;
-
-    &.sym-1 { top: -10px; left: 58px; }
-    &.sym-2 { top: 40px; right: -12px; }
-    &.sym-3 { bottom: -10px; right: 52px; }
-    &.sym-4 { bottom: 40px; left: -10px; }
-    &.sym-5 { top: 18px; left: 10px; }
   }
 
   /* 3 Pillars Grid */
   .math-pillars-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 22px;
-    margin-bottom: 34px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+
+    @media screen and (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   .pillar-card {
     background: var(--color-wrap);
     border: 1px solid var(--color-border);
-    border-radius: 18px;
-    padding: 26px 24px;
-    box-shadow: var(--shadow-card);
+    border-radius: 12px;
+    padding: 20px 18px;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    text-decoration: none;
-    transition: all 0.25s ease;
-    position: relative;
-    overflow: hidden;
+    transition: all 0.2s ease;
 
     &:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-card-hover);
-      border-color: rgba(123, 44, 191, 0.4);
+      border-color: var(--color-default);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 
-      .pillar-action {
-        color: #7b2cbf;
-        transform: translateX(4px);
+      .pillar-arrow {
+        transform: translateX(3px);
+        color: var(--color-default);
       }
     }
   }
 
-  .pillar-icon-box {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
+  .pillar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .pillar-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--color-border);
+    color: var(--color-default);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 18px;
-    background: rgba(123, 44, 191, 0.1);
-    color: #7b2cbf;
   }
 
-  .pillar-badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #7b2cbf;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
+  .pillar-arrow {
+    color: var(--grey-7);
+    transition: transform 0.2s ease, color 0.2s ease;
   }
 
   .pillar-title {
-    font-size: 19px;
-    font-weight: 800;
+    font-size: 16px;
+    font-weight: 600;
     color: var(--color-default);
-    margin: 0 0 8px 0;
+    margin: 0 0 6px 0;
   }
 
   .pillar-desc {
-    font-size: 13.5px;
-    line-height: 1.55;
+    font-size: 12.5px;
     color: var(--grey-7);
-    margin: 0 0 20px 0;
-  }
-
-  .pillar-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--color-default);
-    transition: all 0.2s ease;
+    line-height: 1.5;
+    margin: 0;
   }
 
   /* Featured Articles Section */
   .featured-articles-section {
-    background: var(--color-wrap);
-    border: 1px solid var(--color-border);
-    border-radius: 20px;
-    padding: 30px 28px;
     margin-bottom: 30px;
-    box-shadow: var(--shadow-card);
   }
 
   .section-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 22px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--color-border);
-    flex-wrap: wrap;
-    gap: 12px;
+    align-items: center;
+    margin-bottom: 14px;
   }
 
   .section-title {
-    font-size: 20px;
-    font-weight: 800;
+    font-size: 17px;
+    font-weight: 700;
     color: var(--color-default);
-    margin: 0 0 4px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .flame-icon {
-      color: #e67e22;
-    }
-  }
-
-  .section-sub {
-    font-size: 13px;
-    color: var(--grey-7);
+    margin: 0;
   }
 
   .view-all-link {
+    font-size: 12.5px;
+    color: var(--grey-7);
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #7b2cbf;
-    text-decoration: none;
-    transition: transform 0.2s ease;
+    gap: 4px;
+    transition: color 0.2s ease;
 
     &:hover {
-      transform: translateX(3px);
+      color: var(--color-default);
     }
   }
 
   .featured-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+
+    @media screen and (max-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media screen and (max-width: 580px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   .featured-card {
-    background: rgba(53, 90, 117, 0.04);
+    background: var(--color-wrap);
     border: 1px solid var(--color-border);
-    border-radius: 14px;
-    padding: 20px;
+    border-radius: 10px;
+    padding: 16px;
     position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
     transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
     &:hover {
-      transform: translateY(-3px);
-      border-color: rgba(123, 44, 191, 0.35);
-      background: var(--color-wrap);
-      box-shadow: var(--shadow-card);
+      border-color: var(--color-default);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 
       .read-link {
-        color: #7b2cbf;
-        transform: translateX(4px);
+        color: var(--color-default);
+        transform: translateX(2px);
       }
     }
   }
@@ -622,7 +469,7 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
 
   .card-meta-line {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     font-size: 11.5px;
     color: var(--grey-7);
     margin-bottom: 8px;
@@ -635,70 +482,31 @@ const totalRoadmapNodes = mathRoadmapStages.reduce((sum, s) => sum + s.nodes.len
   }
 
   .card-post-title {
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 14.5px;
+    font-weight: 600;
     color: var(--color-default);
     margin: 0 0 8px 0;
     line-height: 1.4;
   }
 
   .card-post-excerpt {
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--grey-7);
     line-height: 1.5;
-    margin: 0 0 16px 0;
+    margin: 0 0 12px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .read-link {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--grey-7);
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    font-size: 12.5px;
-    font-weight: 600;
-    color: var(--color-default);
+    gap: 4px;
     transition: all 0.2s ease;
-  }
-
-  /* Mathematical Quote Box */
-  .math-quote-box {
-    background: linear-gradient(135deg, rgba(123, 44, 191, 0.08) 0%, rgba(157, 78, 221, 0.03) 100%);
-    border: 1px solid rgba(123, 44, 191, 0.2);
-    border-radius: 16px;
-    padding: 28px 24px;
-    text-align: center;
-    box-shadow: var(--shadow-card);
-  }
-
-  .quote-text {
-    font-size: 17px;
-    font-style: italic;
-    color: var(--color-default);
-    margin: 0 0 8px 0;
-    line-height: 1.5;
-    font-weight: 500;
-  }
-
-  .quote-author {
-    font-size: 13px;
-    color: #7b2cbf;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-
-  :global([data-theme='dark']) {
-    .math-badge, .hero-tag, .pillar-badge {
-      background: rgba(186, 104, 200, 0.15);
-      color: #ce93d8;
-    }
-    .hero-stat .num { color: #ce93d8; }
-    .core-math-symbol { color: #ce93d8; }
-    .art-ring { border-color: rgba(186, 104, 200, 0.3); }
-    .sym-art { color: #ce93d8; }
-    .pillar-icon-box {
-      background: rgba(186, 104, 200, 0.15);
-      color: #ce93d8;
-    }
-    .view-all-link { color: #ce93d8; }
-    .quote-author { color: #ce93d8; }
   }
 </style>

@@ -9,8 +9,8 @@ import { mathProblems, mathCategories } from "../../../data/mathProblems";
 import { renderMathInText } from "../../../utils/renderMath";
 import "katex/dist/katex.min.css";
 
-const title = "Kho Đề Toán Olympic | Olympiad Problems Archive";
-const description = "Tuyển tập các bài toán kinh điển từ IMO, VMO, USAMO, Putnam, RMM & APMO • Đề bài chi tiết, công thức LaTeX chuẩn mực và hướng dẫn phương pháp giải.";
+const title = "Kho đề Toán Olympic";
+const description = "Tuyển tập các bài toán từ IMO, VMO, USAMO, Putnam, RMM & APMO có lời giải chi tiết.";
 
 const totalProblems = mathProblems.length;
 const imoCount = mathProblems.filter(p => p.source === "IMO").length;
@@ -22,7 +22,7 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
 <BaseLayout realm="math" title={title} description={description}>
   <HeaderTitle title="Math Olympiad" url={urlFor("math/problems")} slot="header" />
   <HeaderSubTitle
-    subtitle="Kho bài toán Olympic quốc tế & quốc gia • Độc lập với tin học • Tư duy suy luận thuần túy"
+    subtitle="Tuyển tập bài toán IMO, VMO, USAMO, Putnam chọn lọc"
     url={urlFor("math/problems")}
     slot="header"
   />
@@ -33,8 +33,8 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
       <header class="problems-intro">
         <div class="intro-left">
           <div class="math-badge">
-            <Icon name="fa6-solid:award" size={14} />
-            <span>KHO BÀI TOÁN OLYMPIC THUẦN TÚY</span>
+            <Icon name="fa6-solid:book" size={13} />
+            <span>Kho bài toán</span>
           </div>
           <h1 class="page-title">{title}</h1>
           <p class="page-description">{description}</p>
@@ -241,12 +241,11 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 11.5px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-weight: 600;
     text-transform: uppercase;
-    background: rgba(123, 44, 191, 0.12);
-    color: #7b2cbf;
-    border: 1px solid rgba(123, 44, 191, 0.25);
+    background: var(--color-wrap);
+    color: var(--color-default);
+    border: 1px solid var(--color-border);
     margin-bottom: 12px;
   }
 
@@ -270,8 +269,8 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
   }
 
   .stat-pill {
-    background: rgba(123, 44, 191, 0.08);
-    border: 1px solid rgba(123, 44, 191, 0.2);
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
     padding: 8px 14px;
     border-radius: 12px;
     font-size: 13px;
@@ -280,14 +279,9 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
 
     .stat-num {
       font-weight: 700;
-      color: #7b2cbf;
+      color: var(--color-default);
       margin-right: 4px;
     }
-
-    &.imo-stat .stat-num { color: #e74c3c; }
-    &.vmo-stat .stat-num { color: #d4ac0d; }
-    &.usamo-stat .stat-num { color: #2980b9; }
-    &.putnam-stat .stat-num { color: #8e44ad; }
   }
 
   /* Toolbar */
@@ -320,7 +314,7 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
       padding: 12px 16px 12px 42px;
       border-radius: 12px;
       border: 1px solid var(--color-border);
-      background: rgba(53, 90, 117, 0.04);
+      background: var(--color-wrap);
       color: var(--color-default);
       font-size: 14px;
       outline: none;
@@ -328,9 +322,8 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
       transition: all 0.2s ease;
 
       &:focus {
-        border-color: #7b2cbf;
-        box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.15);
-        background: var(--color-wrap);
+        border-color: var(--color-default);
+        box-shadow: none;
       }
     }
   }
@@ -363,15 +356,15 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
     transition: all 0.2s ease;
 
     &:hover {
-      border-color: #7b2cbf;
-      color: #7b2cbf;
+      border-color: var(--color-default);
+      color: var(--color-default);
     }
 
     &.active {
-      background: #7b2cbf;
-      color: #fff;
-      border-color: #7b2cbf;
-      box-shadow: 0 2px 8px rgba(123, 44, 191, 0.3);
+      background: var(--color-default);
+      color: var(--color-wrap);
+      border-color: var(--color-default);
+      box-shadow: none;
     }
   }
 
@@ -394,9 +387,9 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
     justify-content: space-between;
 
     &:hover {
-      transform: translateY(-4px);
+      transform: translateY(-2px);
       box-shadow: var(--shadow-card-hover);
-      border-color: rgba(123, 44, 191, 0.35);
+      border-color: var(--color-default);
     }
   }
 
@@ -443,7 +436,7 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
   .prob-code {
     font-size: 12px;
     font-weight: 700;
-    color: #7b2cbf;
+    color: var(--color-default);
     letter-spacing: 0.5px;
   }
 
@@ -472,8 +465,8 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
 
   /* Đề bài chi tiết Box */
   .problem-statement-box {
-    background: rgba(123, 44, 191, 0.03);
-    border: 1px solid rgba(123, 44, 191, 0.15);
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 14px 16px;
     margin: 0 0 16px 0;
@@ -487,7 +480,7 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #7b2cbf;
+    color: var(--grey-7);
     margin-bottom: 8px;
   }
 
@@ -522,8 +515,8 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
     font-size: 11px;
     padding: 3px 8px;
     border-radius: 6px;
-    background: rgba(123, 44, 191, 0.08);
-    border: 1px solid rgba(123, 44, 191, 0.18);
+    background: var(--color-wrap);
+    border: 1px solid var(--color-border);
     color: var(--color-default);
   }
 
@@ -532,13 +525,12 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
     margin-top: auto;
     border: 1px solid var(--color-border);
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.015);
+    background: var(--color-wrap);
     overflow: hidden;
     transition: all 0.2s ease;
 
     &[open] {
-      border-color: rgba(123, 44, 191, 0.35);
-      background: rgba(123, 44, 191, 0.02);
+      border-color: var(--color-default);
 
       .chevron-icon {
         transform: rotate(180deg);
@@ -563,7 +555,7 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
     }
 
     &:hover {
-      color: #7b2cbf;
+      color: var(--color-default);
     }
   }
 
@@ -589,29 +581,5 @@ const putnamCount = mathProblems.filter(p => p.source === "Putnam").length;
     line-height: 1.6;
     color: var(--grey-8);
     background: var(--color-wrap);
-  }
-
-  :global([data-theme='dark']) {
-    .math-badge {
-      background: rgba(186, 104, 200, 0.15);
-      color: #ce93d8;
-    }
-    .stat-num { color: #ce93d8; }
-    .prob-code { color: #ce93d8; }
-    .problem-statement-box {
-      background: rgba(186, 104, 200, 0.05);
-      border-color: rgba(186, 104, 200, 0.2);
-    }
-    .statement-title-bar {
-      color: #ce93d8;
-    }
-    .th-pill {
-      background: rgba(186, 104, 200, 0.1);
-      border-color: rgba(186, 104, 200, 0.2);
-    }
-    .hint-accordion[open] {
-      border-color: rgba(186, 104, 200, 0.35);
-      background: rgba(186, 104, 200, 0.04);
-    }
   }
 </style>
