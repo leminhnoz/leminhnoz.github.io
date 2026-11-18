@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Studio - Bảng Trắng & Mô Phỏng Thuật Toán</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="vis-network.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Collapsible Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <div class="brand">
+                    <div class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="6" cy="6" r="3"/>
+                            <circle cx="18" cy="6" r="3"/>
+                            <circle cx="18" cy="18" r="3"/>
+                            <circle cx="6" cy="18" r="3"/>
+                            <line x1="8.5" y1="7.5" x2="15.5" y2="16.5"/>
+                            <line x1="8.5" y1="6" x2="15.5" y2="6"/>
+                            <line x1="6" y1="8.5" x2="6" y2="15.5"/>
+                        </svg>
+                    </div>
+                    <div class="brand-info">
+                        <h2>Graph Studio</h2>
+                        <span class="sub">Bảng trắng & Thuật toán</span>
+                    </div>
+                </div>
+                <button id="btn-collapse-sidebar" class="icon-btn-round" title="Thu gọn thanh điều khiển (Phím tắt: H)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Tab Navigation -->
+            <nav class="nav-tabs">
+                <button class="nav-tab-btn active" data-tab="tab-input">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Nhập Cạnh
+                </button>
+                <button class="nav-tab-btn" data-tab="tab-sim">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    DFS / BFS
+                </button>
+                <button class="nav-tab-btn" data-tab="tab-algo">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    Thuật Toán
+                </button>
+                <button class="nav-tab-btn" data-tab="tab-code">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                    Code / Ma Trận
+                </button>
+            </nav>
+
+            <!-- Tab 1: Input & Graph Settings -->
+            <div id="tab-input" class="tab-panel active">
+                <div class="panel-section">
+                    <div class="section-title-row">
+                        <label for="edge-input">Danh sách cạnh (u v [w]):</label>
+                        <select id="preset-select" class="clean-select-small">
+                            <option value="">-- Mẫu đồ thị --</option>
+                            <option value="bfs_dfs">Mẫu mô phỏng BFS/DFS</option>
+                            <option value="dijkstra">Mẫu có trọng số (Dijkstra)</option>
+                            <option value="dag">Đồ thị có hướng (DAG)</option>
+                            <option value="tree">Cây phân cấp (Binary Tree)</option>
+                            <option value="bipartite">Đồ thị 2 phía (Bipartite)</option>
+                            <option value="cycle">Đồ thị chu trình (Cycle)</option>
+                        </select>
+                    </div>
+
+                    <textarea id="edge-input" spellcheck="false" placeholder="Nhập mỗi dòng một cạnh:
+u v [trọng_số]
+
+Ví dụ:
+1 2 4
+1 3 2
+2 4 5
+3 4 1
+4 5 3
+2 5 7"></textarea>
+                    <div class="format-hint">Hỗ trợ: <code>1 2 5</code>, <code>A B 10</code>, <code>1 -> 2 : 5</code>. Tự bỏ qua dòng <code>N M</code> đầu đề thi.</div>
+                </div>
+
+                <div class="panel-section">
+                    <div class="settings-row">
+                        <div class="setting-col">
+                            <span class="setting-label">Loại đồ thị:</span>
+                            <div class="segmented-pills">
+                                <button id="btn-undirected" class="pill-btn active" data-type="undirected">Vô hướng (—)</button>
+                                <button id="btn-directed" class="pill-btn" data-type="directed">Có hướng (→)</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-col">
+                            <span class="setting-label">Bố cục (Layout):</span>
+                            <select id="layout-select" class="clean-select">
+                                <option value="force">Lực vật lý (Tự do)</option>
+                                <option value="hierarchical-ud">Cây phân cấp (Trên ➔ Dưới)</option>
+                                <option value="hierarchical-lr">Cây phân cấp (Trái ➔ Phải)</option>
+                                <option value="circular">Vòng tròn (Circular)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-actions">
+                    <button id="btn-render" class="action-btn primary-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                        Vẽ Đồ Thị
+                    </button>
+                    <button id="btn-random-open" class="action-btn secondary-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+                        Tạo Ngẫu Nhiên
+                    </button>
+                    <button id="btn-clear" class="action-btn outline-danger-btn">Xóa Sạch</button>
+                </div>
+            </div>
+
+            <!-- Tab 2: DFS / BFS Simulation -->
+            <div id="tab-sim" class="tab-panel">
+                <div class="sim-card">
+                    <div class="sim-header">
+                        <div class="segmented-pills full-width">
+                            <button id="sim-type-bfs" class="pill-btn active" data-algo="bfs">Mô Phỏng BFS (Chiều Rộng)</button>
+                            <button id="sim-type-dfs" class="pill-btn" data-algo="dfs">Mô Phỏng DFS (Chiều Sâu)</button>
+                        </div>
+                    </div>
+
+                    <div class="sim-controls-row">
+                        <div class="field-item">
+                            <label>Đỉnh bắt đầu duyệt:</label>
+                            <select id="sim-start-node" class="clean-select"></select>
+                        </div>
+                        <div class="field-item">
+                            <label>Tốc độ: <span id="speed-label">1.0s</span></label>
+                            <input type="range" id="sim-speed" min="200" max="2000" step="100" value="1000" class="clean-range">
+                        </div>
+                    </div>
+
+                    <div class="sim-player-buttons">
+                        <button id="btn-sim-play" class="player-btn primary" title="Phát tự động">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            <span id="sim-play-text">Bắt Đầu</span>
+                        </button>
+                        <button id="btn-sim-step" class="player-btn secondary" title="Bước tiếp theo">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+                            Từng Bước
+                        </button>
+                        <button id="btn-sim-reset" class="player-btn secondary" title="Đặt lại">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                            Reset
+                        </button>
+                    </div>
+
+                    <!-- Step details display -->
+                    <div class="sim-status-box">
+                        <div class="status-title-row">
+                            <strong id="sim-step-badge" class="step-badge">Bước: 0</strong>
+                            <span id="sim-current-action">Chưa bắt đầu mô phỏng</span>
+                        </div>
+
+                        <div class="data-structure-view">
+                            <span class="ds-title" id="ds-title">Hàng đợi (Queue):</span>
+                            <div id="sim-ds-content" class="ds-items-row">
+                                <span class="empty-hint">(Trống)</span>
+                            </div>
+                        </div>
+
+                        <div class="traversal-view">
+                            <span class="ds-title">Thứ tự các đỉnh đã duyệt:</span>
+                            <div id="sim-order-content" class="traversal-chips">
+                                <span class="empty-hint">(Chưa có đỉnh nào)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Dijkstra & MST & Graph Stats -->
+            <div id="tab-algo" class="tab-panel">
+                <!-- Dijkstra -->
+                <div class="algo-card">
+                    <div class="card-title">
+                        <span class="icon">⚡</span>
+                        <h3>Dijkstra (Đường đi ngắn nhất)</h3>
+                    </div>
+                    <div class="dijkstra-inputs">
+                        <div class="field-item">
+                            <label>Từ đỉnh:</label>
+                            <select id="dijkstra-start" class="clean-select"></select>
+                        </div>
+                        <div class="field-item">
+                            <label>Đến đỉnh:</label>
+                            <select id="dijkstra-end" class="clean-select"></select>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button id="btn-run-dijkstra" class="action-btn primary-btn">Tìm Đường Ngắn Nhất</button>
+                        <button id="btn-clear-algo" class="action-btn secondary-btn">Hủy Tô Màu</button>
+                    </div>
+                    <div id="dijkstra-result" class="result-box hidden"></div>
+                </div>
+
+                <!-- MST -->
+                <div class="algo-card">
+                    <div class="card-title">
+                        <span class="icon">🌳</span>
+                        <h3>Cây Khung Nhỏ Nhất (MST - Kruskal)</h3>
+                    </div>
+                    <div class="card-actions">
+                        <button id="btn-run-mst" class="action-btn primary-btn">Tìm Cây Khung Nhỏ Nhất</button>
+                    </div>
+                    <div id="mst-result" class="result-box hidden"></div>
+                </div>
+
+                <!-- Analysis -->
+                <div class="algo-card">
+                    <div class="card-title">
+                        <span class="icon">🔍</span>
+                        <h3>Phân Tích Đồ Thị</h3>
+                    </div>
+                    <div class="analysis-stats">
+                        <div class="stat-line">
+                            <span>Thành phần liên thông:</span>
+                            <strong id="stat-components">-</strong>
+                        </div>
+                        <div class="stat-line">
+                            <span>Chu trình (Cycle):</span>
+                            <strong id="stat-cycle">-</strong>
+                        </div>
+                        <div class="stat-line">
+                            <span>Đồ thị 2 phía (Bipartite):</span>
+                            <strong id="stat-bipartite">-</strong>
+                        </div>
+                    </div>
+                    <button id="btn-color-components" class="action-btn secondary-btn full-width" style="margin-top: 10px;">
+                        Tô Màu Mỗi Thành Phần 1 Màu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 4: Code & Matrices -->
+            <div id="tab-code" class="tab-panel">
+                <div class="code-box-card">
+                    <div class="code-box-header">
+                        <span>Danh Sách Kề (Adjacency List):</span>
+                    </div>
+                    <pre id="code-adj-list" class="code-viewport"></pre>
+                </div>
+
+                <div class="code-box-card">
+                    <div class="code-box-header">
+                        <span>Ma Trận Kề (Adjacency Matrix):</span>
+                    </div>
+                    <pre id="code-adj-matrix" class="code-viewport"></pre>
+                </div>
+
+                <div class="code-box-card">
+                    <div class="code-box-header">
+                        <span>Code C++ Khai Báo (Competitive Programming):</span>
+                        <button id="btn-copy-cpp" class="pill-badge-btn">Copy</button>
+                    </div>
+                    <pre id="code-cpp" class="code-viewport"></pre>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Canvas Viewport -->
+        <main class="canvas-viewport">
+            <!-- Uncollapse Button (Visible only when sidebar is hidden) -->
+            <button id="btn-uncollapse-sidebar" class="floating-uncollapse-btn hidden" title="Mở menu cài đặt (Phím tắt: H)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+                <span>Mở Menu</span>
+            </button>
+
+            <!-- Whiteboard Marker Toolbar (Floating Dock Top Center) -->
+            <div class="whiteboard-toolbar">
+                <!-- Mode Toggles: Cursor, Pen, Highlighter, Eraser -->
+                <div class="tool-group">
+                    <button id="tool-cursor" class="tool-icon-btn active" title="Con trỏ: Di chuyển đỉnh, chọn đỉnh">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3l7 18 3-7 7-3L3 3z"/>
+                        </svg>
+                    </button>
+                    <button id="tool-pen" class="tool-icon-btn" title="Bút viết: Nét thanh mảnh, viết chữ, ghi chú (Nét liền)">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                            <path d="M2 2l7.586 7.586"/>
+                        </svg>
+                    </button>
+                    <button id="tool-marker" class="tool-icon-btn" title="Bút dạ quang: Nét to trong suốt, tô màu, đánh dấu">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15.5 3.5l5 5L7 22H2v-5L15.5 3.5z"/>
+                            <path d="M14 5l5 5"/>
+                            <path d="M4 20l4-1"/>
+                        </svg>
+                    </button>
+                    <button id="tool-eraser" class="tool-icon-btn" title="Tẩy nét vẽ bút">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 20H7L3 16C2 15 2 13 3 12L13 2L22 11L20 20Z"/>
+                            <path d="M17 17L7 7"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Pen Colors -->
+                <div id="pen-colors" class="pen-colors-group">
+                    <button class="color-dot" data-color="#18181b" style="background-color: #18181b;" title="Đen"></button>
+                    <button class="color-dot" data-color="#2563eb" style="background-color: #2563eb;" title="Xanh dương"></button>
+                    <button class="color-dot" data-color="#dc2626" style="background-color: #dc2626;" title="Đỏ"></button>
+                    <button class="color-dot active" data-color="#facc15" style="background-color: #facc15;" title="Vàng dạ quang"></button>
+                    <button class="color-dot" data-color="#16a34a" style="background-color: #16a34a;" title="Xanh lá"></button>
+                    <button class="color-dot" data-color="#ec4899" style="background-color: #ec4899;" title="Hồng"></button>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- History & Actions: Undo, Redo, Clear, Freeze, Fit, Export -->
+                <div class="tool-group">
+                    <button id="btn-undo" class="tool-icon-btn" title="Hoàn tác (Ctrl + Z)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 7v6h6"/>
+                            <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+                        </svg>
+                    </button>
+                    <button id="btn-redo" class="tool-icon-btn" title="Làm lại (Ctrl + Y)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 7v6h-6"/>
+                            <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/>
+                        </svg>
+                    </button>
+                    <button id="btn-clear-canvas" class="tool-icon-btn" title="Xóa toàn bộ nét vẽ">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </button>
+                    <button id="btn-freeze" class="tool-icon-btn" title="Đóng băng chuyển động">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </button>
+                    <button id="btn-fit" class="tool-icon-btn" title="Căn vừa màn hình">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                        </svg>
+                    </button>
+                    <button id="btn-export-png" class="tool-pill accent" title="Lưu toàn bộ bảng ra ảnh PNG">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>Lưu Ảnh</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Graph Canvas Container -->
+            <div id="network-container" class="network-container"></div>
+
+            <!-- Transparent Overlay Canvas for Marker Drawing -->
+            <canvas id="drawing-canvas" class="drawing-canvas"></canvas>
+
+            <!-- Node Inspector Popover -->
+            <div id="node-inspector" class="inspector-card hidden">
+                <div class="inspector-header">
+                    <strong id="inspector-title">Đỉnh 1</strong>
+                    <button id="btn-close-inspector" class="btn-close-sm">&times;</button>
+                </div>
+                <div class="inspector-body">
+                    <div>Bậc đỉnh: <strong id="inspector-deg">0</strong></div>
+                    <div style="margin-top: 4px;">Các đỉnh kề:</div>
+                    <ul id="inspector-neighbors" class="neighbors-list"></ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Random Modal -->
+    <div id="modal-random" class="modal-backdrop hidden">
+        <div class="clean-modal">
+            <div class="modal-head">
+                <h3>Tạo Đồ Thị Ngẫu Nhiên</h3>
+                <button id="btn-close-modal" class="btn-close-sm">&times;</button>
+            </div>
+            <div class="modal-content-body">
+                <div class="field-item">
+                    <label>Số đỉnh (V):</label>
+                    <input type="number" id="rand-v" value="6" min="2" max="30" class="clean-input">
+                </div>
+                <div class="field-item">
+                    <label>Số cạnh (E):</label>
+                    <input type="number" id="rand-e" value="8" min="1" max="60" class="clean-input">
+                </div>
+                <div class="field-item checkbox-row">
+                    <input type="checkbox" id="rand-weighted" checked>
+                    <label for="rand-weighted">Có trọng số (1 đến 20)</label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="btn-generate-rand" class="action-btn primary-btn">Sinh Đồ Thị</button>
+                <button id="btn-cancel-modal" class="action-btn secondary-btn">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
