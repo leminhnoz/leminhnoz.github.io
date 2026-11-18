@@ -4,14 +4,14 @@ export interface MathRoadmapNode {
   vietnameseTitle: string;
   description: string;
   status: "completed" | "in_progress" | "planned";
-  difficulty: "Cơ bản Olympic" | "Chuyên sâu VMO" | "Nâng cao TST" | "Đỉnh cao IMO";
+  difficulty: "Cơ bản" | "Trung cấp" | "Nâng cao" | "Đỉnh cao";
   prerequisites: string[];
   keyTheorems: string[];
   latexFormula: string;
   applications: string[];
   practiceProblems: {
     title: string;
-    judge: "IMO" | "USAMO" | "VMO" | "Putnam" | "AoPS" | "RMM" | "APMO";
+    judge: "IMO" | "USAMO" | "VMO" | "Putnam" | "AoPS" | "RMM" | "APMO" | "CSES" | "Codeforces";
     url: string;
     difficulty: "Easy" | "Medium" | "Hard";
   }[];
@@ -22,7 +22,7 @@ export interface MathRoadmapGroup {
   id: string;
   stepNumber: number;
   title: string;
-  level: "Cơ bản Olympic" | "Chuyên sâu VMO" | "Nâng cao TST" | "Đỉnh cao IMO";
+  level: "Cơ bản" | "Trung cấp" | "Nâng cao" | "Đỉnh cao";
   levelBadge: string;
   description: string;
   nodeIds: string[];
@@ -40,143 +40,626 @@ export interface MathRoadmapStage {
 
 export const mathRoadmapStages: MathRoadmapStage[] = [
   // ==========================================
-  // STAGE 1: SỐ HỌC OLYMPIC (NUMBER THEORY)
+  // PILLAR 1: MATH FUNDAMENTALS
   // ==========================================
   {
     id: 1,
-    name: "Giai đoạn 1: Số Học Olympic",
-    subtitle: "Olympiad Number Theory (NT)",
-    description: "Từ nền tảng chia hết, thuật toán Euclid đến đồng dư thức, bổ đề LTE, thặng dư bậc hai và phương pháp Vieta Jumping đỉnh cao IMO.",
-    icon: "fa6-solid:infinity",
+    name: "1. Số Học Nền Tảng",
+    subtitle: "Math Fundamentals",
+    description: "Nền móng toán học bắt buộc: Từ số nguyên, quan hệ chia hết, số nguyên tố, tìm ƯCLN (GCD), thuật toán Euclid mở rộng đến lũy thừa nhị phân và nghịch đảo modulo.",
+    icon: "fa6-solid:calculator",
     groups: [
       {
-        id: "nt-step-1",
+        id: "fund-step-1",
         stepNumber: 1,
-        title: "Nền tảng chia hết & Thuật toán Euclid",
-        level: "Cơ bản Olympic",
+        title: "Tập số, Quan hệ chia hết & Số nguyên tố",
+        level: "Cơ bản",
         levelBadge: "Level 1 • Cơ bản",
-        description: "Bắt đầu với quan hệ chia hết, thuật toán Euclid tìm ước chung lớn nhất và bổ đề Bézout giải phương trình Diophantine tuyến tính.",
-        nodeIds: ["nt-divisibility-euclid"]
+        description: "Bắt đầu với tập số nguyên Z và số thực R, phép chia có dư Euclid, khái niệm chia hết, ước số, bội số, số nguyên tố và Định lý cơ bản của Số học.",
+        nodeIds: ["fund-numbers-divisibility", "fund-prime-factorization"]
       },
       {
-        id: "nt-step-2",
+        id: "fund-step-2",
         stepNumber: 2,
-        title: "Lý thuyết đồng dư & Vành số nguyên modulo",
-        level: "Cơ bản Olympic",
-        levelBadge: "Level 2 • Cốt lõi",
-        description: "Làm chủ số học modulo m, định lý Fermat nhỏ, hàm phi Euler tính số dư lũy thừa lớn, định lý Wilson và hệ phương trình thặng dư Trung Hoa (CRT).",
-        nodeIds: ["nt-congruence-euler-fermat", "nt-wilson-crt"]
+        title: "ƯCLN, BCNN & Thuật toán Euclid mở rộng",
+        level: "Cơ bản",
+        levelBadge: "Level 2 • Nền tảng cốt lõi",
+        description: "Làm chủ thuật toán Euclid tìm ước chung lớn nhất gcd(a, b), mối liên hệ với bội chung nhỏ nhất lcm(a, b), và thuật toán Euclid mở rộng giải phương trình ax + by = gcd(a, b).",
+        nodeIds: ["fund-gcd-lcm-euclid", "fund-ext-gcd-diophantine"]
       },
       {
-        id: "nt-step-3",
+        id: "fund-step-3",
         stepNumber: 3,
-        title: "Cấu trúc nhân tính, Thặng dư bậc hai & LTE",
-        level: "Chuyên sâu VMO",
-        levelBadge: "Level 3 • Chuyên sâu VMO",
-        description: "Nghiên cứu cấp đồng dư, căn nguyên nguyên thủy, thặng dư bậc hai (ký hiệu Legendre) và bổ đề nâng bậc lũy thừa (Lifting The Exponent - LTE).",
-        nodeIds: ["nt-primitive-roots-order", "nt-legendre-quadratic-reciprocity", "nt-lte-lemma"]
+        title: "Đồng dư thức & Lũy thừa nhị phân",
+        level: "Trung cấp",
+        levelBadge: "Level 3 • Kỹ thuật tính toán",
+        description: "Hiểu bản chất vành đồng dư Z/mZ, các phép cộng trừ nhân modulo, và thuật toán lũy thừa nhị phân tính a^b mod m trong O(log b) cực nhanh.",
+        nodeIds: ["fund-modular-arithmetic", "fund-binary-exponentiation"]
       },
       {
-        id: "nt-step-4",
+        id: "fund-step-4",
         stepNumber: 4,
-        title: "Phương trình nghiệm nguyên & Cực hạn số học",
-        level: "Đỉnh cao IMO",
-        levelBadge: "Level 4 • Đỉnh cao IMO",
-        description: "Tuyệt kỹ Vieta Jumping (bước nhảy Viète) và nguyên lý cực hạn giải quyết các bài toán số học khó nhất trong kỳ thi TST và IMO.",
-        nodeIds: ["nt-vieta-jumping-imo"]
+        title: "Nghịch đảo Modulo & Tiền xử lý O(N)",
+        level: "Trung cấp",
+        levelBadge: "Level 4 • Kỹ thuật thi đấu",
+        description: "Định nghĩa nghịch đảo modulo ax ≡ 1 (mod m), điều kiện gcd(a, m) = 1, tìm nghịch đảo bằng Euclid mở rộng, Fermat nhỏ và kỹ thuật tính nghịch đảo tuyến tính O(N).",
+        nodeIds: ["fund-modular-inverse"]
       }
     ],
     nodes: [
       {
-        id: "nt-divisibility-euclid",
-        title: "Tính Chia Hết & Định Lý Cơ Bản Của Số Học",
-        vietnameseTitle: "Ước số, Thuật toán Euclid & Bổ đề Bézout",
-        description: "Quan hệ chia hết, ước chung lớn nhất gcd(a, b), bổ đề Bézout tìm nghiệm nguyên ax + by = gcd(a, b), phân tích thừa số nguyên tố duy nhất, hàm số ước d(n) và hàm tổng ước σ(n).",
+        id: "fund-numbers-divisibility",
+        title: "Số Nguyên, Số Thực & Phép Chia Có Dư",
+        vietnameseTitle: "Integer and Real Numbers, Divisibility",
+        description: "Tập số nguyên Z, số thực R và sai số dấu phẩy động. Bản chất của phép chia có dư a = b*q + r (0 <= r < b), thương nguyên a / b, số dư a % b và khái niệm quan hệ chia hết b | a.",
         status: "completed",
-        difficulty: "Cơ bản Olympic",
-        prerequisites: ["Phép chia có dư", "Quan hệ thứ tự"],
+        difficulty: "Cơ bản",
+        prerequisites: ["Số học cấp 2"],
         keyTheorems: [
-          "Bổ đề Bézout: Luôn tồn tại x, y ∈ Z sao cho ax + by = gcd(a, b)",
-          "Định lý cơ bản của số học: Mọi số n > 1 phân tích duy nhất thành tích thừa số nguyên tố",
-          "gcd(a, b) * lcm(a, b) = a * b"
+          "Phép chia Euclid: Với b > 0, luôn tồn tại duy nhất (q, r) sao cho a = b*q + r (0 <= r < b)",
+          "Tính bắc cầu: a | b và b | c suy ra a | c",
+          "Tổ hợp tuyến tính: a | b và a | c suy ra a | (b*x + c*y) với mọi x, y nguyên"
         ],
-        latexFormula: "a \\cdot x + b \\cdot y = \\gcd(a, b), \\quad n = \\prod_{i=1}^k p_i^{\\alpha_i}",
-        applications: ["Giải phương trình Diophantine tuyến tính", "Xác định ước nguyên tố", "Rút gọn phân số đại số"],
+        latexFormula: "a = b \\cdot q + r \\quad (0 \\le r < b), \\quad b \\mid a \\iff r = 0",
+        applications: ["Kiểm tra tính chẵn lẻ", "Rút gọn phân số", "Phân chia công việc và tài nguyên trong thuật toán"],
         practiceProblems: [
-          { title: "VMO 2021 Bài 3: Chia hết và ước nguyên tố", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
-          { title: "USAMO 2003 Problem 1: Tính chất số nguyên", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Easy" }
+          { title: "CSES 1083: Missing Number", judge: "CSES", url: "https://cses.fi/problemset/task/1083", difficulty: "Easy" },
+          { title: "Codeforces 1389A: LCM Problem", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1389/A", difficulty: "Easy" }
         ],
-        blogSlug: "2026-01-10-olympiad-nt-divisibility-euclid-bezout"
+        blogSlug: "2026-04-03-math-fundamentals-numbers-divisibility-primes"
       },
       {
-        id: "nt-congruence-euler-fermat",
-        title: "Đồng Dư Thức, Hàm Phi Euler & Định Lý Fermat Nhỏ",
-        vietnameseTitle: "Vành Z/mZ & Chu kỳ đồng dư thức",
-        description: "Lý thuyết đồng dư modulo m, nghịch đảo modulo, hàm phi Euler φ(n) đếm số số nguyên tố cùng nhau, định lý Fermat nhỏ và định lý Euler tổng quát.",
+        id: "fund-prime-factorization",
+        title: "Số Nguyên Tố, Sàng Eratosthenes & Phân Tích Thừa Số",
+        vietnameseTitle: "Prime Numbers, Sieve of Eratosthenes & Prime Factorization",
+        description: "Định nghĩa số nguyên tố p > 1, kiểm tra số nguyên tố trong O(căn n), thuật toán sàng Eratosthenes tìm toàn bộ số nguyên tố đến N trong O(N log log N), và phân tích thừa số nguyên tố duy nhất.",
         status: "completed",
-        difficulty: "Cơ bản Olympic",
-        prerequisites: ["Thuật toán Euclid", "Phân tích thừa số nguyên tố"],
+        difficulty: "Cơ bản",
+        prerequisites: ["Phép chia có dư"],
         keyTheorems: [
-          "Định lý Fermat nhỏ: a^(p-1) ≡ 1 (mod p) với gcd(a, p) = 1",
-          "Định lý Euler: a^φ(n) ≡ 1 (mod n) với gcd(a, n) = 1",
-          "Hàm phi Euler: φ(n) = n ∏ (1 - 1/p) với p là các ước nguyên tố của n"
+          "Định lý cơ bản của Số học: Mọi n > 1 đều phân tích duy nhất thành n = p1^a1 * ... * pk^ak",
+          "Ước nhỏ nhất của hợp số n luôn nhỏ hơn hoặc bằng căn bậc hai của n",
+          "Số lượng ước số của n là d(n) = (a1 + 1)(a2 + 1)...(ak + 1)"
         ],
-        latexFormula: "a^{\\phi(n)} \\equiv 1 \\pmod{n}, \\quad \\phi(n) = n \\prod_{p \\mid n} \\left(1 - \\frac{1}{p}\\right)",
-        applications: ["Tính số dư lũy thừa cực lớn", "Tìm chữ số tận cùng", "Xử lý đồng dư trong các đề thi HSG"],
+        latexFormula: "n = \\prod_{i=1}^k p_i^{\\alpha_i}, \\quad d(n) = \\prod_{i=1}^k (\\alpha_i + 1)",
+        applications: ["Đếm số ước số của n", "Phân tích số thành tích nguyên tố", "Tối ưu hóa các bài toán toán học"],
         practiceProblems: [
-          { title: "IMO 2005 Problem 4: Dãy số và ước đồng dư", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
-          { title: "USAMO 2018 Problem 2: Ước nguyên tố phân biệt", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Hard" }
+          { title: "CSES 1713: Counting Divisors", judge: "CSES", url: "https://cses.fi/problemset/task/1713", difficulty: "Easy" },
+          { title: "CSES 1081: Common Divisors", judge: "CSES", url: "https://cses.fi/problemset/task/1081", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-04-03-math-fundamentals-numbers-divisibility-primes"
+      },
+      {
+        id: "fund-gcd-lcm-euclid",
+        title: "Ước Chung Lớn Nhất (GCD) & Bội Chung Nhỏ Nhất (LCM)",
+        vietnameseTitle: "Greatest Common Divisor, Least Common Multiple & Thuật toán Euclid",
+        description: "Khái niệm gcd(a, b) và lcm(a, b), mối liên hệ tích a * b = gcd * lcm. Thuật toán Euclid lấy phần dư liên tiếp gcd(a, b) = gcd(b, a % b) chạy trong thời gian logarit O(log(min(a, b))).",
+        status: "completed",
+        difficulty: "Cơ bản",
+        prerequisites: ["Phép chia có dư"],
+        keyTheorems: [
+          "Mệnh đề Euclid: gcd(a, b) = gcd(b, a mod b) với b != 0",
+          "Mối liên hệ: gcd(a, b) * lcm(a, b) = a * b",
+          "gcd(a, b) là số nguyên dương nhỏ nhất có thể biểu diễn dưới dạng ax + by"
+        ],
+        latexFormula: "\\gcd(a, b) = \\gcd(b, a \\pmod{b}), \\quad \\text{lcm}(a, b) = \\frac{a \\cdot b}{\\gcd(a, b)}",
+        applications: ["Rút gọn phân số", "Kiểm tra hai số nguyên tố cùng nhau", "Tính chu kỳ lặp lại"],
+        practiceProblems: [
+          { title: "CSES 1081: Common Divisors", judge: "CSES", url: "https://cses.fi/problemset/task/1081", difficulty: "Easy" },
+          { title: "Codeforces 1324D: Pair of Topics", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1324/D", difficulty: "Easy" }
+        ],
+        blogSlug: "2026-03-20-euclidean-algorithm-gcd"
+      },
+      {
+        id: "fund-ext-gcd-diophantine",
+        title: "Thuật Toán Euclid Mở Rộng & Phương Trình Diophantine",
+        vietnameseTitle: "Extended Euclidean Algorithm & Linear Diophantine Equations",
+        description: "Bổ đề Bézout và thuật toán Euclid mở rộng tìm cặp nghiệm nguyên (x, y) thỏa mãn ax + by = gcd(a, b). Ứng dụng giải phương trình Diophantine tuyến tính ax + by = c và tìm nghiệm nhỏ nhất.",
+        status: "completed",
+        difficulty: "Cơ bản",
+        prerequisites: ["Thuật toán Euclid GCD"],
+        keyTheorems: [
+          "Bổ đề Bézout: Luôn tồn tại x, y nguyên sao cho a*x + b*y = gcd(a, b)",
+          "Phương trình ax + by = c có nghiệm nguyên khi và chỉ khi gcd(a, b) | c",
+          "Nghiệm tổng quát: x = x0 + k*(b/g), y = y0 - k*(a/g) với g = gcd(a, b)"
+        ],
+        latexFormula: "a \\cdot x + b \\cdot y = \\gcd(a, b), \\quad \\gcd(a, b) \\mid c",
+        applications: ["Giải bài toán chia tiền / đong nước", "Tìm nghiệm nguyên phương trình 2 ẩn", "Đặt nền móng cho nghịch đảo modulo"],
+        practiceProblems: [
+          { title: "Codeforces 1244C: The Football Season", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1244/C", difficulty: "Medium" },
+          { title: "CSES 1095: Exponentiation", judge: "CSES", url: "https://cses.fi/problemset/task/1095", difficulty: "Easy" }
+        ],
+        blogSlug: "2026-04-02-extended-euclidean-algorithm"
+      },
+      {
+        id: "fund-modular-arithmetic",
+        title: "Số Học Đồng Dư (Modular Arithmetic) & Vành Z/mZ",
+        vietnameseTitle: "Đồng dư thức, Vòng lặp tuần hoàn & Quy tắc cộng trừ nhân modulo",
+        description: "Khái niệm đồng dư a ≡ b (mod m), ý nghĩa số dư trong đồng hồ và chu kỳ. Các quy tắc cơ bản: (a + b) % m, (a - b + m) % m, (a * b) % m. Tránh tràn số nguyên khi nhân số 64-bit.",
+        status: "completed",
+        difficulty: "Cơ bản",
+        prerequisites: ["Phép chia có dư"],
+        keyTheorems: [
+          "a ≡ b (mod m) khi và chỉ khi m | (a - b)",
+          "Bảo toàn phép cộng, trừ, nhân: Nếu a ≡ b và c ≡ d thì a+c ≡ b+d và a*c ≡ b*d (mod m)",
+          "Lưu ý phép chia: a*c ≡ b*c (mod m) CHỈ suy ra a ≡ b khi gcd(c, m) = 1"
+        ],
+        latexFormula: "a \\equiv b \\pmod{m} \\iff m \\mid (a - b), \\quad (a \\cdot b) \\pmod{m} = ((a \\% m) \\cdot (b \\% m)) \\% m",
+        applications: ["Giữ kết quả tính toán không bị tràn số với MOD 10^9 + 7", "Băm chuỗi ký tự (String Hashing)", "Mã hóa bảo mật RSA"],
+        practiceProblems: [
+          { title: "CSES 1712: Exponentiation II", judge: "CSES", url: "https://cses.fi/problemset/task/1712", difficulty: "Medium" },
+          { title: "VMO 2019 Bài 3: Đồng dư và ước số", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
         ],
         blogSlug: "2026-01-15-olympiad-nt-congruence-euler-fermat"
       },
       {
-        id: "nt-wilson-crt",
-        title: "Định Lý Wilson & Định Lý Thặng Dư Trung Hoa (CRT)",
-        vietnameseTitle: "Tiêu chuẩn số nguyên tố Wilson & Hệ phương trình đồng dư",
-        description: "Định lý Wilson (p-1)! ≡ -1 (mod p) và ứng dụng nhận diện số nguyên tố. Định lý thặng dư Trung Hoa (Chinese Remainder Theorem) giải hệ đồng dư bậc nhất một ẩn.",
+        id: "fund-binary-exponentiation",
+        title: "Lũy Thừa Nhị Phân (Binary Exponentiation)",
+        vietnameseTitle: "Thuật toán tính a^b mod m trong O(log b)",
+        description: "Phương pháp bình phương và nhân liên tiếp (Divide and Conquer) giúp giảm thời gian tính a^b từ O(b) xuống O(log b). Ứng dụng lũy thừa nhị phân cho số nguyên, ma trận và hoán vị k lần.",
         status: "completed",
-        difficulty: "Chuyên sâu VMO",
-        prerequisites: ["Nghịch đảo modulo", "Định lý Euler"],
+        difficulty: "Cơ bản",
+        prerequisites: ["Phép nhân modulo", "Hệ nhị phân"],
         keyTheorems: [
-          "Định lý Wilson: (p-1)! ≡ -1 (mod p) ⇔ p là số nguyên tố",
-          "CRT: Hệ x ≡ a_i (mod m_i) có nghiệm duy nhất modulo M = m_1 * ... * m_k khi gcd(m_i, m_j) = 1"
+          "Nếu b chẵn: a^b = (a^2)^(b/2)",
+          "Nếu b lẻ: a^b = a * a^(b-1)",
+          "Số phép nhân tối đa cho b <= 10^18 chỉ khoảng 60 phép tính"
         ],
-        latexFormula: "(p-1)! \\equiv -1 \\pmod{p}, \\quad x \\equiv \\sum_{i=1}^k a_i M_i M_i^{-1} \\pmod{M}",
-        applications: ["Giải hệ phương trình đồng dư", "Phân tích cấu trúc giai thừa modulo p", "Cấu trúc nhóm hữu hạn"],
+        latexFormula: "a^b = \\begin{cases} 1 & \\text{nếu } b = 0 \\\\ (a^2)^{\\frac{b}{2}} & \\text{nếu } b \\text{ chẵn} \\\\ a \\cdot a^{b-1} & \\text{nếu } b \\text{ lẻ} \\end{cases}",
+        applications: ["Tính số dư lũy thừa cực lớn", "Lũy thừa ma trận giải quy hoạch động O(log N)", "Tìm nghịch đảo modulo"],
         practiceProblems: [
-          { title: "Vietnam TST 2021 Bài 6: Đồng dư và CRT", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Hard" },
+          { title: "CSES 1095: Exponentiation", judge: "CSES", url: "https://cses.fi/problemset/task/1095", difficulty: "Easy" },
+          { title: "CSES 1712: Exponentiation II", judge: "CSES", url: "https://cses.fi/problemset/task/1712", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-03-08-binary-exponentiation"
+      },
+      {
+        id: "fund-modular-inverse",
+        title: "Nghịch Đảo Modulo (Modular Multiplicative Inverse)",
+        vietnameseTitle: "Phép chia modulo qua Euclid mở rộng, Fermat nhỏ & Thuật toán O(N)",
+        description: "Phép chia trong modulo: a / b ≡ a * b^(-1) (mod m). Điều kiện tồn tại gcd(b, m) = 1. Tìm b^(-1) bằng Euclid mở rộng cho mọi m, bằng Fermat nhỏ b^(p-2) khi p nguyên tố, và tính nghịch đảo 1..N trong O(N).",
+        status: "completed",
+        difficulty: "Trung cấp",
+        prerequisites: ["Euclid mở rộng", "Đồng dư thức Fermat nhỏ"],
+        keyTheorems: [
+          "a * x ≡ 1 (mod m) có nghiệm khi và chỉ khi gcd(a, m) = 1",
+          "Định lý Fermat nhỏ: a^(-1) ≡ a^(p-2) (mod p) với p là số nguyên tố",
+          "Tính tuyến tính O(N): inv[i] = (p - p/i) * inv[p % i] % p",
+          "Tiền xử lý giai thừa và nghịch đảo giai thừa tính tổ hợp C(n, k) trong O(1)"
+        ],
+        latexFormula: "a \\cdot x \\equiv 1 \\pmod{m}, \\quad a^{-1} \\equiv a^{p-2} \\pmod{p}, \\quad \\text{inv}[i] = (p - \\lfloor p/i \\rfloor) \\cdot \\text{inv}[p \\% i] \\pmod{p}",
+        applications: ["Thực hiện phép chia trong modulo", "Tính tổ hợp C(n, k) và Multinomial Coefficient", "Giải hệ phương trình đồng dư CRT"],
+        practiceProblems: [
+          { title: "CSES 1081: Binomial Coefficients", judge: "CSES", url: "https://cses.fi/problemset/task/1081", difficulty: "Easy" },
+          { title: "CSES 1715: Creating Strings II", judge: "CSES", url: "https://cses.fi/problemset/task/1715", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-01-18-olympiad-nt-modular-inverse-combinatorics"
+      }
+    ]
+  },
+
+  // ==========================================
+  // PILLAR 2: COMBINATORICS
+  // ==========================================
+  {
+    id: 2,
+    name: "2. Đại Số Tổ Hợp & Đếm",
+    subtitle: "Combinatorics & Discrete Counting",
+    description: "Bộ công cụ đếm cấu hình toàn diện: Quy tắc cộng/nhân, Giai thừa, Hoán vị, Chỉnh hợp, Tổ hợp, Tam giác Pascal, Nhị thức Newton, Hệ số Đa thức, Nguyên lý bù trừ PIE, Dirichlet, Số Catalan và Bài toán chia kẹo Euler.",
+    icon: "fa6-solid:dice-d20",
+    groups: [
+      {
+        id: "comb-step-1",
+        stepNumber: 1,
+        title: "Quy tắc đếm cơ sở, Hoán vị & Chỉnh hợp - Tổ hợp",
+        level: "Cơ bản",
+        levelBadge: "Level 1 • Cơ bản",
+        description: "Bắt đầu với quy tắc cộng, quy tắc nhân, định nghĩa giai thừa n!, hoán vị không lặp Pn, phân biệt có thứ tự (Chỉnh hợp A(n, k)) và không thứ tự (Tổ hợp C(n, k)).",
+        nodeIds: ["comb-counting-rules", "comb-permutations-arrangements", "comb-combinations-core"]
+      },
+      {
+        id: "comb-step-2",
+        stepNumber: 2,
+        title: "Tam giác Pascal, Nhị thức Newton & Hệ số Đa thức",
+        level: "Trung cấp",
+        levelBadge: "Level 2 • Nền tảng cốt lõi",
+        description: "Hệ thức truy hồi Tam giác Pascal, khai triển Nhị thức Newton (x+y)^n, hoán vị lặp n!/(n1!...nk!), và mở rộng lên Hệ số Đa thức (Multinomial Coefficient).",
+        nodeIds: ["comb-pascal-binomial", "comb-multinomial-coeffs"]
+      },
+      {
+        id: "comb-step-3",
+        stepNumber: 3,
+        title: "Bù trừ (PIE), Chuồng bồ câu & Chia kẹo Euler",
+        level: "Trung cấp",
+        levelBadge: "Level 3 • Phương pháp kinh điển",
+        description: "Nguyên lý bù trừ (Inclusion-Exclusion), nguyên lý chuồng bồ câu Dirichlet, bài toán chia kẹo Euler (Stars and Bars) và số mất thứ tự (Derangements !n).",
+        nodeIds: ["comb-pie-derangements", "comb-pigeonhole-principle", "comb-stars-and-bars"]
+      },
+      {
+        id: "comb-step-4",
+        stepNumber: 4,
+        title: "Dãy số Catalan & Cấu trúc ngoặc hợp lệ",
+        level: "Nâng cao",
+        levelBadge: "Level 4 • Cấu trúc nâng cao",
+        description: "Khám phá dãy số kỳ diệu Catalan Cn = 1/(n+1) * C(2n, n): từ dãy ngoặc đúng, đường đi Dyck, cây nhị phân đến phân hoạch đa giác.",
+        nodeIds: ["comb-catalan-numbers"]
+      }
+    ],
+    nodes: [
+      {
+        id: "comb-counting-rules",
+        title: "Quy Tắc Cộng & Quy Tắc Nhân (Addition & Multiplication)",
+        vietnameseTitle: "Hai nguyên lý đếm cơ bản nhất của Lý thuyết Tổ hợp",
+        description: "Quy tắc cộng cho các biến cố rời nhau (hợp các tập không giao nhau). Quy tắc nhân cho các hành động liên tiếp độc lập (tích Descartes). Phân biệt khi nào cộng, khi nào nhân.",
+        status: "completed",
+        difficulty: "Cơ bản",
+        prerequisites: ["Tập hợp hữu hạn"],
+        keyTheorems: [
+          "Quy tắc cộng: Nếu A và B rời nhau thì |A ∪ B| = |A| + |B|",
+          "Quy tắc nhân: Nếu công việc gồm 2 bước độc lập với m và n cách chọn, tổng số cách là m * n",
+          "Quy tắc bù trừ sơ cấp: |A ∪ B| = |A| + |B| - |A ∩ B|"
+        ],
+        latexFormula: "|A \\cup B| = |A| + |B| \\quad (A \\cap B = \\emptyset), \\quad |A \\times B| = |A| \\cdot |B|",
+        applications: ["Đếm số đường đi", "Đếm số mật khẩu thỏa mãn điều kiện", "Đếm số tự nhiên có các chữ số khác nhau"],
+        practiceProblems: [
+          { title: "CSES 1068: Weird Algorithm", judge: "CSES", url: "https://cses.fi/problemset/task/1068", difficulty: "Easy" },
+          { title: "Codeforces 1328A: Divisibility Problem", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1328/A", difficulty: "Easy" }
+        ],
+        blogSlug: "2026-04-02-olympiad-comb-permutations-combinations-factorial"
+      },
+      {
+        id: "comb-permutations-arrangements",
+        title: "Giai Thừa, Các Phép Hoán Vị & Chỉnh Hợp (A(n, k))",
+        vietnameseTitle: "Permutations, Arrangements & Hoán vị vòng quanh",
+        description: "Giai thừa n! và xấp xỉ Stirling. Số hoán vị Pn = n!. Chỉnh hợp chập k của n là chọn k phần tử CÓ thứ tự A(n, k) = n! / (n - k)!. Hoán vị vòng quanh (n - 1)! quanh bàn tròn.",
+        status: "completed",
+        difficulty: "Cơ bản",
+        prerequisites: ["Quy tắc nhân"],
+        keyTheorems: [
+          "Hoán vị không lặp: P_n = n!",
+          "Chỉnh hợp: A_n^k = n! / (n - k)!",
+          "Hoán vị vòng tròn n phần tử: (n - 1)!",
+          "Xấp xỉ Stirling: n! ~ √(2πn) * (n/e)^n"
+        ],
+        latexFormula: "P_n = n!, \\quad A_n^k = \\frac{n!}{(n - k)!}, \\quad Q_n = (n - 1)!",
+        applications: ["Xếp hàng người", "Bài toán mã pin / mật khẩu có thứ tự", "Tạo hoán vị std::next_permutation"],
+        practiceProblems: [
+          { title: "CSES 1622: Creating Strings", judge: "CSES", url: "https://cses.fi/problemset/task/1622", difficulty: "Easy" },
+          { title: "Codeforces 131A: cAPS lOCK", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/131/A", difficulty: "Easy" }
+        ],
+        blogSlug: "2026-04-02-olympiad-comb-permutations-combinations-factorial"
+      },
+      {
+        id: "comb-combinations-core",
+        title: "Tổ Hợp Chập K Của N (Combinations — C(n, k))",
+        vietnameseTitle: "Số cách chọn k phần tử không quan tâm thứ tự",
+        description: "Định nghĩa tổ hợp C(n, k) = n! / (k!(n - k)!). Mối liên hệ A(n, k) = k! * C(n, k). Các tính chất vàng: đối xứng C(n, k) = C(n, n - k), tính chất hấp thụ k*C(n, k) = n*C(n-1, k-1) và tổng tập con 2^n.",
+        status: "completed",
+        difficulty: "Cơ bản",
+        prerequisites: ["Chỉnh hợp & Giai thừa"],
+        keyTheorems: [
+          "Công thức tổ hợp: C(n, k) = n! / (k! * (n - k)!)",
+          "Tính chất đối xứng: C(n, k) = C(n, n - k)",
+          "Tổng tất cả tập con: ∑ C(n, k) = 2^n",
+          "Tổ hợp lặp: C_bar(n, k) = C(n + k - 1, k)"
+        ],
+        latexFormula: "\\binom{n}{k} = \\frac{n!}{k!(n - k)!}, \\quad \\binom{n}{k} = \\binom{n}{n - k}, \\quad \\sum_{k=0}^n \\binom{n}{k} = 2^n",
+        applications: ["Chọn đội nhóm", "Đếm số tập con", "Xác suất tổ hợp cổ điển"],
+        practiceProblems: [
+          { title: "CSES 1081: Binomial Coefficients", judge: "CSES", url: "https://cses.fi/problemset/task/1081", difficulty: "Easy" },
+          { title: "VMO 2018 Bài 5: Tập con tổ hợp", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-04-02-olympiad-comb-permutations-combinations-factorial"
+      },
+      {
+        id: "comb-pascal-binomial",
+        title: "Tam Giác Pascal & Định Lý Nhị Thức Newton",
+        vietnameseTitle: "Pascal's Triangle & Binomial Theorem (x + y)^n",
+        description: "Hệ thức truy hồi C(n, k) = C(n-1, k-1) + C(n-1, k). Khai triển Nhị thức Newton (x+y)^n, các đồng nhất thức kinh điển như Chu-Vandermonde, Hockey-Stick và tính modulo hợp số không cần phép chia.",
+        status: "completed",
+        difficulty: "Trung cấp",
+        prerequisites: ["Tổ hợp C(n, k)"],
+        keyTheorems: [
+          "Hệ thức Pascal: C(n, k) = C(n - 1, k - 1) + C(n - 1, k)",
+          "Nhị thức Newton: (x + y)^n = ∑ C(n, k) x^(n-k) y^k",
+          "Chu-Vandermonde: ∑ C(m, i) * C(n, k - i) = C(m + n, k)",
+          "Hockey-stick: ∑_{i=r}^n C(i, r) = C(n + 1, r + 1)"
+        ],
+        latexFormula: "\\binom{n}{k} = \\binom{n-1}{k-1} + \\binom{n-1}{k}, \\quad (x + y)^n = \\sum_{k=0}^n \\binom{n}{k} x^{n-k} y^k",
+        applications: ["Quy hoạch động tam giác Pascal O(N^2)", "Rút gọn các biểu thức nhị thức", "Đếm đường đi trên lưới 2D"],
+        practiceProblems: [
+          { title: "CSES 1715: Creating Strings II", judge: "CSES", url: "https://cses.fi/problemset/task/1715", difficulty: "Medium" },
+          { title: "Putnam 2019 Problem A1: Đồng nhất thức Pascal", judge: "Putnam", url: "https://artofproblemsolving.com/community/c4380_putnam", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-04-05-olympiad-comb-pascal-multinomial-coefficients"
+      },
+      {
+        id: "comb-multinomial-coeffs",
+        title: "Hoán Vị Lặp & Hệ Số Đa Thức (Multinomial Coefficients)",
+        vietnameseTitle: "Permutations with Repetition & Khai triển (x1 + ... + xm)^n",
+        description: "Mở rộng hệ số nhị thức sang m nhóm phân biệt: n! / (k1! * ... * km!). Khai triển đa thức (x1 + ... + xm)^n. Ý nghĩa bài toán xếp chữ lặp (Anagrams) và phân phối n vật vào m hộp phân biệt.",
+        status: "completed",
+        difficulty: "Trung cấp",
+        prerequisites: ["Nhị thức Newton", "Nghịch đảo modulo"],
+        keyTheorems: [
+          "Hệ số đa thức: C(n; k1, ..., km) = n! / (k1! * ... * km!) với ∑ ki = n",
+          "Khai triển đa thức: (x1 + ... + xm)^n = ∑ C(n; k1, ..., km) x1^k1 ... xm^km",
+          "Số số hạng trong khai triển là C(n + m - 1, m - 1)",
+          "Tích liên tiếp: C(n; k1, ..., km) = C(n, k1) * C(n - k1, k2) * ..."
+        ],
+        latexFormula: "\\binom{n}{k_1, k_2, \\dots, k_m} = \\frac{n!}{k_1! k_2! \\dots k_m!}, \\quad (x_1 + \\dots + x_m)^n = \\sum_{\\sum k_i = n} \\binom{n}{\\vec{k}} \\prod x_i^{k_i}",
+        applications: ["Đếm số hoán vị từ ngữ có chữ cái lặp", "Bài toán phân phối đồ vật", "Tính xác suất đa thức"],
+        practiceProblems: [
+          { title: "CSES 1715: Creating Strings II", judge: "CSES", url: "https://cses.fi/problemset/task/1715", difficulty: "Medium" },
+          { title: "Codeforces 1264B: Beautiful Sequence", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1264/B", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-04-05-olympiad-comb-pascal-multinomial-coefficients"
+      },
+      {
+        id: "comb-pie-derangements",
+        title: "Nguyên Lý Bù Trừ (PIE) & Hoán Vị Không Điểm Bất Động (!n)",
+        vietnameseTitle: "Inclusion-Exclusion Principle & Derangements",
+        description: "Nguyên lý bù trừ: Hợp của nhiều tập hợp bằng tổng đơn trừ tổng đôi cộng tổng ba... Ứng dụng giải bài toán số mất thứ tự (Derangements !n): không có ai nhận đúng lá thư của mình.",
+        status: "completed",
+        difficulty: "Trung cấp",
+        prerequisites: ["Quy tắc cộng bù trừ"],
+        keyTheorems: [
+          "Nguyên lý bù trừ PIE: |∪ Ai| = ∑ |Ai| - ∑ |Ai ∩ Aj| + ∑ |Ai ∩ Aj ∩ Ak| - ...",
+          "Công thức Derangement: !n = (n - 1)(!(n-1) + !(n-2))",
+          "Công thức giải tích: !n = n! * ∑_{k=0}^n (-1)^k / k! ~ n! / e"
+        ],
+        latexFormula: "\\left|\\bigcup_{i=1}^n A_i\\right| = \\sum (-1)^{|J|-1} \\left|\\bigcap_{j \\in J} A_j\\right|, \\quad D_n = n! \\sum_{k=0}^n \\frac{(-1)^k}{k!}",
+        applications: ["Đếm số phần tử thỏa mãn ít nhất một điều kiện cấm", "Bài toán phát thư nhầm", "Hàm phi Euler và hàm Möbius"],
+        practiceProblems: [
+          { title: "CSES 2185: Prime Multiples", judge: "CSES", url: "https://cses.fi/problemset/task/2185", difficulty: "Medium" },
+          { title: "Codeforces 1391D: 505", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1391/D", difficulty: "Hard" }
+        ],
+        blogSlug: "2026-04-12-olympiad-comb-counting-stars-and-bars-pie"
+      },
+      {
+        id: "comb-pigeonhole-principle",
+        title: "Nguyên Lý Chuồng Bồ Câu (Pigeonhole Principle / Dirichlet)",
+        vietnameseTitle: "Nguyên lý Dirichlet rời rạc và liên tục",
+        description: "Nếu nhốt n + 1 con bồ câu vào n cái chuồng thì có ít nhất 1 chuồng chứa >= 2 con. Dạng tổng quát: n vật vào k ngăn có ngăn chứa ít nhất ceil(n / k) vật. Ứng dụng chứng minh tồn tại cấu trúc.",
+        status: "completed",
+        difficulty: "Trung cấp",
+        prerequisites: ["Tập hợp hữu hạn"],
+        keyTheorems: [
+          "Dirichlet cơ bản: n + 1 vật vào n chuồng => tồn tại chuồng >= 2 vật",
+          "Dirichlet tổng quát: n vật vào k chuồng => tồn tại chuồng >= ceil(n / k) vật",
+          "Dạng liên tục: Tích phân / diện tích / góc"
+        ],
+        latexFormula: "\\left\\lceil \\frac{n}{k} \\right\\rceil \\le \\max_{1 \\le i \\le k} |S_i|",
+        applications: ["Chứng minh luôn tồn tại 2 người có cùng số bạn", "Hình học tổ hợp điểm trên mặt phẳng", "Xác định chu kỳ đồng dư thức"],
+        practiceProblems: [
+          { title: "USAMO 2015 Problem 1: Nguyên lý Dirichlet lưới", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Medium" },
+          { title: "IMO 1972 Problem 1: Tập con đồng dư", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-04-10-olympiad-comb-pigeonhole-extremal-principle"
+      },
+      {
+        id: "comb-stars-and-bars",
+        title: "Bài Toán Chia Kẹo Euler (Stars and Bars)",
+        vietnameseTitle: "Số nghiệm nguyên không âm của x1 + x2 + ... + xk = n",
+        description: "Phương pháp đặt vách ngăn chia kẹo: Số nghiệm tự nhiên (không âm) của x1 + ... + xk = n là C(n + k - 1, k - 1). Số nghiệm nguyên dương là C(n - 1, k - 1). Ứng dụng giải bài toán phân phối đồ vật giống nhau.",
+        status: "completed",
+        difficulty: "Trung cấp",
+        prerequisites: ["Tổ hợp C(n, k)"],
+        keyTheorems: [
+          "Số nghiệm nguyên không âm (xi >= 0): C(n + k - 1, k - 1)",
+          "Số nghiệm nguyên dương (xi >= 1): C(n - 1, k - 1)",
+          "Biến đổi chặn dưới: Đổi biến y_i = x_i - c_i đưa về dạng chuẩn"
+        ],
+        latexFormula: "x_1 + x_2 + \\dots + x_k = n \\quad (x_i \\ge 0) \\implies \\binom{n + k - 1}{k - 1}",
+        applications: ["Chia n phần quà giống nhau cho k người", "Đếm số đa thức bậc n", "Bài toán phân phối tài nguyên"],
+        practiceProblems: [
+          { title: "CSES 1716: Distributing Apples", judge: "CSES", url: "https://cses.fi/problemset/task/1716", difficulty: "Easy" },
+          { title: "VMO 2016 Bài 5: Phân phối kẹo và phân hoạch", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-04-12-olympiad-comb-counting-stars-and-bars-pie"
+      },
+      {
+        id: "comb-catalan-numbers",
+        title: "Dãy Số Catalan (Catalan Numbers — C_n)",
+        vietnameseTitle: "Dãy số kỳ diệu của cấu trúc ngoặc, cây nhị phân & đường đi Dyck",
+        description: "Dãy số Catalan Cn = 1/(n+1) * C(2n, n): 1, 1, 2, 5, 14, 42, 132... Đếm số dãy ngoặc đúng n cặp, số cây nhị phân n nút, số đường đi từ (0,0) đến (n,n) không vượt qua đường chéo, và số cách tam giác hóa đa giác lồi n+2 cạnh.",
+        status: "completed",
+        difficulty: "Nâng cao",
+        prerequisites: ["Tổ hợp C(n, k)", "Quy hoạch động"],
+        keyTheorems: [
+          "Công thức giải tích: C_n = 1/(n + 1) * C(2n, n) = C(2n, n) - C(2n, n - 1)",
+          "Công thức truy hồi tích chập: C_0 = 1, C_{n+1} = ∑_{i=0}^n C_i * C_{n-i}",
+          "Nguyên lý đối xứng phản xạ (Reflection Principle) của André"
+        ],
+        latexFormula: "C_n = \\frac{1}{n + 1} \\binom{2n}{n} = \\binom{2n}{n} - \\binom{2n}{n - 1}, \\quad C_{n+1} = \\sum_{i=0}^n C_i C_{n-i}",
+        applications: ["Đếm số dãy ngoặc hợp lệ", "Đếm số cách chia đa giác lồi thành các tam giác", "Cấu trúc dữ liệu cây nhị phân tìm kiếm"],
+        practiceProblems: [
+          { title: "CSES 2181: Counting Tilings", judge: "CSES", url: "https://cses.fi/problemset/task/2181", difficulty: "Hard" },
+          { title: "Codeforces 1204E: Natasha, Sasha and the Prefix Sums", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1204/E", difficulty: "Hard" }
+        ],
+        blogSlug: "2026-05-22-catalan-numbers-combinatorics"
+      }
+    ]
+  },
+
+  // ==========================================
+  // PILLAR 3: ADVANCED NUMBER THEORY
+  // ==========================================
+  {
+    id: 3,
+    name: "3. Lý Thuyết Số Nâng Cao",
+    subtitle: "Advanced Number Theory",
+    description: "Khám phá chiều sâu của Số học: Định lý Fermat nhỏ, Euler, hàm phi Euler, Định lý Wilson, Thặng dư Trung Hoa (CRT), Logarithm rời rạc, Căn nguyên thủy, Hàm Möbius và Bổ đề LTE.",
+    icon: "fa6-solid:infinity",
+    groups: [
+      {
+        id: "ant-step-1",
+        stepNumber: 1,
+        title: "Định lý Fermat nhỏ, Euler & Hàm Phi Euler",
+        level: "Trung cấp",
+        levelBadge: "Level 1 • Nền tảng nâng cao",
+        description: "Làm chủ định lý Fermat nhỏ a^(p-1) ≡ 1 mod p, hàm phi Euler phi(n) đếm số số nguyên tố cùng nhau, và định lý Euler tổng quát a^phi(m) ≡ 1 mod m.",
+        nodeIds: ["ant-fermat-euler", "ant-wilson-theorem"]
+      },
+      {
+        id: "ant-step-2",
+        stepNumber: 2,
+        title: "Thặng dư Trung Hoa (CRT) & Căn nguyên thủy",
+        level: "Trung cấp",
+        levelBadge: "Level 2 • Cấu trúc vành số",
+        description: "Giải hệ phương trình đồng dư bậc nhất bằng Định lý Thặng Dư Trung Hoa (CRT), cấp của phần tử ord_m(a) và căn nguyên thủy sinh ra toàn bộ nhóm nhân modulo.",
+        nodeIds: ["ant-crt-system", "ant-primitive-roots"]
+      },
+      {
+        id: "ant-step-3",
+        stepNumber: 3,
+        title: "Logarithm rời rạc & Hàm nhân tính Möbius",
+        level: "Nâng cao",
+        levelBadge: "Level 3 • Chuyên sâu VMO",
+        description: "Thuật toán Baby-Step Giant-Step giải phương trình a^x ≡ b (mod m), hàm nhân tính, hàm Möbius mu(n) và công thức đảo ngược Möbius thần thánh.",
+        nodeIds: ["ant-discrete-log", "ant-mobius-inversion"]
+      },
+      {
+        id: "ant-step-4",
+        stepNumber: 4,
+        title: "Bổ đề LTE & Tuyệt kỹ Vieta Jumping",
+        level: "Đỉnh cao",
+        levelBadge: "Level 4 • Đỉnh cao IMO",
+        description: "Vũ khí định giá số mũ p-adic v_p(a^n ± b^n) bằng Bổ đề nâng bậc lũy thừa (LTE) và tuyệt kỹ bước nhảy Viète giải phương trình nghiệm nguyên IMO.",
+        nodeIds: ["ant-lte-lemma", "ant-vieta-jumping"]
+      }
+    ],
+    nodes: [
+      {
+        id: "ant-fermat-euler",
+        title: "Định Lý Fermat Nhỏ, Hàm Phi Euler & Định Lý Euler",
+        vietnameseTitle: "Fermat's Little Theorem, Euler's Totient Function phi(n)",
+        description: "Hàm phi Euler phi(n) = n * ∏ (1 - 1/p). Định lý Euler a^phi(n) ≡ 1 (mod n) với gcd(a, n) = 1. Khi n = p nguyên tố, suy ra Định lý Fermat nhỏ a^(p-1) ≡ 1 (mod p).",
+        status: "completed",
+        difficulty: "Trung cấp",
+        prerequisites: ["Đồng dư thức cơ bản"],
+        keyTheorems: [
+          "Fermat nhỏ: a^(p-1) ≡ 1 (mod p) với p nguyên tố và gcd(a, p) = 1",
+          "Định lý Euler: a^phi(n) ≡ 1 (mod n) với gcd(a, n) = 1",
+          "Công thức Euler: phi(n) = n * ∏_{p|n} (1 - 1/p)"
+        ],
+        latexFormula: "a^{\\phi(n)} \\equiv 1 \\pmod{n}, \\quad \\phi(n) = n \\prod_{p \\mid n} \\left(1 - \\frac{1}{p}\\right)",
+        applications: ["Tính số dư lũy thừa khổng lồ", "Tìm nghịch đảo modulo", "Mã hóa khóa công khai RSA"],
+        practiceProblems: [
+          { title: "CSES 1712: Exponentiation II", judge: "CSES", url: "https://cses.fi/problemset/task/1712", difficulty: "Medium" },
+          { title: "IMO 2005 Problem 4: Dãy số và ước đồng dư", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-01-15-olympiad-nt-congruence-euler-fermat"
+      },
+      {
+        id: "ant-wilson-theorem",
+        title: "Định Lý Wilson & Cấu Trúc Giai Thừa Modulo p",
+        vietnameseTitle: "Wilson's Theorem: (p - 1)! ≡ -1 (mod p)",
+        description: "Định lý Wilson: Số tự nhiên p > 1 là số nguyên tố khi và chỉ khi (p - 1)! ≡ -1 (mod p). Ý nghĩa ghép cặp nghịch đảo từng đôi một và tính giai thừa modulo p.",
+        status: "completed",
+        difficulty: "Trung cấp",
+        prerequisites: ["Nghịch đảo modulo"],
+        keyTheorems: [
+          "Định lý Wilson: (p - 1)! ≡ -1 (mod p) <=> p là số nguyên tố",
+          "Hệ quả cho p = 4k + 1: ((p-1)/2)!^2 ≡ -1 (mod p) (Tồn tại căn bậc hai của -1 mod p)"
+        ],
+        latexFormula: "(p - 1)! \\equiv -1 \\pmod{p} \\iff p \\in \\mathbb{P}",
+        applications: ["Kiểm tra tính nguyên tố lý thuyết", "Tính giai thừa modulo số nguyên tố", "Xác định thặng dư bậc hai của -1"],
+        practiceProblems: [
+          { title: "Vietnam TST 2021 Bài 6: Đồng dư Wilson", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Hard" },
           { title: "RMM 2018 Problem 1: Ước chung đa thức", judge: "RMM", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
         ],
         blogSlug: "2026-01-20-olympiad-nt-wilson-chinese-remainder-theorem"
       },
       {
-        id: "nt-order-primitive-roots",
-        title: "Cấp Của Phần Tử & Căn Nguyên Thủy",
-        vietnameseTitle: "Order of Elements & Primitive Roots",
-        description: "Cấp ord_m(a) là số nguyên dương nhỏ nhất sao cho a^k ≡ 1 (mod m). Căn nguyên thủy g mod m sinh ra toàn bộ nhóm nhân (Z/mZ)* và điều kiện tồn tại căn nguyên thủy.",
+        id: "ant-crt-system",
+        title: "Định Lý Thặng Dư Trung Hoa (Chinese Remainder Theorem — CRT)",
+        vietnameseTitle: "Giải hệ phương trình đồng dư thức một ẩn x ≡ ai (mod mi)",
+        description: "Nếu các số m1, m2, ..., mk đôi một nguyên tố cùng nhau thì hệ x ≡ ai (mod mi) luôn có nghiệm duy nhất modulo M = m1 * ... * mk. Thuật toán ghép từng phương trình bằng Euclid mở rộng.",
         status: "completed",
-        difficulty: "Chuyên sâu VMO",
+        difficulty: "Trung cấp",
+        prerequisites: ["Euclid mở rộng"],
+        keyTheorems: [
+          "Định lý CRT: Hệ có nghiệm duy nhất modulo M khi gcd(mi, mj) = 1",
+          "Công thức nghiệm giải tích: x = ∑ ai * Mi * inv(Mi, mi) (mod M) với Mi = M / mi"
+        ],
+        latexFormula: "x \\equiv \\sum_{i=1}^k a_i M_i \\left(M_i^{-1} \\pmod{m_i}\\right) \\pmod{M}, \\quad M = \\prod_{i=1}^k m_i",
+        applications: ["Tính số dư modulo hợp số lớn bằng cách phân tích thừa số nguyên tố", "Thuật toán Garner", "Khôi phục dữ liệu nguyên"],
+        practiceProblems: [
+          { title: "Codeforces 687B: Remainders Game", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/687/B", difficulty: "Medium" },
+          { title: "CSES 2182: Divisor Analysis", judge: "CSES", url: "https://cses.fi/problemset/task/2182", difficulty: "Hard" }
+        ],
+        blogSlug: "2026-01-20-olympiad-nt-wilson-chinese-remainder-theorem"
+      },
+      {
+        id: "ant-primitive-roots",
+        title: "Căn Nguyên Thủy & Cấp Đồng Dư (Primitive Roots & Order)",
+        vietnameseTitle: "Order of Elements & Primitive Roots",
+        description: "Cấp ord_m(a) là số nguyên dương k nhỏ nhất để a^k ≡ 1 (mod m). Căn nguyên thủy g mod m sinh ra toàn bộ phi(m) phần tử của nhóm nhân (Z/mZ)*. Điều kiện tồn tại căn nguyên thủy.",
+        status: "completed",
+        difficulty: "Nâng cao",
         prerequisites: ["Định lý Euler"],
         keyTheorems: [
-          "ord_m(a) | φ(m) và a^h ≡ 1 (mod m) ⇔ ord_m(a) | h",
+          "ord_m(a) | phi(m) và a^h ≡ 1 (mod m) <=> ord_m(a) | h",
           "Căn nguyên thủy tồn tại khi và chỉ khi m ∈ {2, 4, p^k, 2p^k} với p lẻ nguyên tố",
-          "Nếu g là căn nguyên thủy thì ord_m(g^k) = φ(m) / gcd(k, φ(m))"
+          "Nếu g là căn nguyên thủy thì ord_m(g^k) = phi(m) / gcd(k, phi(m))"
         ],
-        latexFormula: "a^k \\equiv 1 \\pmod{m} \\iff \\text{ord}_m(a) \\mid k",
-        applications: ["Xác định chu kỳ tuần hoàn", "Chứng minh một số không có ước nguyên tố dạng đặc biệt", "Logarithm rời rạc"],
+        latexFormula: "a^k \\equiv 1 \\pmod{m} \\iff \\text{ord}_m(a) \\mid k, \\quad \\text{ord}_m(g) = \\phi(m)",
+        applications: ["Biến đổi Fourier số học NTT", "Tìm nghiệm logarithm rời rạc", "Xác định chu kỳ tuần hoàn"],
         practiceProblems: [
-          { title: "IMO Shortlist 2006 N5: Cấp của số nguyên", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
-          { title: "VMO 2021 Bài 3: Cấp của số nguyên", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
+          { title: "CSES 1712: Exponentiation II", judge: "CSES", url: "https://cses.fi/problemset/task/1712", difficulty: "Medium" },
+          { title: "IMO Shortlist 2006 N5: Cấp của số nguyên", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
         blogSlug: "2026-01-25-olympiad-nt-order-primitive-roots"
       },
       {
-        id: "nt-lte-lemma",
+        id: "ant-discrete-log",
+        title: "Logarithm Rời Rạc & Thuật Toán Baby-step Giant-step",
+        vietnameseTitle: "Giải phương trình a^x ≡ b (mod m) trong O(căn m)",
+        description: "Tìm số nguyên x sao cho a^x ≡ b (mod m). Thuật toán Meet-in-the-middle của Shanks: Đặt x = i*m - j với m = ceil(căn N), lưu bảng băm tìm kiếm trong O(căn m).",
+        status: "in_progress",
+        difficulty: "Nâng cao",
+        prerequisites: ["Căn nguyên thủy", "Lũy thừa nhị phân"],
+        keyTheorems: [
+          "Biến đổi Shanks: a^(i*m) ≡ b * a^j (mod p) với m = ceil(căn p)",
+          "Độ phức tạp thuật toán: O(căn p) thời gian và bộ nhớ"
+        ],
+        latexFormula: "a^x \\equiv b \\pmod{m} \\implies a^{i \\cdot \\lceil\\sqrt{m}\\rceil} \\equiv b \\cdot a^j \\pmod{m}",
+        applications: ["Phá mã trao đổi khóa Diffie-Hellman", "Tìm chu kỳ hệ mật mã", "Giải phương trình mũ modulo"],
+        practiceProblems: [
+          { title: "Codeforces 1106F: Lunar New Year and a Recursive Sequence", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1106/F", difficulty: "Hard" },
+          { title: "SPOJ MOD: Easy Math", judge: "Codeforces", url: "https://www.spoj.com/problems/MOD/", difficulty: "Medium" }
+        ],
+        blogSlug: null
+      },
+      {
+        id: "ant-mobius-inversion",
+        title: "Hàm Nhân Tính & Công Thức Đảo Ngược Möbius",
+        vietnameseTitle: "Möbius Function mu(n), Sàng tuyến tính & Đảo ngược Dirichlet",
+        description: "Hàm nhân tính f(ab) = f(a)f(b) với gcd(a, b) = 1. Hàm Möbius mu(n). Tích chập Dirichlet và công thức đảo ngược Möbius: f(n) = ∑_{d|n} g(d) <=> g(n) = ∑_{d|n} mu(d) f(n/d).",
+        status: "in_progress",
+        difficulty: "Nâng cao",
+        prerequisites: ["Sàng Eratosthenes", "Phân tích nguyên tố"],
+        keyTheorems: [
+          "Hàm Möbius: mu(1) = 1, mu(n) = (-1)^k nếu n là tích k số nguyên tố phân biệt, mu(n) = 0 nếu n có ước chính phương",
+          "Tính chất cơ bản: ∑_{d|n} mu(d) = [n == 1]",
+          "Đảo ngược Möbius: g(n) = ∑_{d|n} mu(d) * f(n/d)"
+        ],
+        latexFormula: "\\sum_{d \\mid n} \\mu(d) = [n = 1], \\quad g(n) = \\sum_{d \\mid n} \\mu(d) f\\left(\\frac{n}{d}\\right)",
+        applications: ["Đếm số cặp (x, y) nguyên tố cùng nhau trong O(N)", "Tính tổng gcd(i, j) trong O(N)", "Sàng tuyến tính Euler"],
+        practiceProblems: [
+          { title: "Codeforces 803F: Coprime Subsequences", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/803/F", difficulty: "Hard" },
+          { title: "CSES 2417: Counting Coprime Pairs", judge: "CSES", url: "https://cses.fi/problemset/task/2417", difficulty: "Hard" }
+        ],
+        blogSlug: null
+      },
+      {
+        id: "ant-lte-lemma",
         title: "Bổ Đề Nâng Bậc Số Mũ LTE (Lifting The Exponent Lemma)",
-        vietnameseTitle: "Vũ khí tối thượng cho phương trình số mũ và định giá p-adic v_p(n)",
-        description: "Tính số mũ đúng v_p(a^n ± b^n) theo v_p(a ± b) và v_p(n). Công cụ giải quyết hàng loạt bài toán số học mũ trong đề thi TST và IMO.",
+        vietnameseTitle: "Vũ khí định giá số mũ p-adic v_p(a^n ± b^n)",
+        description: "Công thức xác định chính xác số mũ v_p(a^n - b^n) = v_p(a - b) + v_p(n). Vũ khí giải quyết hàng loạt bài toán phương trình số mũ khó nhất trong đề thi TST và IMO.",
         status: "completed",
-        difficulty: "Nâng cao TST",
+        difficulty: "Đỉnh cao",
         prerequisites: ["Đồng dư thức", "Nhị thức Newton", "Căn nguyên thủy"],
         keyTheorems: [
           "Với p lẻ, p | a - b, p ∤ a, p ∤ b: v_p(a^n - b^n) = v_p(a - b) + v_p(n)",
@@ -184,7 +667,7 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           "Với p = 2, n chẵn, 4 | a - b: v_2(a^n - b^n) = v_2(a - b) + v_2(a + b) + v_2(n) - 1"
         ],
         latexFormula: "v_p(a^n - b^n) = v_p(a - b) + v_p(n) \\quad (p \\ge 3, \\, p \\mid a - b)",
-        applications: ["Giải phương trình Diophantine dạng a^x + b^y = c^z", "Đánh giá ước nguyên tố của a^n - 1"],
+        applications: ["Giải phương trình Diophantine mũ a^x + b^y = c^z", "Đánh giá ước nguyên tố của a^n - 1"],
         practiceProblems: [
           { title: "USA TST 2018 Problem 5: Ứng dụng LTE", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Hard" },
           { title: "IMO Shortlist 2007 N5: Chia hết số mũ", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
@@ -192,132 +675,92 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
         blogSlug: "2026-02-01-olympiad-nt-lifting-the-exponent-lte"
       },
       {
-        id: "nt-quadratic-reciprocity",
-        title: "Thặng Dư Bậc Hai & Luật Thuận Nghịch Bình Phương Gauss",
-        vietnameseTitle: "Ký hiệu Legendre, Tiêu chuẩn Euler & Phương trình Pell",
-        description: "Xác định xem x^2 ≡ a (mod p) có nghiệm hay không thông qua ký hiệu Legendre (a/p), tiêu chuẩn Euler và định lý vàng của Gauss về luật thuận nghịch bình phương.",
-        status: "in_progress",
-        difficulty: "Nâng cao TST",
-        prerequisites: ["Căn nguyên thủy", "Định lý Wilson"],
-        keyTheorems: [
-          "Tiêu chuẩn Euler: (a/p) ≡ a^((p-1)/2) (mod p)",
-          "Luật thuận nghịch Gauss: (p/q)(q/p) = (-1)^(((p-1)/2) * ((q-1)/2))",
-          "Phương trình Pell: x^2 - d*y^2 = 1 luôn có vô số nghiệm nguyên dương"
-        ],
-        latexFormula: "\\left(\\frac{p}{q}\\right) \\left(\\frac{q}{p}\\right) = (-1)^{\\frac{p-1}{2} \\cdot \\frac{q-1}{2}}",
-        applications: ["Xét ước nguyên tố của biểu thức bậc hai x^2 + dy^2", "Giải phương trình Pell trong IMO"],
-        practiceProblems: [
-          { title: "USAMO 2008 Problem 1: Thặng dư bậc hai", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Medium" },
-          { title: "RMM 2018 Problem 1: Ký hiệu Legendre", judge: "RMM", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
-        ],
-        blogSlug: "2026-02-05-olympiad-nt-quadratic-reciprocity-gauss"
-      },
-      {
-        id: "nt-vieta-jumping",
+        id: "ant-vieta-jumping",
         title: "Phương Pháp Bước Nhảy Vieta (Vieta Jumping / Root Flipping)",
         vietnameseTitle: "Kỹ thuật lùi vô hạn kết hợp hệ thức Viète trên phương trình bậc hai",
         description: "Phương pháp tạo ra nghiệm nguyên dương nhỏ hơn từ nghiệm đã cho bằng cách coi phương trình đối xứng như phương trình bậc 2 theo một biến. Xuất phát từ bài toán huyền thoại IMO 1988 P6.",
         status: "completed",
-        difficulty: "Đỉnh cao IMO",
+        difficulty: "Đỉnh cao",
         prerequisites: ["Hệ thức Viète", "Nguyên lý cực hạn"],
         keyTheorems: [
-          "Nếu (x1, y) là nghiệm thì x2 = k*y - x1 cũng là nghiệm của x^2 - k*x*y + y^2 = c",
-          "Nếu x1 > y thì x2 = (y^2 - c)/x1 có thể tạo ra nghiệm nhỏ hơn vô hạn lần dẫn tới mâu thuẫn"
+          "Biểu thức đối xứng: (a^2 + b^2) / (ab + 1) = k => x^2 - k*b*x + (b^2 - k) = 0",
+          "Nghiệm còn lại theo Viète: x1 + x2 = k*b và x1 * x2 = b^2 - k",
+          "Nguyên lý cực hạn: Giả sử tồn tại nghiệm nhỏ nhất dẫn đến mâu thuẫn lùi vô hạn"
         ],
-        latexFormula: "x^2 - k \\cdot x \\cdot y + y^2 = c \\implies x_1 + x_2 = k \\cdot y, \\quad x_1 \\cdot x_2 = y^2 - c",
-        applications: ["Chứng minh một biểu thức luôn là số chính phương", "Giải phương trình Diophantine đối xứng 2 biến"],
+        latexFormula: "\\frac{a^2 + b^2}{ab + 1} = k \\implies x^2 - (kb)x + (b^2 - k) = 0, \\quad x_2 = kb - a",
+        applications: ["Giải các bài toán số học huyền thoại IMO", "Chứng minh một số k bắt buộc phải là số chính phương"],
         practiceProblems: [
           { title: "IMO 1988 Problem 6: Huyền thoại Vieta Jumping", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
-          { title: "IMO 2007 Problem 5: Bước nhảy Vieta nâng cao", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
+          { title: "Vietnam TST 2002 Bài 6: Phương trình nghiệm nguyên", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Hard" }
         ],
         blogSlug: "2026-02-10-olympiad-nt-vieta-jumping-infinite-descent"
-      },
-      {
-        id: "nt-zsigmondy-cyclotomic",
-        title: "Định Lý Zsigmondy & Đa Thức Cyclotomic",
-        vietnameseTitle: "Ước nguyên tố nguyên thủy của a^n - b^n & Bổ đề Hensel",
-        description: "Với mọi a > b ≥ 1 nguyên tố cùng nhau, a^n - b^n luôn có ít nhất một ước nguyên tố nguyên thủy không chia hết bất kỳ a^k - b^k nào với k < n (trừ các ngoại lệ cụ thể). Bổ đề Hensel nâng nghiệm.",
-        status: "in_progress",
-        difficulty: "Đỉnh cao IMO",
-        prerequisites: ["LTE", "Căn nguyên thủy"],
-        keyTheorems: [
-          "Định lý Zsigmondy: Tồn tại ước nguyên tố nguyên thủy cho mọi n > 1 ngoại trừ a=2, b=1, n=6 và a+b=2^k với n=2",
-          "Bổ đề Hensel: Nâng nghiệm f(x) ≡ 0 (mod p) lên mod p^k khi f'(x) ≢ 0 (mod p)"
-        ],
-        latexFormula: "\\exists p \\mid (a^n - b^n) \\quad \\text{sao cho} \\quad \\forall k < n, \\, p \\nmid (a^k - b^k)",
-        applications: ["Giải triệt để các phương trình Diophantine lũy thừa IMO", "Phân tích đa thức chia đường tròn"],
-        practiceProblems: [
-          { title: "IMO 2012 Problem 3: Ứng dụng Zsigmondy", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
-          { title: "USA TST 2014 Problem 1: Ước nguyên tố nguyên thủy", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Hard" }
-        ],
-        blogSlug: "2026-02-15-olympiad-nt-zsigmondy-cyclotomic-hensel"
       }
     ]
   },
 
   // ==========================================
-  // STAGE 2: ĐẠI SỐ & PHƯƠNG TRÌNH HÀM (ALGEBRA & FE)
+  // PILLAR 4: ALGEBRA
   // ==========================================
   {
-    id: 2,
-    name: "Giai đoạn 2: Đại Số & Phương Trình Hàm",
-    subtitle: "Olympiad Algebra & Functional Equations",
-    description: "Từ đa thức cơ bản, hệ thức Viète đến tiêu chuẩn Eisenstein, dãy số truy hồi, phương trình hàm Cauchy và các kỹ thuật song ánh đỉnh cao IMO.",
+    id: 4,
+    name: "4. Đại Số, Ma Trận & Đa Thức",
+    subtitle: "Algebra, Polynomials & Matrices",
+    description: "Từ đa thức, hệ thức Viète, phép nhân ma trận, khử Gauss giải hệ phương trình đến hàm sinh và biến đổi Fourier nhanh (FFT/NTT).",
     icon: "fa6-solid:square-root-variable",
     groups: [
       {
         id: "alg-step-1",
         stepNumber: 1,
-        title: "Đa thức cơ bản & Hệ thức Viète",
-        level: "Cơ bản Olympic",
+        title: "Đa thức, Hệ thức Viète & Nội suy Lagrange",
+        level: "Cơ bản",
         levelBadge: "Level 1 • Cơ bản",
-        description: "Nền móng đa thức một biến, phép chia có dư, định lý Bézout và mối liên hệ giữa các nghiệm qua hệ thức Viète.",
-        nodeIds: ["alg-polynomial-vieta"]
+        description: "Đa thức một biến, phép chia có dư, định lý Bézout, hệ thức Viète liên hệ nghiệm và hệ số, tiêu chuẩn bất khả quy Eisenstein và nội suy Lagrange.",
+        nodeIds: ["alg-polynomial-vieta", "alg-roots-irreducibility"]
       },
       {
         id: "alg-step-2",
         stepNumber: 2,
-        title: "Đa thức nguyên, Tính bất khả quy & Dãy số",
-        level: "Chuyên sâu VMO",
-        levelBadge: "Level 2 • Chuyên sâu VMO",
-        description: "Tiêu chuẩn Eisenstein chứng minh đa thức bất khả quy, nội suy Lagrange và khảo sát tính đơn điệu, giới hạn dãy số truy hồi.",
-        nodeIds: ["alg-roots-irreducibility-eisenstein", "alg-sequences-limits-recurrence"]
+        title: "Ma trận, Lũy thừa ma trận & Dãy số truy hồi",
+        level: "Trung cấp",
+        levelBadge: "Level 2 • Nền tảng thuật toán",
+        description: "Các phép toán ma trận, phép nhân ma trận O(N^3), lũy thừa ma trận tính số Fibonacci thứ 10^18 trong O(log N) và giải dãy truy hồi tuyến tính.",
+        nodeIds: ["alg-matrix-exponentiation"]
       },
       {
         id: "alg-step-3",
         stepNumber: 3,
-        title: "Phương trình hàm cơ bản & Phương trình Cauchy",
-        level: "Chuyên sâu VMO",
-        levelBadge: "Level 3 • Cốt lõi VMO",
-        description: "Phương pháp giải phương trình hàm cổ điển Cauchy từ tập Q lên R thông qua các điều kiện biên liên tục, đơn điệu hoặc bị chặn.",
-        nodeIds: ["alg-cauchy-jensen-fe"]
+        title: "Khử Gauss, Hệ phương trình & Định thức",
+        level: "Nâng cao",
+        levelBadge: "Level 3 • Tuyến tính nâng cao",
+        description: "Phương pháp khử Gauss đưa ma trận về dạng bậc thang, giải hệ N phương trình N ẩn trong O(N^3) và tính định thức ma trận det(A).",
+        nodeIds: ["alg-gaussian-elimination", "alg-matrix-determinants"]
       },
       {
         id: "alg-step-4",
         stepNumber: 4,
-        title: "Phương trình hàm nâng cao & Kỹ thuật song ánh",
-        level: "Đỉnh cao IMO",
-        levelBadge: "Level 4 • Đỉnh cao IMO",
-        description: "Khai thác tính đơn ánh, toàn ánh, điểm bất động và xử lý phương trình hàm tự lồng f(f(x)) trên tập số thực và số nguyên.",
-        nodeIds: ["alg-advanced-fe-imo"]
+        title: "Hàm sinh & Biến đổi Fourier nhanh (FFT / NTT)",
+        level: "Đỉnh cao",
+        levelBadge: "Level 4 • Đỉnh cao CP & Math",
+        description: "Hàm sinh (Generating Functions) đếm số cấu hình và thuật toán biến đổi Fourier nhanh FFT / NTT nhân hai đa thức bậc N trong O(N log N).",
+        nodeIds: ["alg-generating-functions", "alg-fft-ntt"]
       }
     ],
     nodes: [
       {
         id: "alg-polynomial-vieta",
-        title: "Đa Thức Cơ Bản, Phép Chia Có Dư & Hệ Thức Viète",
-        vietnameseTitle: "Định lý Bézout & Đa thức đối xứng sơ cấp",
-        description: "Đa thức một biến, phép chia có dư, định lý Bézout P(x) = (x - c)Q(x) + P(c), hệ thức Viète cho đa thức bậc n, công thức Newton cho tổng lũy thừa S_k = ∑ x_i^k.",
+        title: "Đa Thức, Hệ Thức Viète & Phép Chia Có Dư",
+        vietnameseTitle: "Polynomials, Bézout Theorem & Viète Relations",
+        description: "Đa thức một biến P(x), định lý Bézout P(x) = (x - c)Q(x) + P(c), hệ thức Viète liên hệ tổng và tích các nghiệm, công thức Newton tính tổng lũy thừa Sk = ∑ xi^k.",
         status: "completed",
-        difficulty: "Cơ bản Olympic",
+        difficulty: "Cơ bản",
         prerequisites: ["Đại số sơ cấp"],
         keyTheorems: [
-          "Định lý Bézout: c là nghiệm của P(x) ⇔ (x - c) | P(x)",
+          "Định lý Bézout: c là nghiệm của P(x) <=> (x - c) | P(x)",
           "Hệ thức Viète: e_k = (-1)^k * a_{n-k} / a_n",
           "Công thức Newton liên hệ tổng lũy thừa và đa thức đối xứng"
         ],
-        latexFormula: "P(x) = (x - c)Q(x) + P(c), \\quad \\sum_{i=1}^n x_i = -\\frac{a_{n-1}}{a_n}",
-        applications: ["Giải hệ phương trình đối xứng", "Tính tổng lũy thừa nghiệm", "Biến đổi đa thức"],
+        latexFormula: "P(x) = (x - c)Q(x) + P(c), \\quad \\sum_{i=1}^n x_i = -\\frac{a_{n-1}}{a_n}, \\quad \\prod_{i=1}^n x_i = (-1)^n \\frac{a_0}{a_n}",
+        applications: ["Giải hệ phương trình đối xứng", "Tính tổng lũy thừa nghiệm", "Xác định nghiệm đa thức"],
         practiceProblems: [
           { title: "USAMO 2003 Problem 1: Đa thức nguyên", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Easy" },
           { title: "VMO 2019 Bài 2: Đa thức nghiệm thực", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
@@ -325,557 +768,842 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
         blogSlug: "2026-02-20-olympiad-alg-polynomial-foundations-vieta"
       },
       {
-        id: "alg-roots-irreducibility-eisenstein",
-        title: "Đa Thức Nguyên, Nghiệm Phức & Tiêu Chuẩn Eisenstein",
-        vietnameseTitle: "Bổ đề Gauss, Tiêu chuẩn Eisenstein & Đa thức nội suy Lagrange",
-        description: "Định lý nghiệm hữu tỉ, tính chất a - b | P(a) - P(b), Bổ đề Gauss, tiêu chuẩn Eisenstein chứng minh đa thức bất khả quy trên Q[x], công thức nội suy Lagrange.",
+        id: "alg-roots-irreducibility",
+        title: "Đa Thức Nguyên, Bổ Đề Gauss & Tiêu Chuẩn Eisenstein",
+        vietnameseTitle: "Irreducibility Criteria & Lagrange Interpolation",
+        description: "Tính chất cơ bản a - b | P(a) - P(b) cho đa thức hệ số nguyên. Tiêu chuẩn Eisenstein chứng minh đa thức bất khả quy trên Q[x]. Đa thức nội suy Lagrange khôi phục đa thức bậc n qua n+1 điểm.",
         status: "completed",
-        difficulty: "Chuyên sâu VMO",
-        prerequisites: ["Hệ thức Viète", "Số học modulo"],
+        difficulty: "Trung cấp",
+        prerequisites: ["Hệ thức Viète"],
         keyTheorems: [
-          "Tính chất cơ bản: Với P(x) ∈ Z[x], ta có a - b | P(a) - P(b) với mọi a, b ∈ Z",
+          "Tính chất cơ bản: Với P(x) ∈ Z[x], ta có a - b | P(a) - P(b) với mọi a != b nguyên",
           "Tiêu chuẩn Eisenstein: Nếu p | a_i (i < n), p ∤ a_n, p^2 ∤ a_0 thì P(x) bất khả quy trên Q[x]",
-          "Đa thức nội suy Lagrange: Khôi phục duy nhất đa thức bậc n qua n+1 điểm"
+          "Nội suy Lagrange: P(x) = ∑ y_i * ∏_{j != i} (x - x_j) / (x_i - x_j)"
         ],
-        latexFormula: "P(x) = \\sum_{i=0}^n y_i \\prod_{j \\ne i} \\frac{x - x_j}{x_i - x_j}, \\quad a - b \\mid P(a) - P(b)",
-        applications: ["Chứng minh đa thức không có nghiệm hữu tỉ", "Xác định đa thức qua tập giá trị", "Phương trình nghiệm nguyên đa thức"],
+        latexFormula: "a - b \\mid P(a) - P(b), \\quad P(x) = \\sum_{i=0}^n y_i \\prod_{j \\ne i} \\frac{x - x_j}{x_i - x_j}",
+        applications: ["Chứng minh phương trình đa thức không có nghiệm hữu tỉ", "Khôi phục đa thức bí mật (Shamir Secret Sharing)"],
         practiceProblems: [
-          { title: "IMO Shortlist 2008 A1: Đa thức nguyên", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
-          { title: "Putnam 2020 Problem A1: Đa thức nhân tính", judge: "Putnam", url: "https://artofproblemsolving.com/community/c4380_putnam", difficulty: "Medium" }
+          { title: "Putnam 2020 Problem A1: Đa thức nguyên", judge: "Putnam", url: "https://artofproblemsolving.com/community/c4380_putnam", difficulty: "Medium" },
+          { title: "IMO Shortlist 2008 A1: Đa thức số học", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
         ],
         blogSlug: "2026-02-25-olympiad-alg-roots-irreducibility-eisenstein"
       },
       {
-        id: "alg-sequences-limits-recurrence",
-        title: "Dãy Số, Sai Phân Tuyến Tính & Giới Hạn Dãy Thực",
-        vietnameseTitle: "Phương trình đặc trưng & Định lý Weierstrass",
-        description: "Công thức tổng quát dãy truy hồi tuyến tính bằng phương trình đặc trưng. Khảo sát tính đơn điệu, bị chặn, chứng minh tồn tại giới hạn theo định lý Weierstrass và định lý kẹp.",
+        id: "alg-matrix-exponentiation",
+        title: "Ma Trận, Phép Nhân Ma Trận & Lũy Thừa Ma Trận",
+        vietnameseTitle: "Matrix Multiplication & Matrix Exponentiation for Recurrences",
+        description: "Phép nhân ma trận kích thước N x N trong O(N^3). Biểu diễn dãy số truy hồi tuyến tính (Fibonacci, số đường đi) dưới dạng vector trạng thái và lũy thừa ma trận nhị phân trong O(N^3 log K).",
         status: "completed",
-        difficulty: "Chuyên sâu VMO",
-        prerequisites: ["Giới hạn dãy số", "Đạo hàm sơ cấp"],
+        difficulty: "Trung cấp",
+        prerequisites: ["Lũy thừa nhị phân"],
         keyTheorems: [
-          "Định lý Weierstrass: Mọi dãy số đơn điệu và bị chặn đều có giới hạn hữu hạn",
-          "Nghiệm phương trình đặc trưng r^2 - a*r - b = 0 xác định dạng x_n = c1*r1^n + c2*r2^n",
-          "Hàm co Banach: Nếu |f'(x)| ≤ q < 1 thì dãy x_{n+1} = f(x_n) hội tụ về điểm bất động duy nhất"
+          "Phép nhân ma trận có tính kết hợp (A*B)*C = A*(B*C) nhưng KHÔNG có tính giao hoán",
+          "Biểu diễn Fibonacci: [[F_{n+1}, F_n], [F_n, F_{n-1}]] = [[1, 1], [1, 0]]^n",
+          "Độ phức tạp: O(K^3 log N) cho ma trận cỡ K x K và số mũ N"
         ],
-        latexFormula: "x_{n+1} = f(x_n), \\quad |f'(x)| < 1 \\implies \\lim_{n \\to \\infty} x_n = L",
-        applications: ["Dạng bài 1 đề thi VMO hàng năm", "Đánh giá sai số hội tụ", "Dãy số nguyên Fibonacci"],
+        latexFormula: "\\begin{bmatrix} F_{n+1} \\\\ F_n \\end{bmatrix} = \\begin{bmatrix} 1 & 1 \\\\ 1 & 0 \\end{bmatrix}^n \\begin{bmatrix} F_1 \\\\ F_0 \\end{bmatrix}",
+        applications: ["Tìm số Fibonacci thứ 10^18 trong 0.001 giây", "Đếm số đường đi độ dài K trên đồ thị", "Tăng tốc quy hoạch động"],
         practiceProblems: [
-          { title: "VMO 2019 Bài 1: Giới hạn dãy số truy hồi", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
-          { title: "VMO 2020 Bài 1: Dãy số hữu tỉ", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
+          { title: "CSES 1722: Fibonacci Numbers", judge: "CSES", url: "https://cses.fi/problemset/task/1722", difficulty: "Easy" },
+          { title: "CSES 1723: Graph Paths I", judge: "CSES", url: "https://cses.fi/problemset/task/1723", difficulty: "Medium" }
         ],
-        blogSlug: "2026-03-01-olympiad-alg-sequences-recurrence-limits"
+        blogSlug: "2026-04-27-fibonacci-numbers-secrets"
       },
       {
-        id: "alg-cauchy-jensen-fe",
-        title: "Phương Trình Hàm Cơ Bản & Phương Trình Cauchy",
-        vietnameseTitle: "Phương trình Cauchy trên Q và mở rộng lên R",
-        description: "Giải phương trình hàm Cauchy f(x + y) = f(x) + f(y) qua các bước N -> Z -> Q -> R bằng điều kiện liên tục, đơn điệu hoặc bị chặn. Các biến thể Cauchy, Jensen và d'Alembert.",
+        id: "alg-gaussian-elimination",
+        title: "Khử Gauss & Giải Hệ Phương Trình Tuyến Tính",
+        vietnameseTitle: "Gaussian Elimination & Systems of Linear Equations",
+        description: "Phương pháp biến đổi sơ cấp trên dòng đưa ma trận về dạng tam giác trên (bậc thang). Giải hệ N phương trình N ẩn trong O(N^3). Nhận diện hệ vô nghiệm, vô số nghiệm và nghiệm duy nhất.",
         status: "completed",
-        difficulty: "Chuyên sâu VMO",
-        prerequisites: ["Tập hợp số", "Tính liên tục"],
+        difficulty: "Nâng cao",
+        prerequisites: ["Phép nhân ma trận"],
         keyTheorems: [
-          "Phương trình Cauchy: f(x+y) = f(x) + f(y) trên Q có nghiệm duy nhất f(x) = cx",
-          "Nếu f liên tục hoặc đơn điệu hoặc bị chặn một phía trên một khoảng thì f(x) = cx trên toàn bộ R",
-          "Phương trình Jensen: f((x+y)/2) = (f(x)+f(y))/2 ⇔ f(x) = ax + b"
+          "Ba phép biến đổi sơ cấp dòng bảo toàn tập nghiệm: Đổi chỗ 2 dòng, nhân một dòng với hằng số khác 0, cộng một bội dòng này vào dòng khác",
+          "Định lý Rouché-Capelli: Hệ có nghiệm khi và chỉ khi rank(A) = rank(A|b)"
         ],
-        latexFormula: "f(x + y) = f(x) + f(y) \\implies f(x) = c \\cdot x \\quad (x \\in \\mathbb{R})",
-        applications: ["Giải các bài phương trình hàm trong VMO", "Phương trình hàm logarit f(xy) = f(x) + f(y)"],
+        latexFormula: "A \\cdot \\mathbf{x} = \\mathbf{b} \\implies \\begin{bmatrix} A & \\mathbf{b} \\end{bmatrix} \\xrightarrow{\\text{Gauss}} \\begin{bmatrix} I & \\mathbf{x} \\end{bmatrix}",
+        applications: ["Giải mạch điện Kirchhoff", "Cân bằng phương trình hóa học", "Tìm cơ sở XOR trong lập trình thi đấu"],
         practiceProblems: [
-          { title: "VMO 2022 Bài 2: Phương trình hàm trên R", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
-          { title: "USAMO 2019 Problem 4: PT hàm Cauchy", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Hard" }
+          { title: "Codeforces 1155E: Guess the Root", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1155/E", difficulty: "Hard" },
+          { title: "CSES 2418: Grid Path Construction", judge: "CSES", url: "https://cses.fi/problemset/task/2418", difficulty: "Hard" }
         ],
-        blogSlug: "2026-03-05-olympiad-alg-functional-equations-cauchy"
+        blogSlug: "2026-06-20-gaussian-elimination-linear-systems"
       },
       {
-        id: "alg-advanced-fe-imo",
-        title: "Kỹ Thuật Nâng Cao Giải Phương Trình Hàm IMO",
-        vietnameseTitle: "Song ánh, Điểm bất động & Phương trình hàm tự lồng",
-        description: "Khai thác tính đơn ánh, toàn ánh, song ánh; tìm điểm bất động f(c) = c và điểm triệt tiêu f(x0) = 0; phương pháp thế biến đối xứng; phương trình hàm tự lồng f(f(x)) và trên tập số nguyên Z.",
+        id: "alg-matrix-determinants",
+        title: "Định Thức Ma Trận (Matrix Determinants)",
+        vietnameseTitle: "Định thức det(A), Phép khử Gauss & Bổ đề Cauchy-Binet",
+        description: "Định nghĩa định thức ma trận vuông det(A). Tính định thức bằng phép khử Gauss trong O(N^3). Mối liên hệ định thức với diện tích/thể tích hình học và Định lý Kirchhoff đếm số cây khung trên đồ thị (Matrix Tree Theorem).",
+        status: "completed",
+        difficulty: "Nâng cao",
+        prerequisites: ["Khử Gauss"],
+        keyTheorems: [
+          "det(A*B) = det(A) * det(B)",
+          "Ma trận khả nghịch khi và chỉ khi det(A) != 0",
+          "Định lý Kirchhoff (Matrix Tree Theorem): Số cây khung của đồ thị bằng định thức con bất kỳ của ma trận Laplacian"
+        ],
+        latexFormula: "\\det(A) = \\sum_{\\sigma \\in S_n} \\text{sgn}(\\sigma) \\prod_{i=1}^n A_{i, \\sigma(i)}, \\quad \\det(A) = \\prod_{i=1}^n A_{i, i} \\quad (\\text{ma trận tam giác})",
+        applications: ["Tính số cây khung của đồ thị (Matrix Tree Theorem)", "Kiểm tra hệ độc lập tuyến tính", "Tính thể tích khối đa diện N chiều"],
+        practiceProblems: [
+          { title: "Codeforces 852E: Casinos and Cities", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/852/E", difficulty: "Hard" },
+          { title: "SPOJ DETER3: Find The Determinant III", judge: "Codeforces", url: "https://www.spoj.com/problems/DETER3/", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-07-06-matrix-determinant-gauss"
+      },
+      {
+        id: "alg-generating-functions",
+        title: "Hàm Sinh (Generating Functions)",
+        vietnameseTitle: "Chuỗi hình thức biểu diễn các dãy số đếm tổ hợp",
+        description: "Hàm sinh thường (OGF) G(x) = ∑ an x^n và hàm sinh mũ (EGF). Biến các phép toán tổ hợp phức tạp thành các phép nhân, cộng, chia đa thức đại số đơn giản. Giải bài toán chia kẹo có giới hạn.",
         status: "in_progress",
-        difficulty: "Đỉnh cao IMO",
-        prerequisites: ["Phương trình hàm Cauchy", "Lý thuyết ánh xạ"],
+        difficulty: "Đỉnh cao",
+        prerequisites: ["Nhị thức Newton mở rộng", "Dãy số truy hồi"],
         keyTheorems: [
-          "Tính đơn ánh: f(a) = f(b) ⇒ a = b (khử hàm ngoài)",
-          "Toàn ánh: Luôn tồn tại t sao cho f(t) = 0 hoặc f(t) = y",
-          "Kỹ thuật bất động điểm: Khảo sát f(c) = c để tìm dạng toàn thể"
+          "Hàm sinh chuỗi hình học: 1 / (1 - x) = 1 + x + x^2 + x^3 + ...",
+          "Tích hai hàm sinh tương ứng với tích chập của hai dãy số: c_n = ∑ a_k * b_{n-k}"
         ],
-        latexFormula: "f(f(x) + y) = 2x + f(f(y) - x) \\implies f \\text{ là song ánh}",
-        applications: ["Giải bài 1 & bài 5 đề thi IMO", "Phương trình hàm số học trên tập số nguyên Z"],
+        latexFormula: "G(x) = \\sum_{n=0}^\\infty a_n x^n = a_0 + a_1 x + a_2 x^2 + \\dots",
+        applications: ["Đếm số phân hoạch số nguyên P(n)", "Giải phương trình truy hồi sai phân", "Phân tích cấu trúc đồ thị"],
         practiceProblems: [
-          { title: "IMO 2019 Problem 1: PT hàm số học f(2a) + 2f(b) = f(f(a+b))", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
-          { title: "IMO 1977 Problem 6: f(f(n)) < f(n+1)", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
+          { title: "Codeforces 451E: Devu and Flowers", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/451/E", difficulty: "Hard" },
+          { title: "HackerRank: Generating Functions", judge: "Codeforces", url: "https://www.hackerrank.com", difficulty: "Medium" }
         ],
-        blogSlug: "2026-03-10-olympiad-alg-advanced-functional-equations-imo"
+        blogSlug: null
+      },
+      {
+        id: "alg-fft-ntt",
+        title: "Biến Đổi Fourier Nhanh & Biến Đổi Số Học (FFT / NTT)",
+        vietnameseTitle: "Fast Fourier Transform & Number Theoretic Transform O(N log N)",
+        description: "Thuật toán nhân hai đa thức bậc N trong O(N log N) thay vì O(N^2) thông thường. Chuyển đổi giữa biểu diễn hệ số và biểu diễn điểm qua căn nguyên thủy của đơn vị (Root of Unity).",
+        status: "in_progress",
+        difficulty: "Đỉnh cao",
+        prerequisites: ["Số phức", "Căn nguyên thủy", "Đa thức"],
+        keyTheorems: [
+          "Định lý tích chập: Tích chập trong miền thời gian tương đương với phép nhân từng điểm trong miền tần số",
+          "NTT sử dụng căn nguyên thủy g mod (c * 2^k + 1) như MOD 998244353 thay cho số phức để tránh sai số thực"
+        ],
+        latexFormula: "A(x) \\cdot B(x) = \\text{IFFT}\\Big(\\text{FFT}(A) \\odot \\text{FFT}(B)\\Big) \\implies O(N \\log N)",
+        applications: ["Nhân hai số nguyên lớn 10^6 chữ số trong 0.2s", "Đếm số tổng a + b = c", "Tìm khớp xâu ký tự có ký tự đại diện wildcard"],
+        practiceProblems: [
+          { title: "CSES 2111: Apples and Bananas", judge: "CSES", url: "https://cses.fi/problemset/task/2111", difficulty: "Hard" },
+          { title: "Codeforces 1096G: Lucky Tickets", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1096/G", difficulty: "Hard" }
+        ],
+        blogSlug: null
       }
     ]
   },
 
   // ==========================================
-  // STAGE 3: HÌNH HỌC PHẲNG THUẦN TÚY (EUCLIDEAN GEOMETRY)
+  // PILLAR 5: PROBABILITY AND EXPECTED VALUE
   // ==========================================
   {
-    id: 3,
-    name: "Giai đoạn 3: Hình Học Phẳng Thuần Túy",
-    subtitle: "Olympiad Euclidean Geometry",
-    description: "Từ định lý Ceva, Menelaus, phương tích đến hàng điểm điều hòa, định lý Pascal, Desargues và phép nghịch đảo đường tròn đỉnh cao IMO.",
+    id: 5,
+    name: "5. Xác Suất & Kỳ Vọng Toán Học",
+    subtitle: "Probability & Expected Value",
+    description: "Từ không gian mẫu, xác suất có điều kiện, biến cố độc lập đến kỳ vọng toán học, vũ khí Linearity of Expectation, phương sai, bất đẳng thức Chebyshev và Quy hoạch động xác suất.",
+    icon: "fa6-solid:chart-pie",
+    groups: [
+      {
+        id: "prob-step-1",
+        stepNumber: 1,
+        title: "Không gian mẫu, Biến cố & Xác suất cơ bản",
+        level: "Cơ bản",
+        levelBadge: "Level 1 • Cơ bản",
+        description: "Hiểu bản chất không gian mẫu Omega, biến cố A, công thức xác suất cổ điển P(A) = |A| / |Omega|, biến cố độc lập và xác suất có điều kiện P(A|B).",
+        nodeIds: ["prob-sample-spaces-events"]
+      },
+      {
+        id: "prob-step-2",
+        stepNumber: 2,
+        title: "Kỳ vọng toán học & Tính tuyến tính thần kỳ",
+        level: "Trung cấp",
+        levelBadge: "Level 2 • Vũ khí cốt lõi",
+        description: "Định nghĩa kỳ vọng E[X] là giá trị trung bình theo trọng số xác suất, và vũ khí tối thượng Tính tuyến tính của kỳ vọng E[X + Y] = E[X] + E[Y] không cần độc lập.",
+        nodeIds: ["prob-expectation-linearity"]
+      },
+      {
+        id: "prob-step-3",
+        stepNumber: 3,
+        title: "Phương sai & Các bất đẳng thức xác suất",
+        level: "Nâng cao",
+        levelBadge: "Level 3 • Đánh giá phân tán",
+        description: "Đo lường độ phân tán bằng phương sai Var(X) = E[X^2] - (E[X])^2, bất đẳng thức Markov đánh giá biến ngẫu nhiên không âm và bất đẳng thức Chebyshev.",
+        nodeIds: ["prob-variance-chebyshev"]
+      },
+      {
+        id: "prob-step-4",
+        stepNumber: 4,
+        title: "Quy hoạch động xác suất & Kỳ vọng trên đồ thị",
+        level: "Đỉnh cao",
+        levelBadge: "Level 4 • Lập trình thi đấu",
+        description: "Thiết lập hệ phương trình trạng thái quy hoạch động tính xác suất thắng và kỳ vọng số bước đi trên đồ thị có chu trình bằng khử Gauss.",
+        nodeIds: ["prob-dp-markov-chains"]
+      }
+    ],
+    nodes: [
+      {
+        id: "prob-sample-spaces-events",
+        title: "Không Gian Mẫu, Biến Cố & Xác Suất Có Điều Kiện",
+        vietnameseTitle: "Sample Spaces, Events, Conditional Probability & Independence",
+        description: "Không gian mẫu Omega, biến cố tập con A. Xác suất cổ điển P(A) = |A| / |Omega|. Biến cố độc lập P(A ∩ B) = P(A)*P(B). Xác suất có điều kiện P(A|B) = P(A ∩ B) / P(B) và Định lý Bayes.",
+        status: "completed",
+        difficulty: "Cơ bản",
+        prerequisites: ["Tổ hợp cơ bản"],
+        keyTheorems: [
+          "Xác suất cổ điển: P(A) = |A| / |Ω| với các kết cục đồng khả năng",
+          "Biến cố độc lập: P(A ∩ B) = P(A) * P(B)",
+          "Định lý Bayes: P(A|B) = P(B|A) * P(A) / P(B)"
+        ],
+        latexFormula: "P(A) = \\frac{|A|}{|\\Omega|}, \\quad P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}, \\quad P(A \\cap B) = P(A) \\cdot P(B)",
+        applications: ["Tính xác suất thắng trong trò chơi", "Phân tích rủi ro trong thuật toán ngẫu nhiên", "Bộ lọc thư rác Naive Bayes"],
+        practiceProblems: [
+          { title: "CSES 1728: Inversion Probability", judge: "CSES", url: "https://cses.fi/problemset/task/1728", difficulty: "Medium" },
+          { title: "Codeforces 148D: Bag of mice", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/148/D", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-05-15-probability-expected-value-for-programmers"
+      },
+      {
+        id: "prob-expectation-linearity",
+        title: "Kỳ Vọng Toán Học & Tính Tuyến Tính (Linearity of Expectation)",
+        vietnameseTitle: "Expected Value E[X] & Tuyệt kỹ biến chỉ thị Indicator Variables",
+        description: "Kỳ vọng E[X] = ∑ x * P(X = x) là trung bình có trọng số. Tính tuyến tính thần kỳ E[X + Y] = E[X] + E[Y] luôn đúng bất chấp độc lập. Kỹ thuật biến chỉ thị I_i đếm số sự kiện xảy ra.",
+        status: "completed",
+        difficulty: "Trung cấp",
+        prerequisites: ["Xác suất cơ bản"],
+        keyTheorems: [
+          "Công thức kỳ vọng rời rạc: E[X] = ∑ x_i * P(X = x_i)",
+          "Tính tuyến tính của kỳ vọng: E[X1 + ... + Xn] = E[X1] + ... + E[Xn] (KHÔNG CẦN ĐỘC LẬP)",
+          "Kỳ vọng của biến chỉ thị: E[I_A] = P(A)"
+        ],
+        latexFormula: "\\mathbf{E}[X] = \\sum x_i P(X = x_i), \\quad \\mathbf{E}\\left[\\sum_{i=1}^n X_i\\right] = \\sum_{i=1}^n \\mathbf{E}[X_i]",
+        applications: ["Đếm số nghịch thế kỳ vọng trong mảng", "Bài toán phát thư nhầm", "Phân tích thời gian chạy trung bình của Randomized Quicksort"],
+        practiceProblems: [
+          { title: "CSES 1729: Moving Robots", judge: "CSES", url: "https://cses.fi/problemset/task/1729", difficulty: "Medium" },
+          { title: "Codeforces 1042E: Vasya and Magic Matrix", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1042/E", difficulty: "Hard" }
+        ],
+        blogSlug: "2026-05-15-probability-expected-value-for-programmers"
+      },
+      {
+        id: "prob-variance-chebyshev",
+        title: "Phương Sai & Bất Đẳng Thức Chebyshev",
+        vietnameseTitle: "Variance Var(X), Markov & Chebyshev Inequalities",
+        description: "Đo lường mức độ dao động xung quanh kỳ vọng bằng phương sai Var(X) = E[X^2] - (E[X])^2. Bất đẳng thức Markov P(X >= a) <= E[X]/a cho biến không âm và Chebyshev P(|X - E[X]| >= k*sigma) <= 1/k^2.",
+        status: "completed",
+        difficulty: "Nâng cao",
+        prerequisites: ["Kỳ vọng toán học"],
+        keyTheorems: [
+          "Công thức phương sai: Var(X) = E[(X - E[X])^2] = E[X^2] - (E[X])^2",
+          "Bất đẳng thức Markov: Với X >= 0, P(X >= a) <= E[X] / a",
+          "Bất đẳng thức Chebyshev: P(|X - E[X]| >= k*σ) <= 1 / k^2"
+        ],
+        latexFormula: "\\text{Var}(X) = \\mathbf{E}[X^2] - (\\mathbf{E}[X])^2, \\quad P(|X - \\mu| \\ge k\\sigma) \\le \\frac{1}{k^2}",
+        applications: ["Đánh giá sai số thuật toán ngẫu nhiên", "Chứng minh luật số lớn", "Thiết kế thuật toán xấp xỉ"],
+        practiceProblems: [
+          { title: "Codeforces 1140F: Extending Set of Points", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1140/F", difficulty: "Hard" },
+          { title: "Putnam 2017 Problem B1: Kỳ vọng và tích phân", judge: "Putnam", url: "https://artofproblemsolving.com/community/c4380_putnam", difficulty: "Hard" }
+        ],
+        blogSlug: "2026-05-15-probability-expected-value-for-programmers"
+      },
+      {
+        id: "prob-dp-markov-chains",
+        title: "Quy Hoạch Động Xác Suất & Xích Markov (Probability DP)",
+        vietnameseTitle: "Thiết lập hệ phương trình trạng thái kỳ vọng trên đồ thị",
+        description: "Mô hình xích Markov và quy hoạch động tính xác suất đạt đến trạng thái đích. Bài toán kỳ vọng số bước đi ngẫu nhiên trên đồ thị quy về hệ phương trình tuyến tính giải bằng khử Gauss.",
+        status: "in_progress",
+        difficulty: "Đỉnh cao",
+        prerequisites: ["Khử Gauss", "Kỳ vọng toán học"],
+        keyTheorems: [
+          "Công thức chuyển trạng thái kỳ vọng: E[u] = 1 + ∑ P(u -> v) * E[v]",
+          "Hấp thụ xích Markov: Ma trận P quy về giải hệ (I - Q) * E = 1"
+        ],
+        latexFormula: "E[u] = 1 + \\sum_{v \\in \\text{Adj}(u)} P(u \\to v) \\cdot E[v]",
+        applications: ["Tính số lượt tung xúc xắc trung bình để thắng game cờ cá ngựa", "Bước đi ngẫu nhiên trên đồ thị Random Walk"],
+        practiceProblems: [
+          { title: "CSES 1729: Moving Robots", judge: "CSES", url: "https://cses.fi/problemset/task/1729", difficulty: "Hard" },
+          { title: "Codeforces 24D: Broken robot", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/24/D", difficulty: "Hard" }
+        ],
+        blogSlug: null
+      }
+    ]
+  },
+
+  // ==========================================
+  // PILLAR 6: GEOMETRY
+  // ==========================================
+  {
+    id: 6,
+    name: "6. Hình Học Phẳng & Tính Toán",
+    subtitle: "Geometry & Computational Geometry",
+    description: "Bộ công cụ hình học máy tính thực chiến: Vector 2D/3D, Tích vô hướng (Dot), Tích có hướng (Cross), Phép rẽ CCW, Kiểm tra cắt nhau, Bao lồi (Convex Hull), Điểm trong đa giác, Con trỏ quay và Nửa mặt phẳng.",
     icon: "fa6-solid:shapes",
     groups: [
       {
         id: "geo-step-1",
         stepNumber: 1,
-        title: "Đồng quy, thẳng hàng & Điểm đặc biệt",
-        level: "Cơ bản Olympic",
-        levelBadge: "Level 1 • Cơ bản",
-        description: "Nắm vững tỉ số đoạn thẳng với định lý Ceva, Menelaus, đường thẳng Euler và tính chất các tâm đặc biệt trong tam giác.",
-        nodeIds: ["geo-collinearity-special-points"]
+        title: "Vector 2D, Tích vô hướng & Tích có hướng",
+        level: "Cơ bản",
+        levelBadge: "Level 1 • Nền tảng số nguyên",
+        description: "Tọa độ điểm và vector 2D/3D, phép cộng trừ vector, tích vô hướng kiểm tra vuông góc và tích có hướng 2D tính diện tích hình bình hành không lo sai số thực.",
+        nodeIds: ["geo-vectors-dot-cross"]
       },
       {
         id: "geo-step-2",
         stepNumber: 2,
-        title: "Phương tích, Trục đẳng phương & Tâm đẳng phương",
-        level: "Cơ bản Olympic",
-        levelBadge: "Level 2 • Cốt lõi",
-        description: "Lý thuyết phương tích điểm đối với đường tròn, trục đẳng phương và tâm đẳng phương chứng minh đồng quy, thẳng hàng.",
-        nodeIds: ["geo-power-radical-axis"]
+        title: "Hàm CCW & Kiểm tra hai đoạn thẳng cắt nhau",
+        level: "Trung cấp",
+        levelBadge: "Level 2 • Kỹ thuật then chốt",
+        description: "Hàm Counter-Clockwise (CCW) xác định hướng rẽ trái / rẽ phải / thẳng hàng chỉ bằng dấu tích có hướng. Ứng dụng kiểm tra hai đoạn thẳng cắt nhau không dùng số thực.",
+        nodeIds: ["geo-ccw-segment-intersection"]
       },
       {
         id: "geo-step-3",
         stepNumber: 3,
-        title: "Hàng điểm điều hòa & Tỉ số kép",
-        level: "Chuyên sâu VMO",
-        levelBadge: "Level 3 • Chuyên sâu VMO",
-        description: "Công cụ hàng điểm điều hòa, chùm điều hòa, tứ giác toàn phần và tứ giác nội tiếp điều hòa giải bài toán hình học VMO.",
-        nodeIds: ["geo-harmonic-bundles"]
+        title: "Bao lồi (Convex Hull) & Điểm trong đa giác",
+        level: "Nâng cao",
+        levelBadge: "Level 3 • Thuật toán kinh điển",
+        description: "Thuật toán tìm Bao lồi Monotone Chain / Graham Scan trong O(N log N). Kiểm tra điểm nằm trong đa giác lồi trong O(log N) và con trỏ quay (Rotating Calipers) tìm cặp điểm xa nhất.",
+        nodeIds: ["geo-convex-hull-point-in-poly"]
       },
       {
         id: "geo-step-4",
         stepNumber: 4,
-        title: "Hình học xạ ảnh & Phép biến hình nghịch đảo",
-        level: "Đỉnh cao IMO",
-        levelBadge: "Level 4 • Đỉnh cao IMO",
-        description: "Các định lý xạ ảnh Pascal, Desargues, cực - đối cực và phép nghịch đảo đường tròn giải các cấu hình tiếp xúc phức tạp.",
-        nodeIds: ["geo-projective-theorems", "geo-inversion-spiral-similarity"]
+        title: "Đường quét, Hình học đường tròn & Nửa mặt phẳng",
+        level: "Đỉnh cao",
+        levelBadge: "Level 4 • Đỉnh cao hình học",
+        description: "Thuật toán đường quét (Sweep Line), giao điểm và phương tích đường tròn, và thuật toán tìm giao các nửa mặt phẳng (Half-Plane Intersection) trong O(N log N).",
+        nodeIds: ["geo-sweep-line-half-planes"]
       }
     ],
     nodes: [
       {
-        id: "geo-collinearity-special-points",
-        title: "Đồng Quy, Thẳng Hàng & Các Điểm Đặc Biệt Tam Giác",
-        vietnameseTitle: "Định lý Ceva, Menelaus & Đường thẳng Euler",
-        description: "Định lý Ceva và Menelaus (dạng đại số và lượng giác), các điểm đặc biệt: Trọng tâm G, Trực tâm H, Tâm ngoại tiếp O, Tâm nội tiếp I, Tâm bàng tiếp. Đường thẳng Euler và đường tròn Euler 9 điểm.",
+        id: "geo-vectors-dot-cross",
+        title: "Vector 2D/3D, Tích Vô Hướng (Dot) & Tích Có Hướng (Cross)",
+        vietnameseTitle: "Tọa độ vector, Dot Product, Cross Product & Diện tích tam giác",
+        description: "Biểu diễn Point struct. Vector AB = B - A. Tích vô hướng u.v = x1*x2 + y1*y2 xác định góc và tính vuông góc. Tích có hướng u x v = x1*y2 - x2*y1 đo diện tích hình bình hành có dấu.",
         status: "completed",
-        difficulty: "Cơ bản Olympic",
-        prerequisites: ["Hình học phẳng THCS", "Tỉ số đoạn thẳng"],
+        difficulty: "Cơ bản",
+        prerequisites: ["Hình học phẳng cấp 3"],
         keyTheorems: [
-          "Định lý Ceva: AD, BE, CF đồng quy ⇔ (AF/FB) * (BD/DC) * (CE/EA) = 1",
-          "Định lý Menelaus: D, E, F thẳng hàng ⇔ (AF/FB) * (BD/DC) * (CE/EA) = -1",
-          "Đường thẳng Euler: O, G, H thẳng hàng với GH = 2*OG"
+          "Tích vô hướng: u · v = |u| * |v| * cos(θ) = x1*x2 + y1*y2 (u ⊥ v <=> u · v = 0)",
+          "Tích có hướng: u × v = x1*y2 - x2*y1 = |u| * |v| * sin(θ)",
+          "Diện tích tam giác ABC: S = 1/2 * |cross(AB, AC)|"
         ],
-        latexFormula: "\\frac{\\overline{AF}}{\\overline{FB}} \\cdot \\frac{\\overline{BD}}{\\overline{DC}} \\cdot \\frac{\\overline{CE}}{\\overline{EA}} = 1",
-        applications: ["Chứng minh 3 đường thẳng đồng quy", "Chứng minh 3 điểm thẳng hàng", "Tính chất tâm nội tiếp"],
+        latexFormula: "\\vec{u} \\cdot \\vec{v} = x_1 x_2 + y_1 y_2, \\quad \\vec{u} \\times \\vec{v} = x_1 y_2 - x_2 y_1, \\quad S_{ABC} = \\frac{1}{2} |\\vec{AB} \\times \\vec{AC}|",
+        applications: ["Tính góc giữa hai đường thẳng", "Tính diện tích đa giác bằng công thức Shoelace (dây giày)", "Kiểm tra vuông góc"],
         practiceProblems: [
-          { title: "IMO 2014 Problem 4: Điểm liên kết tam giác", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
-          { title: "VMO 2017 Bài 2: Cấu hình đồng quy", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
+          { title: "CSES 2189: Point Location Test", judge: "CSES", url: "https://cses.fi/problemset/task/2189", difficulty: "Easy" },
+          { title: "CSES 2191: Polygon Area", judge: "CSES", url: "https://cses.fi/problemset/task/2191", difficulty: "Easy" }
         ],
-        blogSlug: "2026-03-15-olympiad-geo-ceva-menelaus-euler-line"
+        blogSlug: "2026-06-10-computational-geometry-vectors-ccw"
       },
       {
-        id: "geo-power-radical-axis",
-        title: "Phương Tích, Trục Đẳng Phương & Tâm Đẳng Phương",
-        vietnameseTitle: "Power of a Point, Radical Axis & Radical Center",
-        description: "Phương tích của điểm M đối với đường tròn (O; R): P_M/(O) = MO^2 - R^2 = MA * MB. Tập hợp các điểm có cùng phương tích tạo thành trục đẳng phương vuông góc với đoạn nối tâm. Tâm đẳng phương của 3 đường tròn.",
+        id: "geo-ccw-segment-intersection",
+        title: "Phép Rẽ CCW & Kiểm Tra Đoạn Thẳng Cắt Nhau",
+        vietnameseTitle: "Counter-Clockwise Orientation & Segment Intersection Test",
+        description: "Hàm CCW(A, B, C): xác định C nằm bên trái (>0), bên phải (<0) hay thẳng hàng (=0) với vector AB. Kiểm tra hai đoạn thẳng AB và CD cắt nhau bằng phép nhân dấu CCW hoàn toàn bằng số nguyên.",
         status: "completed",
-        difficulty: "Cơ bản Olympic",
-        prerequisites: ["Tứ giác nội tiếp", "Định lý Pythagore"],
+        difficulty: "Trung cấp",
+        prerequisites: ["Tích có hướng Cross Product"],
         keyTheorems: [
-          "Trục đẳng phương của hai đường tròn không đồng tâm luôn là một đường thẳng vuông góc với O1O2",
-          "Tâm đẳng phương của 3 đường tròn có các trục đẳng phương đồng quy hoặc đôi một song song"
+          "CCW(A, B, C) = cross(B - A, C - A)",
+          "Hai đoạn AB và CD cắt nhau <=> C và D khác phía so với AB VÀ A và B khác phía so với CD",
+          "Điều kiện khác phía: ccw(A, B, C) * ccw(A, B, D) <= 0"
         ],
-        latexFormula: "\\mathcal{P}_{M/(O)} = MO^2 - R^2 = \\overline{MA} \\cdot \\overline{MB}",
-        applications: ["Chứng minh 3 điểm thẳng hàng qua tâm đẳng phương", "Chứng minh 4 điểm cùng thuộc một đường tròn", "Đường tròn đồng trục"],
+        latexFormula: "\\text{ccw}(A, B, C) = (x_B - x_A)(y_C - y_A) - (y_B - y_A)(x_C - x_A)",
+        applications: ["Kiểm tra đa giác tự cắt", "Tìm giao điểm của các tia", "Trò chơi vật lý 2D"],
         practiceProblems: [
-          { title: "IMO 2008 Problem 4: Trục đẳng phương và tứ giác nội tiếp", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
-          { title: "USAMO 2014 Problem 1: Phương tích và tiếp tuyến", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Medium" }
+          { title: "CSES 2190: Line Segment Intersection", judge: "CSES", url: "https://cses.fi/problemset/task/2190", difficulty: "Medium" },
+          { title: "Codeforces 1036B: Diagonal Walking v.2", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1036/B", difficulty: "Medium" }
         ],
-        blogSlug: "2026-03-20-olympiad-geo-power-radical-axis"
+        blogSlug: "2026-06-10-computational-geometry-vectors-ccw"
       },
       {
-        id: "geo-harmonic-bundles",
-        title: "Hàng Điểm Điều Hòa, Chùm Điều Hòa & Tứ Giác Toàn Phần",
-        vietnameseTitle: "Tỉ số kép, Tứ giác toàn phần & Tứ giác điều hòa",
-        description: "Định nghĩa tỉ số kép (A, B; C, D) = -1, các tính chất bảo toàn qua phép chiếu xuyên tâm (chùm điều hòa), hệ thức Newton, hệ thức Descartes, tứ giác toàn phần và tứ giác nội tiếp điều hòa.",
+        id: "geo-convex-hull-point-in-poly",
+        title: "Bao Lồi (Convex Hull) & Điểm Trong Đa Giác",
+        vietnameseTitle: "Thuật toán Monotone Chain O(N log N) & Rotating Calipers",
+        description: "Dựng bao lồi bằng thuật toán Monotone Chain (Andrew). Kiểm tra điểm nằm trong đa giác bằng thuật toán Ray Casting (bắn tia) cho đa giác bất kỳ và chặt nhị phân O(log N) cho đa giác lồi. Kỹ thuật con trỏ quay tìm cặp điểm xa nhất.",
         status: "completed",
-        difficulty: "Chuyên sâu VMO",
-        prerequisites: ["Định lý Menelaus", "Phương tích"],
+        difficulty: "Nâng cao",
+        prerequisites: ["Hàm CCW"],
         keyTheorems: [
-          "Hàng điểm điều hòa: (AB, CD) = (CA/CB) : (DA/DB) = -1",
-          "Hệ thức Newton: IA^2 = IC * ID (với I là trung điểm AB)",
-          "Tứ giác toàn phần: Ba đường chéo tạo thành các hàng điểm điều hòa",
-          "Tứ giác điều hòa nội tiếp: AB * CD = AD * BC"
+          "Bao lồi là đa giác lồi nhỏ nhất bao phủ toàn bộ tập điểm",
+          "Monotone Chain dựng vỏ dưới và vỏ trên bằng cách duy trì rẽ trái ccw > 0",
+          "Kỹ thuật con trỏ quay (Rotating Calipers) tìm khoảng cách xa nhất giữa 2 điểm trong O(N) sau khi có bao lồi"
         ],
-        latexFormula: "(A, B; C, D) = \\frac{\\overline{CA}}{\\overline{CB}} : \\frac{\\overline{DA}}{\\overline{DB}} = -1, \\quad IA^2 = \\overline{IC} \\cdot \\overline{ID}",
-        applications: ["Chứng minh đường thẳng đi qua điểm cố định", "Chứng minh tiếp tuyến", "Bài 4 đề thi VMO hàng năm"],
+        latexFormula: "\\text{while } (k \\ge 2 \\text{ and } \\text{ccw}(h_{k-2}, h_{k-1}, p_i) \\le 0) \\quad k--",
+        applications: ["Tìm cặp điểm xa nhất trên mặt phẳng", "Xác định vùng phủ nhỏ nhất của robot", "Bao lồi động trong tối ưu hóa CHT"],
         practiceProblems: [
-          { title: "VMO 2020 Bài 4: Hàng điểm điều hòa và trực tâm", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Hard" },
-          { title: "IMO 2016 Problem 1: Tứ giác điều hòa", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
+          { title: "CSES 2195: Convex Hull", judge: "CSES", url: "https://cses.fi/problemset/task/2195", difficulty: "Medium" },
+          { title: "CSES 2192: Point in Polygon", judge: "CSES", url: "https://cses.fi/problemset/task/2192", difficulty: "Medium" }
         ],
-        blogSlug: "2026-03-25-olympiad-geo-harmonic-bundles-poles"
+        blogSlug: "2026-07-20-computational-geometry-convex-hull"
       },
       {
-        id: "geo-projective-theorems",
-        title: "Các Định Lý Xạ Ảnh: Pascal, Brianchon, Desargues",
-        vietnameseTitle: "Lục giác nội tiếp conic & Lý thuyết Cực - Đối cực",
-        description: "Định lý Pascal cho lục giác nội tiếp đường tròn (giao điểm 3 cặp cạnh đối thẳng hàng), định lý Brianchon cho lục giác ngoại tiếp, định lý Desargues cho 2 tam giác thấu xạ, định lý La Hire về cực và đối cực.",
+        id: "geo-sweep-line-half-planes",
+        title: "Thuật Toán Đường Quét (Sweep Line) & Giao Nửa Mặt Phẳng",
+        vietnameseTitle: "Sweep Line, Circle Geometry & Half-Plane Intersection O(N log N)",
+        description: "Thuật toán đường quét (Sweep Line) giải bài toán tìm cặp điểm gần nhất O(N log N) và diện tích hợp các hình chữ nhật. Hình học đường tròn. Giao các nửa mặt phẳng dựng vùng đa giác lồi khả thi.",
         status: "in_progress",
-        difficulty: "Nâng cao TST",
-        prerequisites: ["Hàng điểm điều hòa", "Định lý Ceva/Menelaus"],
+        difficulty: "Đỉnh cao",
+        prerequisites: ["Bao lồi", "Cấu trúc dữ liệu Set/Treap"],
         keyTheorems: [
-          "Định lý Pascal: Giao điểm của các cạnh đối của một lục giác nội tiếp đường tròn luôn thẳng hàng",
-          "Định lý Desargues: Hai tam giác thấu xạ đỉnh khi và chỉ khi thấu xạ trục",
-          "Định lý La Hire: Điểm A thuộc đối cực của B ⇔ B thuộc đối cực của A"
+          "Đường quét biến bài toán 2D tĩnh thành bài toán 1D động theo trục x",
+          "Giao các nửa mặt phẳng luôn tạo thành một tập lồi (có thể rỗng hoặc vô hạn)"
         ],
-        latexFormula: "P = AB \\cap DE, \\, Q = BC \\cap EF, \\, R = CD \\cap FA \\implies P, Q, R \\text{ thẳng hàng}",
-        applications: ["Giải các bài toán đồng quy - thẳng hàng phức tạp trong TST và IMO"],
+        latexFormula: "\\mathcal{H}_i: a_i x + b_i y + c_i \\le 0 \\implies \\bigcap_{i=1}^n \\mathcal{H}_i = \\text{Đa giác lồi khả thi}",
+        applications: ["Quy hoạch tuyến tính 2D", "Tìm tầm nhìn của camera trong phòng đa giác (Art Gallery Problem)", "Tính diện tích phủ radar"],
         practiceProblems: [
-          { title: "Vietnam TST 2018 Bài 2: Cấu hình Desargues và cực đối cực", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Hard" },
-          { title: "IMO Shortlist 2011 G4: Định lý Pascal", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
+          { title: "CSES 2194: Minimum Euclidean Distance", judge: "CSES", url: "https://cses.fi/problemset/task/2194", difficulty: "Hard" },
+          { title: "Codeforces 1060F: Shrinking Tree", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1060/F", difficulty: "Hard" }
         ],
-        blogSlug: "2026-04-01-olympiad-geo-projective-pascal-desargues"
-      },
-      {
-        id: "geo-inversion-spiral-similarity",
-        title: "Phép Biến Hình: Phép Vị Tự Quay & Phép Nghịch Đảo",
-        vietnameseTitle: "Spiral Similarity, Circle Inversion & Điểm Miquel",
-        description: "Phép nghịch đảo cực O phương tích k biến đường tròn thành đường tròn hoặc đường thẳng, bảo toàn góc (ánh xạ bảo giác). Phép vị tự quay giải cấu hình điểm Miquel và tam giác đồng dạng định hướng.",
-        status: "in_progress",
-        difficulty: "Đỉnh cao IMO",
-        prerequisites: ["Góc định hướng", "Hình học xạ ảnh"],
-        keyTheorems: [
-          "Phép nghịch đảo: OP * OP' = k. Đường tròn qua tâm biến thành đường thẳng không qua tâm",
-          "Công thức khoảng cách nghịch đảo: P'Q' = |k| * PQ / (OP * OQ)",
-          "Điểm Miquel: Bốn đường tròn ngoại tiếp các tam giác của một tứ giác toàn phần đồng quy tại điểm Miquel"
-        ],
-        latexFormula: "I_{(O, k)}: P \\mapsto P' \\quad \\text{sao cho} \\quad \\vec{OP'} = \\frac{k}{OP^2} \\vec{OP}, \\quad P'Q' = \\frac{|k| \\cdot PQ}{OP \\cdot OQ}",
-        applications: ["Biến các cấu hình tiếp xúc phức tạp thành tiếp tuyến song song", "Tâm vị tự quay biến đoạn thẳng này thành đoạn khác"],
-        practiceProblems: [
-          { title: "IMO 2015 Problem 3: Nghịch đảo và đường tròn", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
-          { title: "RMM 2020 Problem 3: Điểm Miquel và vị tự quay", judge: "RMM", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
-        ],
-        blogSlug: "2026-04-05-olympiad-geo-inversion-spiral-similarity"
+        blogSlug: null
       }
     ]
   },
 
   // ==========================================
-  // STAGE 4: TỔ HỢP & LÝ THUYẾT RỜI RẠC (COMBINATORICS)
+  // PILLAR 7: MATHEMATICAL DP AND OPTIMIZATION
   // ==========================================
   {
-    id: 4,
-    name: "Giai đoạn 4: Tổ Hợp & Lý Thuyết Rời Rạc",
-    subtitle: "Olympiad Combinatorics & Discrete Mathematics",
-    description: "Từ nguyên lý Dirichlet, cực hạn đến bất biến, đếm hai cách, lý thuyết đồ thị Turán - Ramsey và các trò chơi tổ hợp đỉnh cao IMO.",
-    icon: "fa6-solid:dice-d20",
+    id: 7,
+    name: "7. Quy Hoạch Động Toán & Tối Ưu",
+    subtitle: "Mathematical DP & Optimization",
+    description: "Bộ bí kíp tối ưu hóa thuật toán quy hoạch động: Bitmask DP, Digit DP, SOS DP, Tối ưu chia để trị (D&C), Convex Hull Trick (CHT), Cây Li Chao và Tối ưu Knuth.",
+    icon: "fa6-solid:bolt",
     groups: [
       {
-        id: "comb-step-1",
+        id: "dp-step-1",
         stepNumber: 1,
-        title: "Nền tảng: Dirichlet, Cực hạn & Đếm Euler (PIE)",
-        level: "Cơ bản Olympic",
-        levelBadge: "Level 1 • Cơ bản",
-        description: "Làm chủ nguyên lý chuồng bồ câu (Dirichlet) dạng rời rạc và liên tục, nguyên lý cực hạn (Extremal Principle), và bài toán chia kẹo Euler (Stars and Bars) kết hợp bù trừ PIE.",
-        nodeIds: ["comb-pigeonhole-extremal", "comb-counting-pie"]
+        title: "Quy hoạch động Bitmask & Chữ số (Digit DP)",
+        level: "Trung cấp",
+        levelBadge: "Level 1 • Nâng tầm DP",
+        description: "Làm chủ Bitmask DP biểu diễn tập hợp bằng số nguyên 32-bit, và Digit DP đếm số lượng số trong đoạn [L, R] thỏa mãn điều kiện chữ số.",
+        nodeIds: ["dp-bitmask-core", "dp-digit-dp"]
       },
       {
-        id: "comb-step-2",
+        id: "dp-step-2",
         stepNumber: 2,
-        title: "Kỹ thuật biến đổi trạng thái & Đếm hai cách",
-        level: "Chuyên sâu VMO",
-        levelBadge: "Level 2 • Chuyên sâu VMO",
-        description: "Tìm đại lượng bất biến, hàm đơn biến thế vị, kỹ thuật tô màu bàn cờ và phương pháp đếm bằng hai cách (Double Counting) chứng minh đẳng thức.",
-        nodeIds: ["comb-invariants-monovariants-coloring", "comb-double-counting-identities"]
+        title: "SOS DP (Sum Over Subsets) & Tối ưu Chia để trị",
+        level: "Nâng cao",
+        levelBadge: "Level 2 • Tối ưu kinh điển",
+        description: "Tính tổng trên mọi tập con bằng SOS DP trong O(N * 2^N) thay vì O(3^N). Tối ưu hóa chia để trị (D&C Optimization) giảm độ phức tạp từ O(K*N^2) xuống O(K*N log N).",
+        nodeIds: ["dp-sos-dp", "dp-divide-and-conquer-opt"]
       },
       {
-        id: "comb-step-3",
+        id: "dp-step-3",
         stepNumber: 3,
-        title: "Lý thuyết Đồ thị Olympic & Cực trị rời rạc",
-        level: "Nâng cao TST",
-        levelBadge: "Level 3 • Nâng cao TST",
-        description: "Cực trị số cạnh đồ thị không chứa tam giác (Mantel), định lý Turán tổng quát và lý thuyết tô màu đồ thị Ramsey trong các bài toán TST.",
-        nodeIds: ["comb-graph-theory-turan-ramsey"]
+        title: "Convex Hull Trick (CHT) & Cây Li Chao",
+        level: "Đỉnh cao",
+        levelBadge: "Level 3 • Tối ưu đường thẳng",
+        description: "Tối ưu hóa chuyển trạng thái dạng dp[i] = min(m_j * x_i + c_j) bằng bao lồi các đường thẳng CHT trong O(N) và Cây Li Chao hỗ trợ truy vấn động trong O(log C).",
+        nodeIds: ["dp-convex-hull-trick-li-chao"]
       },
       {
-        id: "comb-step-4",
+        id: "dp-step-4",
         stepNumber: 4,
-        title: "Lý thuyết Trò chơi tổ hợp & Hình học tổ hợp IMO",
-        level: "Đỉnh cao IMO",
-        levelBadge: "Level 4 • Đỉnh cao IMO",
-        description: "Trò chơi Nim, hàm Sprague-Grundy, chiến lược đối xứng và bài toán hình học tổ hợp cối xay gió (Windmill - Terence Tao).",
-        nodeIds: ["comb-games-windmill-imo"]
+        title: "Tối ưu Knuth & Lập luận đổi chỗ (Exchange Arguments)",
+        level: "Đỉnh cao",
+        levelBadge: "Level 4 • Đỉnh cao cấu trúc",
+        description: "Tối ưu Knuth cho quy hoạch động đoạn thỏa mãn bất đẳng thức tứ giác (Quadrangle Inequality) opt[i][j-1] <= opt[i][j] <= opt[i+1][j] giảm từ O(N^3) xuống O(N^2).",
+        nodeIds: ["dp-knuth-exchange-arguments"]
       }
     ],
     nodes: [
       {
-        id: "comb-pigeonhole-extremal",
-        title: "Nguyên Lý Dirichlet & Nguyên Lý Cực Hạn",
-        vietnameseTitle: "Pigeonhole Principle & Extremal Principle",
-        description: "Nguyên lý Dirichlet dạng rời rạc và liên tục (phân chia độ dài, diện tích). Nguyên lý Cực hạn (Extremal Principle): xét phần tử có tính chất cực trị (nhỏ nhất, lớn nhất, góc nhọn nhất, bao lồi) để suy ra mâu thuẫn.",
+        id: "dp-bitmask-core",
+        title: "Quy Hoạch Động Trạng Thái Mặt Nạ Bit (Bitmask DP)",
+        vietnameseTitle: "Mặt nạ bit biểu diễn tập con & Bài toán người du lịch (TSP)",
+        description: "Sử dụng số nguyên biểu diễn tập con hữu hạn N <= 20 phần tử. Các thao tác bitwise bật, tắt, kiểm tra bit. Áp dụng giải bài toán người du lịch TSP trong O(N^2 * 2^N) thay vì O(N!).",
         status: "completed",
-        difficulty: "Cơ bản Olympic",
-        prerequisites: ["Tập hợp hữu hạn", "Quan hệ thứ tự"],
+        difficulty: "Trung cấp",
+        prerequisites: ["Thao tác bitwise", "Quy hoạch động cơ bản"],
         keyTheorems: [
-          "Dirichlet tổng quát: Phân phối n vật vào k ngăn thì tồn tại ngăn có ít nhất ⌈n/k⌉ vật",
-          "Mọi tập con hữu hạn khác rỗng của R luôn có phần tử nhỏ nhất và lớn nhất",
-          "Bài toán Sylvester-Gallai: Tập hữu hạn điểm không thẳng hàng luôn có đường thẳng đi qua đúng 2 điểm"
+          "Tập con n phần tử được nén hoàn hảo thành một số nguyên từ 0 đến 2^n - 1",
+          "Kiểm tra phần tử i: (mask >> i) & 1",
+          "Bật phần tử i: mask | (1 << i), tắt phần tử i: mask & ~(1 << i)"
         ],
-        latexFormula: "\\exists c \\in S: \\quad c = \\min(S) \\quad \\text{hoặc} \\quad c = \\max(S), \\quad \\left\\lceil \\frac{n}{k} \\right\\rceil",
-        applications: ["Hình học tổ hợp", "Chứng minh sự tồn tại cấu trúc", "Bài toán chia kẹo và xếp lịch"],
+        latexFormula: "dp[\\text{mask}][u] = \\min_{v \\notin \\text{mask}} \\Big(dp[\\text{mask} \\mid (1 \\ll v)][v] + \\text{dist}(u, v)\\Big)",
+        applications: ["Bài toán người du lịch (TSP)", "Xếp lịch công việc", "Đếm số cách ghép đôi hoàn hảo"],
         practiceProblems: [
-          { title: "USAMO 2015 Problem 1: Nguyên lý cực hạn lưới", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Medium" },
-          { title: "IMO 2011 Problem 2: Windmill (Cối xay gió tổ hợp)", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
+          { title: "CSES 1690: Hamiltonian Flights", judge: "CSES", url: "https://cses.fi/problemset/task/1690", difficulty: "Medium" },
+          { title: "CSES 2181: Counting Tilings", judge: "CSES", url: "https://cses.fi/problemset/task/2181", difficulty: "Hard" }
         ],
-        blogSlug: "2026-04-10-olympiad-comb-pigeonhole-extremal-principle"
+        blogSlug: "2025-10-04-bitmasks-and-bitmask-dp"
       },
       {
-        id: "comb-counting-pie",
-        title: "Quy Tắc Đếm, Bài Toán Chia Kẹo & Nguyên Lý Bù Trừ",
-        vietnameseTitle: "Stars and Bars, Phân hoạch & Principle of Inclusion-Exclusion (PIE)",
-        description: "Các quy tắc cộng, nhân, hoán vị, chỉnh hợp, tổ hợp. Phương pháp chia kẹo Euler (Stars and Bars) tìm số nghiệm tự nhiên của phương trình x1 + ... + xk = n. Nguyên lý bù trừ (PIE) và bài toán số mất thứ tự (Derangements).",
+        id: "dp-digit-dp",
+        title: "Quy Hoạch Động Chữ Số (Digit DP)",
+        vietnameseTitle: "Đếm số nguyên trong đoạn [L, R] thỏa mãn tính chất chữ số",
+        description: "Kỹ thuật đếm số lượng số trong đoạn [L, R] có tính chất đặc biệt (ví dụ: không chứa số 13, tổng chữ số là số nguyên tố). Trạng thái (vị trí chữ số, cờ tight, các điều kiện tích lũy).",
         status: "completed",
-        difficulty: "Cơ bản Olympic",
-        prerequisites: ["Tổ hợp chập k của n", "Tập hợp hữu hạn"],
+        difficulty: "Trung cấp",
+        prerequisites: ["Đệ quy có nhớ"],
         keyTheorems: [
-          "Bài toán chia kẹo Euler: Số nghiệm nguyên không âm của x_1 + ... + x_k = n là C(n + k - 1, k - 1)",
-          "Nguyên lý bù trừ (PIE): |A1 ∪ ... ∪ An| = ∑ |Ai| - ∑ |Ai ∩ Aj| + ... + (-1)^(n-1) |A1 ∩ ... ∩ An|",
-          "Số mất thứ tự (Derangements): D_n = n! * ∑_{i=0}^n (-1)^i / i!"
+          "Quy tắc đoạn: f([L, R]) = f([0, R]) - f([0, L - 1])",
+          "Cờ tight (chặn trên): Nếu các chữ số trước đã nhỏ hơn tiền tố của R thì chữ số tiếp theo được tự do chọn từ 0 đến 9"
         ],
-        latexFormula: "x_1 + \\dots + x_k = n \\implies \\binom{n+k-1}{k-1}, \\quad D_n = n! \\sum_{i=0}^n \\frac{(-1)^i}{i!}",
-        applications: ["Đếm số cấu hình thỏa mãn điều kiện cấm", "Bài toán xếp chỗ và phân chia đồ vật"],
+        latexFormula: "dp(\\text{pos}, \\text{tight}, \\text{mask}) = \\sum_{d=0}^{\\text{limit}} dp(\\text{pos} + 1, \\text{tight} \\land (d = \\text{limit}), \\text{update}(\\text{mask}, d))",
+        applications: ["Đếm số không chứa chữ số 4 và 7", "Đếm số đối xứng (Palindrome) trong đoạn lớn 10^18", "Tìm số tự nhiên thứ K"],
         practiceProblems: [
-          { title: "VMO 2016 Bài 5: Bài toán chia kẹo và phân hoạch", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
-          { title: "AIME 2020 Problem 9: Stars and Bars", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Easy" }
+          { title: "CSES 2220: Counting Numbers", judge: "CSES", url: "https://cses.fi/problemset/task/2220", difficulty: "Medium" },
+          { title: "Codeforces 1073E: Segment Sum", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1073/E", difficulty: "Hard" }
         ],
-        blogSlug: "2026-04-12-olympiad-comb-counting-stars-and-bars-pie"
+        blogSlug: null
       },
       {
-        id: "comb-invariants-monovariants-coloring",
-        title: "Bất Biến, Đơn Biến & Kỹ Thuật Tô Màu",
-        vietnameseTitle: "Invariants, Monovariants & Coloring Techniques",
-        description: "Tìm đại lượng không đổi (bất biến) hoặc luôn tăng/giảm ngặt (đơn biến / hàm thế vị) qua từng trạng thái biến đổi. Kỹ thuật tô màu bàn cờ (checkerboard, mod k) để chứng minh tính không thể lát gạch.",
-        status: "completed",
-        difficulty: "Chuyên sâu VMO",
-        prerequisites: ["Quy nạp toán học", "Đồng dư thức"],
-        keyTheorems: [
-          "Bất biến mod 2 hoặc mod k để chứng minh một trạng thái không thể đạt tới",
-          "Hàm thế vị đơn biến bị chặn suy ra quá trình phải dừng lại sau hữu hạn bước",
-          "Tô màu bàn cờ chứng minh điều kiện cần để phủ kín bởi các khối domino/tromino"
-        ],
-        latexFormula: "\\Phi(S_{t+1}) < \\Phi(S_t) \\implies \\text{Quá trình hữu hạn bước dừng}",
-        applications: ["Trò chơi biến đổi số trên bảng", "Lát gạch bàn cờ", "Thuật toán lặp rời rạc"],
-        practiceProblems: [
-          { title: "VMO 2023 Bài 5: Bất biến phân hoạch", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
-          { title: "IMO Shortlist 2014 C1: Trạng thái tiền xu", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
-        ],
-        blogSlug: "2026-04-15-olympiad-comb-invariants-monovariants-coloring"
-      },
-      {
-        id: "comb-double-counting-identities",
-        title: "Phương Pháp Đếm Hai Cách & Đẳng Thức Tổ Hợp",
-        vietnameseTitle: "Double Counting, Bổ đề bắt tay & Định lý Sperner",
-        description: "Đếm số cặp (x, y) thỏa mãn quan hệ R theo hai chiều: theo hàng và theo cột. Bổ đề bắt tay cho đồ thị, bất đẳng thức Cauchy-Schwarz áp dụng cho ma trận liên thuộc, định lý Sperner về phản xích lớn nhất.",
-        status: "completed",
-        difficulty: "Chuyên sâu VMO",
-        prerequisites: ["Tổ hợp nCr", "Ma trận nhị phân"],
-        keyTheorems: [
-          "Bổ đề bắt tay: Tổng bậc của tất cả các đỉnh bằng hai lần số cạnh: ∑ deg(v) = 2E",
-          "Đếm hai cách: ∑_{x} deg(x) = |R| = ∑_{y} deg(y)",
-          "Định lý Sperner: Kích thước của một phản xích lớn nhất trong tập n phần tử là C(n, ⌊n/2⌋)"
-        ],
-        latexFormula: "\\sum_{x \\in X} \\deg(x) = |\\mathcal{R}| = \\sum_{y \\in Y} \\deg(y), \\quad \\sum_{v \\in V} \\deg(v) = 2E",
-        applications: ["Đánh giá số trận thắng trong thi đấu vòng tròn", "Định lý Erdős-Ko-Rado", "Bất đẳng thức tổ hợp"],
-        practiceProblems: [
-          { title: "IMO 1998 Problem 2: Đếm hai cách thi đấu", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
-          { title: "IMO 1989 Problem 3: Đếm số bộ ba điểm", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
-        ],
-        blogSlug: "2026-04-20-olympiad-comb-double-counting-identities"
-      },
-      {
-        id: "comb-graph-theory-turan-ramsey",
-        title: "Lý Thuyết Đồ Thị Olympic: Định Lý Turán & Ramsey",
-        vietnameseTitle: "Đồ thị phẳng, Định lý Mantel, Turán & Số màu Ramsey",
-        description: "Công thức Euler cho đồ thị phẳng V - E + F = 2. Cực trị số cạnh của đồ thị không chứa tam giác (Định lý Mantel) và không chứa K_{r+1} (Định lý Turán). Lý thuyết Ramsey R(k, l) và bài toán tô màu cạnh.",
+        id: "dp-sos-dp",
+        title: "SOS DP (Sum Over Subsets Dynamic Programming)",
+        vietnameseTitle: "Tính tổng trên mọi tập con F[mask] = ∑_{sub ⊆ mask} A[sub] trong O(N * 2^N)",
+        description: "Tính tổng trên toàn bộ các tập con của từng mặt nạ bit. Thuật toán duyệt ngây thơ mất O(3^N), SOS DP sử dụng ý tưởng hàm tiền tố trên từng bit giảm xuống đúng O(N * 2^N).",
         status: "in_progress",
-        difficulty: "Nâng cao TST",
-        prerequisites: ["Khái niệm đồ thị cơ bản", "Đếm hai cách"],
+        difficulty: "Nâng cao",
+        prerequisites: ["Bitmask DP"],
         keyTheorems: [
-          "Định lý Mantel: Đồ thị không chứa tam giác có tối đa ⌊n^2 / 4⌋ cạnh",
-          "Định lý Turán: Số cạnh tối đa của đồ thị n đỉnh không chứa K_{r+1} là (1 - 1/r) * n^2 / 2",
-          "Công thức Euler đồ thị phẳng: V - E + F = 2",
-          "Định lý Ramsey: R(3, 3) = 6, R(s, t) ≤ R(s-1, t) + R(s, t-1)"
+          "Biến đổi SOS: dp[i][mask] là tổng của các tập con chỉ khác mask ở i bit đầu tiên",
+          "Chuyển trạng thái: dp[i][mask] = dp[i-1][mask] + (nếu bit i bật: dp[i-1][mask ^ (1 << i)])",
+          "Độ phức tạp tối ưu: O(N * 2^N)"
         ],
-        latexFormula: "e(G) \\le \\left(1 - \\frac{1}{r}\\right) \\frac{n^2}{2}, \\quad V - E + F = 2, \\quad R(3, 3) = 6",
-        applications: ["Quan hệ quen biết trong nhóm người", "Cấu trúc mạng lưới cực trị", "Tô màu bản đồ"],
+        latexFormula: "F[\\text{mask}] = \\sum_{s \\subseteq \\text{mask}} A[s] \\implies O(N \\cdot 2^N)",
+        applications: ["Tính toán xác suất trên đồ thị", "Đếm số cặp i, j có a_i & a_j = 0", "Biến đổi Walsh-Hadamard"],
         practiceProblems: [
-          { title: "Vietnam TST 2020 Bài 3: Định lý Ramsey và tô màu cạnh", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Hard" },
-          { title: "IMO 2017 Problem 3: Thỏ và thợ săn trên đồ thị", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
+          { title: "CSES 1654: Bit Problem", judge: "CSES", url: "https://cses.fi/problemset/task/1654", difficulty: "Hard" },
+          { title: "Codeforces 1208F: Bits And Pieces", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1208/F", difficulty: "Hard" }
         ],
-        blogSlug: "2026-04-25-olympiad-comb-graph-theory-turan-ramsey"
+        blogSlug: null
       },
       {
-        id: "comb-games-windmill-imo",
-        title: "Trò Chơi Tổ Hợp & Hình Học Tổ Hợp IMO",
-        vietnameseTitle: "Chiến lược đối xứng, Định lý Sprague-Grundy & Cối xay gió",
-        description: "Chiến lược đối xứng trong trò chơi hai người, trò chơi Nim và phép cộng Nim-sum, định lý Sprague-Grundy. Bài toán cối xay gió tổ hợp (Windmill - Terence Tao) bảo toàn phân chia nửa mặt phẳng.",
-        status: "in_progress",
-        difficulty: "Đỉnh cao IMO",
-        prerequisites: ["Bất biến", "Nguyên lý cực hạn"],
+        id: "dp-divide-and-conquer-opt",
+        title: "Tối Ưu Hóa Chia Để Trị (Divide and Conquer Optimization)",
+        vietnameseTitle: "Tối ưu DP O(K*N^2) xuống O(K*N log N) nhờ tính đơn điệu điểm tối ưu",
+        description: "Áp dụng cho quy hoạch động phân hoạch K đoạn dạng dp[i][j] = min_{k < j} (dp[i-1][k] + Cost(k+1, j)). Nếu điểm tối ưu opt[i][j] đơn điệu không giảm theo j, ta chia để trị giảm độ phức tạp xuống O(K * N log N).",
+        status: "completed",
+        difficulty: "Nâng cao",
+        prerequisites: ["Quy hoạch động phân hoạch"],
         keyTheorems: [
-          "Trò chơi Nim: Vị trí thua khi và chỉ khi Nim-sum xor = 0",
-          "Định lý Sprague-Grundy: Mọi trò chơi không thiên vị đều tương đương một đống Nim kích thước g(v)",
-          "Bài toán cối xay gió: Đường thẳng quay qua các điểm luôn quay đủ 180 độ và qua mọi điểm"
+          "Điều kiện đơn điệu điểm tối ưu: opt[i][j] <= opt[i][j+1]",
+          "Thỏa mãn khi hàm chi phí Cost(i, j) có tính chất bất đẳng thức tứ giác (Monge Property): Cost(a, c) + Cost(b, d) <= Cost(a, d) + Cost(b, c) với a <= b <= c <= d"
         ],
-        latexFormula: "\\text{Nim-sum} = a_1 \\oplus a_2 \\oplus \\dots \\oplus a_k = 0",
-        applications: ["Giải các bài toán trò chơi bốc sỏi", "Hình học tổ hợp điểm và đường thẳng trên mặt phẳng"],
+        latexFormula: "\\text{opt}[i][j] \\le \\text{opt}[i][j+1] \\implies O(K \\cdot N \\log N)",
+        applications: ["Phân cụm dữ liệu 1D", "Chia đoạn văn bản", "Bài toán phân bổ tài nguyên tối ưu"],
         practiceProblems: [
-          { title: "IMO 2011 Problem 2: The Windmill Problem (Terence Tao)", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
-          { title: "USAMO 2015 Problem 1: Trò chơi trên lưới", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Medium" }
+          { title: "CSES 2084: Monster Game I", judge: "CSES", url: "https://cses.fi/problemset/task/2084", difficulty: "Medium" },
+          { title: "Codeforces 321E: Ciel and Gondolas", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/321/E", difficulty: "Hard" }
+        ],
+        blogSlug: "2025-10-12-divide-and-conquer-dp"
+      },
+      {
+        id: "dp-convex-hull-trick-li-chao",
+        title: "Convex Hull Trick (CHT) & Cây Li Chao (Li Chao Tree)",
+        vietnameseTitle: "Tối ưu hóa quy hoạch động hàm bậc nhất min(m*x + c) trong O(log N)",
+        description: "Tối ưu hóa chuyển trạng thái dạng dp[i] = min_{j < i} (m_j * x_i + c_j) bằng cấu trúc bao lồi các đường thẳng. Khi hệ số góc không đơn điệu, Cây Li Chao (Segment Tree trên đường thẳng) hỗ trợ chèn đường thẳng và truy vấn trong O(log C).",
+        status: "in_progress",
+        difficulty: "Đỉnh cao",
+        prerequisites: ["Bao lồi", "Segment Tree"],
+        keyTheorems: [
+          "Dạng hàm: Mỗi trạng thái cũ cung cấp một đường thẳng y = m*x + c, trạng thái mới là truy vấn cực trị tại x",
+          "CHT tĩnh: Duy trì giao điểm các đường thẳng bằng deque trong O(N)",
+          "Cây Li Chao: Segment Tree lưu đường thẳng chiếm ưu thế tại trung điểm"
+        ],
+        latexFormula: "dp[i] = \\min_{j < i} \\big(m_j \\cdot x_i + c_j\\big) \\xrightarrow{\\text{Li Chao / CHT}} O(N \\log C)",
+        applications: ["Monster Game trong CSES", "Bài toán cắt cây đốn gỗ", "Tối ưu hóa chi phí vận chuyển"],
+        practiceProblems: [
+          { title: "CSES 2085: Monster Game II", judge: "CSES", url: "https://cses.fi/problemset/task/2085", difficulty: "Hard" },
+          { title: "Codeforces 1083E: The Fair Nut and Rectangles", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1083/E", difficulty: "Hard" }
+        ],
+        blogSlug: null
+      },
+      {
+        id: "dp-knuth-exchange-arguments",
+        title: "Tối Ưu Knuth & Lập Luận Đổi Chỗ (Exchange Arguments)",
+        vietnameseTitle: "Tối ưu DP đoạn O(N^3) xuống O(N^2) & Kỹ thuật tham lam chứng minh thứ tự",
+        description: "Tối ưu Knuth cho quy hoạch động đoạn dp[i][j] = min_{i <= k < j} (dp[i][k] + dp[k+1][j]) + Cost(i, j) nhờ tính chất kẹp điểm tối ưu opt[i][j-1] <= opt[i][j] <= opt[i+1][j]. Lập luận đổi chỗ (Exchange Arguments) chứng minh thứ tự sắp xếp tham lam.",
+        status: "completed",
+        difficulty: "Đỉnh cao",
+        prerequisites: ["Tối ưu D&C"],
+        keyTheorems: [
+          "Bất đẳng thức kẹp Knuth: opt[i][j-1] <= opt[i][j] <= opt[i+1][j]",
+          "Giảm độ phức tạp: Tổng số phép duyệt qua tất cả các đoạn bằng O(N^2)",
+          "Exchange Arguments: Giả sử tồn tại hoán vị tối ưu mà hai phần tử liền kề nghịch thế, đổi chỗ chúng để suy ra mâu thuẫn"
+        ],
+        latexFormula: "\\text{opt}[i][j-1] \\le \\text{opt}[i][j] \\le \\text{opt}[i+1][j] \\implies O(N^3) \\to O(N^2)",
+        applications: ["Dựng cây nhị phân tìm kiếm tối ưu (OBST)", "Bài toán nối chuỗi / cắt thanh gỗ", "Chứng minh thuật toán tham lam"],
+        practiceProblems: [
+          { title: "CSES 2088: Knuth Division", judge: "CSES", url: "https://cses.fi/problemset/task/2088", difficulty: "Hard" },
+          { title: "Codeforces 888G: Xor-MST", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/888/G", difficulty: "Hard" }
+        ],
+        blogSlug: "2025-10-26-knuth-optimization-range-dp"
+      }
+    ]
+  },
+
+  // ==========================================
+  // PILLAR 8: GRAPH THEORY
+  // ==========================================
+  {
+    id: 8,
+    name: "8. Lý Thuyết Đồ Thị",
+    subtitle: "Graph Theory & Network Flows",
+    description: "Bộ công cụ đồ thị toán học: Bổ đề bắt tay, Đường đi Euler, Tính chất cây, Đồ thị hai phía, Cặp ghép cực đại, Định lý Hall, Thành phần liên thông mạnh (SCC), Đồ thị phẳng và Tô màu đồ thị.",
+    icon: "fa6-solid:diagram-project",
+    groups: [
+      {
+        id: "graph-step-1",
+        stepNumber: 1,
+        title: "Bổ đề bắt tay, Bậc đỉnh & Đường đi Euler",
+        level: "Cơ bản",
+        levelBadge: "Level 1 • Cơ sở đồ thị",
+        description: "Bổ đề bắt tay ∑ deg(v) = 2E, bậc chẵn lẻ, chu trình Euler và đường đi Euler (thuật toán Hierholzer) đi qua mỗi cạnh đúng 1 lần.",
+        nodeIds: ["graph-handshake-eulerian"]
+      },
+      {
+        id: "graph-step-2",
+        stepNumber: 2,
+        title: "Tính chất của cây, Cây khung & Tổ tiên chung (LCA)",
+        level: "Trung cấp",
+        levelBadge: "Level 2 • Cấu trúc cây",
+        description: "Định nghĩa cây là đồ thị liên thông không chu trình (E = V - 1). Cây khung nhỏ nhất MST và kỹ thuật nhảy nhị phân Binary Lifting tìm LCA trong O(log N).",
+        nodeIds: ["graph-tree-properties-lca"]
+      },
+      {
+        id: "graph-step-3",
+        stepNumber: 3,
+        title: "Đồ thị hai phía, Cặp ghép & Định lý Hall",
+        level: "Nâng cao",
+        levelBadge: "Level 3 • Cặp ghép tối ưu",
+        description: "Kiểm tra đồ thị hai phía (không có chu trình độ dài lẻ). Thuật toán tìm cặp ghép cực đại (Kuhn Algorithm) và Định lý hôn nhân Hall chứng minh sự tồn tại cặp ghép hoàn hảo.",
+        nodeIds: ["graph-bipartite-matching-hall"]
+      },
+      {
+        id: "graph-step-4",
+        stepNumber: 4,
+        title: "SCC, Tô-pô DAG, Đồ thị phẳng & Tô màu",
+        level: "Đỉnh cao",
+        levelBadge: "Level 4 • Đỉnh cao cấu trúc",
+        description: "Thành phần liên thông mạnh (Tarjan / Kosaraju), thứ tự Tô-pô trên DAG, công thức Euler đồ thị phẳng V - E + F = 2 và bài toán tô màu đồ thị (Graph Coloring).",
+        nodeIds: ["graph-scc-planar-coloring"]
+      }
+    ],
+    nodes: [
+      {
+        id: "graph-handshake-eulerian",
+        title: "Bổ Đề Bắt Tay & Đường Đi Euler (Eulerian Paths)",
+        vietnameseTitle: "Handshake Lemma, Đồ thị Euler & Thuật toán Hierholzer",
+        description: "Bổ đề bắt tay: Tổng bậc của tất cả các đỉnh bằng 2 lần số cạnh ∑ deg(v) = 2E. Suy ra số đỉnh bậc lẻ luôn là số chẵn. Điều kiện tồn tại chu trình Euler (mọi đỉnh có bậc chẵn) và đường đi Euler.",
+        status: "completed",
+        difficulty: "Cơ bản",
+        prerequisites: ["Khái niệm đồ thị cơ bản"],
+        keyTheorems: [
+          "Bổ đề bắt tay: ∑_{v ∈ V} deg(v) = 2E",
+          "Số đỉnh bậc lẻ trong bất kỳ đồ thị vô hướng nào luôn là một số chẵn",
+          "Chu trình Euler tồn tại <=> đồ thị liên thông và mọi đỉnh đều có bậc chẵn",
+          "Đường đi Euler tồn tại <=> liên thông và có đúng 0 hoặc 2 đỉnh bậc lẻ"
+        ],
+        latexFormula: "\\sum_{v \\in V} \\deg(v) = 2|E|",
+        applications: ["Vẽ hình một nét không nhấc bút", "Tái tạo chuỗi gen De Bruijn", "Tối ưu hóa đường đi của xe quét rác"],
+        practiceProblems: [
+          { title: "CSES 1691: Mail Delivery", judge: "CSES", url: "https://cses.fi/problemset/task/1691", difficulty: "Medium" },
+          { title: "CSES 1693: Teleporters Path", judge: "CSES", url: "https://cses.fi/problemset/task/1693", difficulty: "Medium" }
+        ],
+        blogSlug: "2025-06-08-graph-traversal-bfs-dfs"
+      },
+      {
+        id: "graph-tree-properties-lca",
+        title: "Tính Chất Của Cây & Tổ Tiên Chung Gần Nhất (LCA)",
+        vietnameseTitle: "Tree Properties & Binary Lifting Lowest Common Ancestor",
+        description: "Đồ thị liên thông không chu trình gồm V đỉnh có đúng V - 1 cạnh. Bất kỳ 2 đỉnh nào cũng có đúng một đường đi đơn duy nhất. Kỹ thuật nhảy nhị phân Binary Lifting tìm LCA(u, v) và tính khoảng cách trên cây trong O(log V).",
+        status: "completed",
+        difficulty: "Trung cấp",
+        prerequisites: ["BFS / DFS trên cây"],
+        keyTheorems: [
+          "Một đồ thị liên thông V đỉnh là cây <=> có đúng V - 1 cạnh",
+          "Thêm một cạnh bất kỳ vào cây tạo ra đúng một chu trình đơn duy nhất",
+          "Khoảng cách trên cây: dist(u, v) = depth[u] + depth[v] - 2 * depth[LCA(u, v)]"
+        ],
+        latexFormula: "|E| = |V| - 1, \\quad \\text{dist}(u, v) = \\text{depth}[u] + \\text{depth}[v] - 2 \\cdot \\text{depth}[\\text{LCA}(u, v)]",
+        applications: ["Truy vấn đường đi trên cây", "Cây khung nhỏ nhất Kruskal/Prim", "Hệ thống mạng cáp viễn thông"],
+        practiceProblems: [
+          { title: "CSES 1687: Company Queries I", judge: "CSES", url: "https://cses.fi/problemset/task/1687", difficulty: "Easy" },
+          { title: "CSES 1688: Company Queries II", judge: "CSES", url: "https://cses.fi/problemset/task/1688", difficulty: "Medium" }
+        ],
+        blogSlug: "2025-07-28-lowest-common-ancestor-binary-lifting"
+      },
+      {
+        id: "graph-bipartite-matching-hall",
+        title: "Đồ Thị Hai Phía, Cặp Ghép Cực Đại & Định Lý Hôn Nhân Hall",
+        vietnameseTitle: "Bipartite Graphs, Maximum Matching & Hall's Marriage Theorem",
+        description: "Đồ thị hai phía là đồ thị tô được bằng 2 màu (không có chu trình độ dài lẻ). Cặp ghép cực đại tìm bằng thuật toán Kuhn (Augmenting Paths) trong O(V * E). Định lý Hall: Điều kiện cần và đủ để tồn tại cặp ghép phủ toàn bộ tập X là |N(S)| >= |S| với mọi S con của X.",
+        status: "in_progress",
+        difficulty: "Nâng cao",
+        prerequisites: ["BFS / DFS"],
+        keyTheorems: [
+          "Đồ thị là hai phía khi và chỉ khi không chứa bất kỳ chu trình độ dài lẻ nào",
+          "Định lý König: Trong đồ thị hai phía, kích thước cặp ghép cực đại bằng kích thước phủ đỉnh cực tiểu",
+          "Định lý hôn nhân Hall: Tồn tại cặp ghép hoàn hảo phủ X <=> với mọi S ⊆ X ta có |N(S)| >= |S|"
+        ],
+        latexFormula: "|N(S)| \\ge |S| \\quad (\\forall S \\subseteq X) \\iff \\text{Tồn tại cặp ghép bão hòa } X",
+        applications: ["Phân công công việc tối ưu (Job Assignment)", "Ghép đôi học sinh vào trường", "Định lý Dilworth về chuỗi và phản xích"],
+        practiceProblems: [
+          { title: "CSES 1696: School Dance", judge: "CSES", url: "https://cses.fi/problemset/task/1696", difficulty: "Medium" },
+          { title: "Codeforces 1009F: Dominant Indices", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1009/F", difficulty: "Hard" }
+        ],
+        blogSlug: null
+      },
+      {
+        id: "graph-scc-planar-coloring",
+        title: "SCC, Thứ Tự Tô-pô, Đồ Thị Phẳng & Tô Màu Đồ Thị",
+        vietnameseTitle: "Strongly Connected Components, Planar Graphs & Four Color Theorem",
+        description: "Thành phần liên thông mạnh (SCC) nén đồ thị có hướng thành DAG (thuật toán Tarjan / Kosaraju). Sắp xếp Tô-pô. Công thức Euler đồ thị phẳng V - E + F = 2. Định lý 4 màu và sắc số đồ thị.",
+        status: "completed",
+        difficulty: "Đỉnh cao",
+        prerequisites: ["DFS", "Đồ thị có hướng"],
+        keyTheorems: [
+          "Định lý Kosaraju / Tarjan: Tìm toàn bộ SCC trong O(V + E)",
+          "Công thức Euler đồ thị phẳng liên thông: V - E + F = 2",
+          "Đồ thị phẳng đơn không chứa K5 và K3,3 (Định lý Kuratowski), có số cạnh E <= 3V - 6",
+          "Định lý 4 màu: Mọi đồ thị phẳng đều có thể tô bằng tối đa 4 màu sao cho 2 đỉnh kề nhau khác màu"
+        ],
+        latexFormula: "V - E + F = 2, \\quad E \\le 3V - 6, \\quad \\chi(G) \\le 4 \\quad (\\text{đồ thị phẳng})",
+        applications: ["Giải bài toán 2-SAT", "Vẽ mạch in không chéo dây", "Quy hoạch phân bổ tần số sóng di động"],
+        practiceProblems: [
+          { title: "CSES 1686: Coin Collector", judge: "CSES", url: "https://cses.fi/problemset/task/1686", difficulty: "Hard" },
+          { title: "CSES 1684: Giant Pizza (2-SAT)", judge: "CSES", url: "https://cses.fi/problemset/task/1684", difficulty: "Hard" }
+        ],
+        blogSlug: "2025-07-04-topological-sort-dag"
+      }
+    ]
+  },
+
+  // ==========================================
+  // PILLAR 9: ADVANCED MATHEMATICS
+  // ==========================================
+  {
+    id: 9,
+    name: "9. Toán Cao Cấp & Cấu Trúc Rời Rạc",
+    subtitle: "Advanced Mathematics & Abstract Structures",
+    description: "Vươn tới đỉnh cao tư duy toán học: Đại số trừu tượng (Nhóm, Vành, Trường), Cơ sở XOR tuyến tính, Tổ hợp Modulo nâng cao (Định lý Lucas), Lý thuyết Matroid, Trò chơi Sprague-Grundy, Lý thuyết Ramsey và Phân tích tiệm cận.",
+    icon: "fa6-solid:brain",
+    groups: [
+      {
+        id: "adv-step-1",
+        stepNumber: 1,
+        title: "Đại số trừu tượng & Cơ sở tuyến tính XOR",
+        level: "Nâng cao",
+        levelBadge: "Level 1 • Cấu trúc đại số",
+        description: "Khái niệm Nhóm (Group), Vành (Ring), Trường (Field). Không gian vector trên trường Z2 và thuật toán dựng cơ sở XOR Basis tìm tập con có XOR lớn nhất trong O(N log C).",
+        nodeIds: ["adv-abstract-algebra-xor"]
+      },
+      {
+        id: "adv-step-2",
+        stepNumber: 2,
+        title: "Tổ hợp Modulo nâng cao & Định lý Lucas",
+        level: "Nâng cao",
+        levelBadge: "Level 2 • Tổ hợp số học",
+        description: "Tính C(n, k) mod p khi n, k lên tới 10^18 bằng Định lý Lucas biểu diễn theo hệ cơ số p. Mở rộng định lý Kummer về số mũ nguyên tố của hệ số nhị thức.",
+        nodeIds: ["adv-lucas-modular-combinatorics"]
+      },
+      {
+        id: "adv-step-3",
+        stepNumber: 3,
+        title: "Lý thuyết Matroid & Thuật toán Tham lam",
+        level: "Đỉnh cao",
+        levelBadge: "Level 3 • Bản chất của Tham lam",
+        description: "Lý thuyết Matroid giải thích vì sao thuật toán Tham lam (Greedy) như Kruskal lại đưa ra nghiệm tối ưu toàn cục. Thuật toán giao Matroid (Matroid Intersection).",
+        nodeIds: ["adv-matroids-greedy"]
+      },
+      {
+        id: "adv-step-4",
+        stepNumber: 4,
+        title: "Lý thuyết Trò chơi Nim & Định lý Sprague-Grundy",
+        level: "Đỉnh cao",
+        levelBadge: "Level 4 • Đỉnh cao Game Theory",
+        description: "Trò chơi Nim và phép cộng Nim-sum (XOR). Định lý Sprague-Grundy biến mọi trò chơi không thiên vị (Impartial Games) thành trò chơi Nim thông qua hàm mex.",
+        nodeIds: ["adv-sprague-grundy-games"]
+      }
+    ],
+    nodes: [
+      {
+        id: "adv-abstract-algebra-xor",
+        title: "Đại Số Trừu Tượng & Không Gian Vector XOR Basis",
+        vietnameseTitle: "Groups, Rings, Fields & Linear Basis trên trường F2",
+        description: "Nhóm (tính kết hợp, phần tử đơn vị, phần tử nghịch đảo). Không gian vector nhị phân Z2^B. Thuật toán dựng cơ sở tuyến tính XOR Basis giải bài toán tìm tập con có tổng XOR lớn nhất hoặc kiểm tra xem một số có tạo được từ tập con hay không.",
+        status: "completed",
+        difficulty: "Nâng cao",
+        prerequisites: ["Phép toán XOR", "Khử Gauss"],
+        keyTheorems: [
+          "Cơ sở XOR gồm tối đa B phần tử (B = 60 cho số 64-bit)",
+          "Mọi giá trị XOR có thể tạo thành từ tập hợp đều biểu diễn duy nhất qua cơ sở",
+          "Số lượng giá trị XOR phân biệt có thể tạo thành là 2^(kích thước cơ sở)"
+        ],
+        latexFormula: "\\text{span}(\\mathcal{B}) = \\left\\{ \\bigoplus_{b \\in S} b \\;\\middle|\\; S \\subseteq \\mathcal{B} \\right\\}, \\quad |\\mathcal{B}| \\le 60",
+        applications: ["Tìm tập con có XOR lớn nhất trong O(N log MAX)", "Đếm số tập con có XOR = 0", "Tìm cây khung nhỏ nhất XOR (XOR-MST)"],
+        practiceProblems: [
+          { title: "Codeforces 1101G: (Zero XOR Subset)-less", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1101/G", difficulty: "Hard" },
+          { title: "Codeforces 888G: Xor-MST", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/888/G", difficulty: "Hard" }
+        ],
+        blogSlug: "2026-06-20-gaussian-elimination-linear-systems"
+      },
+      {
+        id: "adv-lucas-modular-combinatorics",
+        title: "Định Lý Lucas & Tổ Hợp Modulo Nâng Cao",
+        vietnameseTitle: "Lucas Theorem for C(n, k) mod p with N, K up to 10^18",
+        description: "Khi n, k lên tới 10^18 mà modulo p là số nguyên tố nhỏ (p <= 10^5), mảng giai thừa bị tràn. Định lý Lucas phân tích n và k trong hệ cơ số p để tính tổ hợp trong O(p + log_p n).",
+        status: "completed",
+        difficulty: "Nâng cao",
+        prerequisites: ["Tổ hợp C(n, k)", "Hệ cơ số"],
+        keyTheorems: [
+          "Định lý Lucas: C(n, k) ≡ ∏ C(n_i, k_i) (mod p) với n_i, k_i là các chữ số trong hệ cơ số p",
+          "Quy ước: C(a, b) = 0 nếu a < b (Nếu có chữ số n_i < k_i thì C(n, k) chia hết cho p)",
+          "Định lý Kummer: Số mũ của p trong C(n, k) bằng số lần nhớ khi cộng k và n - k trong hệ cơ số p"
+        ],
+        latexFormula: "\\binom{n}{k} \\equiv \\prod_{i=0}^m \\binom{n_i}{k_i} \\pmod{p}, \\quad n = \\sum n_i p^i, \\; k = \\sum k_i p^i",
+        applications: ["Tính tổ hợp với N, K khổng lồ cỡ 10^18", "Kiểm tra tính chẵn lẻ của C(n, k) bằng bitwise AND (n & k == k)"],
+        practiceProblems: [
+          { title: "Codeforces 568A: Primes or Palindromes", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/568/A", difficulty: "Medium" },
+          { title: "HackerEarth: Lucas Theorem", judge: "Codeforces", url: "https://www.hackerearth.com", difficulty: "Medium" }
+        ],
+        blogSlug: "2026-05-10-binomial-coefficients-combinatorics"
+      },
+      {
+        id: "adv-matroids-greedy",
+        title: "Lý Thuyết Matroid & Thuật Toán Tham Lam (Greedy)",
+        vietnameseTitle: "Matroid Theory & Matroid Intersection",
+        description: "Cấu trúc độc lập trừu tượng Matroid M = (E, I). Ba tiên đề độc lập. Định lý Rado-Edmonds: Thuật toán tham lam luôn tìm ra nghiệm tối ưu khi và chỉ khi tập phương án là một Matroid. Thuật toán giao Matroid.",
+        status: "in_progress",
+        difficulty: "Đỉnh cao",
+        prerequisites: ["Đại số tuyến tính", "Lý thuyết đồ thị"],
+        keyTheorems: [
+          "Tiên đề di truyền: Tập con của tập độc lập là độc lập",
+          "Tiên đề mở rộng: Nếu |A| < |B| thì luôn có phần tử b ∈ B \ A sao cho A ∪ {b} độc lập",
+          "Định lý Rado: Thuật toán Greedy cho trọng số luôn tối ưu trên Matroid"
+        ],
+        latexFormula: "M = (E, \\mathcal{I}), \\quad A \\in \\mathcal{I}, \\; |A| < |B| \\implies \\exists e \\in B \\setminus A: A \\cup \\{e\\} \\in \\mathcal{I}",
+        applications: ["Giải thích thuật toán Kruskal tìm cây khung nhỏ nhất", "Giao hai Matroid giải bài toán đồ thị phức tạp"],
+        practiceProblems: [
+          { title: "Codeforces 1284E: New Year and Castle Construction", judge: "Codeforces", url: "https://codeforces.com/problemset/problem/1284/E", difficulty: "Hard" },
+          { title: "SPOJ COG: Colors on Graph", judge: "Codeforces", url: "https://www.spoj.com/problems/COG/", difficulty: "Hard" }
+        ],
+        blogSlug: null
+      },
+      {
+        id: "adv-sprague-grundy-games",
+        title: "Lý Thuyết Trò Chơi & Định Lý Sprague-Grundy",
+        vietnameseTitle: "Game Theory, Trò chơi Nim & Hàm Grundy (mex)",
+        description: "Trò chơi hai người không thiên vị, không có yếu tố ngẫu nhiên, thông tin hoàn hảo. Trò chơi bốc sỏi Nim và phép cộng Nim-sum (XOR). Định lý Sprague-Grundy: Mọi trò chơi đều tương đương một đống Nim kích thước g(u) = mex({g(v)}).",
+        status: "completed",
+        difficulty: "Đỉnh cao",
+        prerequisites: ["Phép toán XOR", "Đồ thị có hướng"],
+        keyTheorems: [
+          "Trò chơi Nim: Vị trí thua (P-position) khi và chỉ khi XOR sum = s1 ⊕ s2 ⊕ ... ⊕ sk = 0",
+          "Hàm mex: Giá trị nguyên không âm nhỏ nhất KHÔNG nằm trong tập hợp",
+          "Định lý Sprague-Grundy: Trò chơi kết hợp nhiều trò chơi độc lập có giá trị Grundy bằng XOR sum các giá trị Grundy thành phần"
+        ],
+        latexFormula: "g(u) = \\text{mex}\\big(\\{g(v) \\mid u \\to v\\}\\), \\quad \\text{Nim-sum} = \\bigoplus_{i=1}^k g(u_i) = 0 \\iff \\text{Thua}",
+        applications: ["Giải các bài toán bốc sỏi / di chuyển quân cờ", "Trò chơi trên đồ thị có hướng DAG", "Trò chơi chia quân cờ"],
+        practiceProblems: [
+          { title: "CSES 2207: Nim Game I", judge: "CSES", url: "https://cses.fi/problemset/task/2207", difficulty: "Easy" },
+          { title: "CSES 2208: Nim Game II", judge: "CSES", url: "https://cses.fi/problemset/task/2208", difficulty: "Medium" }
         ],
         blogSlug: "2026-05-01-olympiad-comb-games-windmill-terence-tao"
-      }
-    ]
-  },
-
-  // ==========================================
-  // STAGE 5: BẤT ĐẲNG THỨC & CỰC TRỊ OLYMPIC (INEQUALITIES)
-  // ==========================================
-  {
-    id: 5,
-    name: "Giai đoạn 5: Bất Đẳng Thức & Cực Trị Olympic",
-    subtitle: "Olympiad Inequalities & Optimization",
-    description: "Từ AM-GM, Cauchy-Schwarz dạng Engel đến bất đẳng thức Schur, kỹ thuật đổi biến p, q, r, phân tích bình phương SOS và dồn biến EV/MV đỉnh cao IMO.",
-    icon: "fa6-solid:scale-balanced",
-    groups: [
-      {
-        id: "ineq-step-1",
-        stepNumber: 1,
-        title: "Bất đẳng thức cổ điển & Kỹ thuật chọn điểm rơi",
-        level: "Cơ bản Olympic",
-        levelBadge: "Level 1 • Cơ bản",
-        description: "Làm chủ AM-GM và Cauchy-Schwarz dạng Engel, kỹ thuật chọn điểm rơi đối xứng / không đối xứng và kỹ thuật chuẩn hóa biến.",
-        nodeIds: ["ineq-classical-amgm-cauchy"]
-      },
-      {
-        id: "ineq-step-2",
-        stepNumber: 2,
-        title: "Bất đẳng thức nâng cao & Đơn điệu hoán vị",
-        level: "Chuyên sâu VMO",
-        levelBadge: "Level 2 • Chuyên sâu VMO",
-        description: "Bất đẳng thức Hölder khử căn thức, Minkowski hình học vector và Chebyshev cho dãy số đơn điệu cùng chiều.",
-        nodeIds: ["ineq-holder-minkowski-chebyshev"]
-      },
-      {
-        id: "ineq-step-3",
-        stepNumber: 3,
-        title: "BĐT Schur & Phương pháp đổi biến p, q, r",
-        level: "Chuyên sâu VMO",
-        levelBadge: "Level 3 • Cốt lõi VMO",
-        description: "Kỹ thuật phân tích đa thức đối xứng 3 biến theo p, q, r và ứng dụng bất đẳng thức Schur bậc 3, bậc 4.",
-        nodeIds: ["ineq-schur-pqr-method"]
-      },
-      {
-        id: "ineq-step-4",
-        stepNumber: 4,
-        title: "Phân tích bình phương SOS & Kỹ thuật dồn biến",
-        level: "Đỉnh cao IMO",
-        levelBadge: "Level 4 • Đỉnh cao IMO",
-        description: "Phân tích SOS đưa về tổng bình phương, dồn biến EV (Equal Variables) và bất đẳng thức Karamata với dãy trội.",
-        nodeIds: ["ineq-sos-ev-karamata"]
-      }
-    ],
-    nodes: [
-      {
-        id: "ineq-classical-amgm-cauchy",
-        title: "Bất Đẳng Thức Cổ Điển: AM-GM & Cauchy-Schwarz",
-        vietnameseTitle: "Kỹ thuật chọn điểm rơi & BĐT Cauchy-Schwarz dạng Engel",
-        description: "Bất đẳng thức AM-GM cho n số không âm, kỹ thuật chọn điểm rơi đối xứng và không đối xứng, kỹ thuật thêm bớt hạng tử, bất đẳng thức Cauchy-Schwarz dạng Engel (cộng mẫu Sedrakyan), kỹ thuật chuẩn hóa biến.",
-        status: "completed",
-        difficulty: "Cơ bản Olympic",
-        prerequisites: ["Biến đổi đại số", "Đẳng thức đáng nhớ"],
-        keyTheorems: [
-          "BĐT AM-GM: (a1 + ... + an)/n ≥ (a1*...*an)^(1/n)",
-          "BĐT Cauchy-Schwarz dạng Engel: ∑ (a_i^2 / b_i) ≥ (∑ a_i)^2 / ∑ b_i",
-          "Kỹ thuật chuẩn hóa: Đặt a + b + c = 3 hoặc abc = 1 nhờ tính đồng bậc"
-        ],
-        latexFormula: "\\sum_{i=1}^n \\frac{a_i^2}{b_i} \\ge \\frac{\\left(\\sum_{i=1}^n a_i\\right)^2}{\\sum_{i=1}^n b_i}, \\quad \\frac{a_1 + \\dots + a_n}{n} \\ge \\sqrt[n]{a_1 \\dots a_n}",
-        applications: ["Đánh giá cực trị phân thức 3 biến", "Tìm giá trị lớn nhất / nhỏ nhất"],
-        practiceProblems: [
-          { title: "VMO 2018 Bài 3: Bất đẳng thức 3 biến phân thức", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
-          { title: "APMO 2021 Problem 2: BĐT 3 biến đối xứng", judge: "APMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" }
-        ],
-        blogSlug: "2026-05-05-olympiad-ineq-amgm-cauchy-schwarz-engel"
-      },
-      {
-        id: "ineq-holder-minkowski-chebyshev",
-        title: "Bất Đẳng Thức Nâng Cao: Hölder, Minkowski & Chebyshev",
-        vietnameseTitle: "Bất đẳng thức hoán vị, tích phân & vector",
-        description: "Bất đẳng thức Hölder cho 3 bộ số hoặc n bộ số, bất đẳng thức Minkowski (bất đẳng thức tam giác vector), bất đẳng thức Chebyshev cho các dãy số đơn điệu cùng chiều, bất đẳng thức hoán vị.",
-        status: "completed",
-        difficulty: "Chuyên sâu VMO",
-        prerequisites: ["BĐT Cauchy-Schwarz", "AM-GM"],
-        keyTheorems: [
-          "BĐT Hölder: (∑ a_i^p)^(1/p) * (∑ b_i^q)^(1/q) ≥ ∑ a_i * b_i với 1/p + 1/q = 1",
-          "BĐT Minkowski: √(∑ (a_i + b_i)^2) ≤ √(∑ a_i^2) + √(∑ b_i^2)",
-          "BĐT Chebyshev: Nếu a1 ≤ ... ≤ an và b1 ≤ ... ≤ bn thì n ∑ a_i b_i ≥ (∑ a_i)(∑ b_i)"
-        ],
-        latexFormula: "\\left(\\sum_{i=1}^n a_i^3\\right)^{\\frac{1}{3}} \\left(\\sum_{i=1}^n b_i^3\\right)^{\\frac{1}{3}} \\left(\\sum_{i=1}^n c_i^3\\right)^{\\frac{1}{3}} \\ge \\sum_{i=1}^n a_i b_i c_i",
-        applications: ["Khử căn thức bậc 3", "Đánh giá các tổng hoán vị đối xứng"],
-        practiceProblems: [
-          { title: "IMO 2001 Problem 2: BĐT hoán vị phân thức căn bậc hai", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Medium" },
-          { title: "Putnam 2017 Problem B1: BĐT tích phân Cauchy-Schwarz", judge: "Putnam", url: "https://artofproblemsolving.com/community/c4380_putnam", difficulty: "Medium" }
-        ],
-        blogSlug: "2026-05-10-olympiad-ineq-holder-minkowski-chebyshev"
-      },
-      {
-        id: "ineq-schur-pqr-method",
-        title: "Bất Đẳng Thức Schur & Phương Pháp Đổi Biến p, q, r",
-        vietnameseTitle: "Khảo sát hàm số đối xứng qua p = a+b+c, q = ab+bc+ca, r = abc",
-        description: "Bất đẳng thức Schur bậc 3 và bậc 4, kỹ thuật biểu diễn các đa thức đối xứng qua p, q, r, các bất đẳng thức liên hệ cốt lõi giữa p, q, r và định lý dồn biến biên khi r đạt cực đại / cực tiểu.",
-        status: "completed",
-        difficulty: "Chuyên sâu VMO",
-        prerequisites: ["Đa thức đối xứng 3 biến", "AM-GM"],
-        keyTheorems: [
-          "BĐT Schur bậc 3: x^t(x-y)(x-z) + y^t(y-z)(y-x) + z^t(z-x)(z-y) ≥ 0",
-          "Dạng p, q, r của Schur bậc 3: p^3 - 4pq + 9r ≥ 0",
-          "Hệ thức nền tảng: p^2 ≥ 3q, q^2 ≥ 3pr, p*q ≥ 9r, r ≥ max(0, (4pq - p^3)/9)"
-        ],
-        latexFormula: "x^t(x-y)(x-z) + y^t(y-z)(y-x) + z^t(z-x)(z-y) \\ge 0, \\quad p^3 - 4pq + 9r \\ge 0",
-        applications: ["Giải các bài BĐT đối xứng 3 biến trong kỳ thi VMO và Olympic khu vực"],
-        practiceProblems: [
-          { title: "USA TST 2015 Problem 2: BĐT Schur và p, q, r", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Hard" },
-          { title: "VMO 2018 Bài 3: Bất đẳng thức p, q, r", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" }
-        ],
-        blogSlug: "2026-05-15-olympiad-ineq-schur-pqr-method"
-      },
-      {
-        id: "ineq-sos-ev-karamata",
-        title: "Phương Pháp SOS (Sum of Squares) & Kỹ Thuật Dồn Biến (EV/MV)",
-        vietnameseTitle: "Phân tích bình phương SOS, Equal Variables & BĐT Karamata",
-        description: "Đưa bất đẳng thức đối xứng 3 biến về dạng SOS: S_a(b-c)^2 + S_b(c-a)^2 + S_c(a-b)^2 ≥ 0 và kiểm tra các tiêu chuẩn hệ số. Phương pháp dồn biến EV (Equal Variables) chứng minh cực trị đạt tại b = c. BĐT Karamata với dãy trội.",
-        status: "in_progress",
-        difficulty: "Đỉnh cao IMO",
-        prerequisites: ["BĐT Schur", "Đạo hàm khảo sát hàm số"],
-        keyTheorems: [
-          "Tiêu chuẩn SOS: Nếu S_a + S_b > 0, S_b + S_c > 0, S_c + S_a > 0 và S_a*S_b + S_b*S_c + S_c*S_a ≥ 0 thì biểu thức ≥ 0",
-          "Định lý Equal Variables (EV): Cực trị của f(a, b, c) đối xứng đạt được khi có hai biến bằng nhau (b = c) hoặc tại biên",
-          "Bất đẳng thức Karamata: Dãy x trội hơn y (x ≻ y) thì ∑ f(x_i) ≥ ∑ f(y_i) với f lồi"
-        ],
-        latexFormula: "S_a (b-c)^2 + S_b (c-a)^2 + S_c (a-b)^2 \\ge 0, \\quad x \\succ y \\implies \\sum f(x_i) \\ge \\sum f(y_i)",
-        applications: ["Chứng minh các bất đẳng thức IMO khó có điểm biên hoặc điểm rơi tại biên"],
-        practiceProblems: [
-          { title: "IMO 2020 Problem 2: Bất đẳng thức 4 biến thực", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" },
-          { title: "IMO 2005 Problem 3: Bất đẳng thức phân thức IMO", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
-        ],
-        blogSlug: "2026-05-20-olympiad-ineq-sos-equal-variables-karamata"
       }
     ]
   }
