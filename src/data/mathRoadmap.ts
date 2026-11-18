@@ -18,12 +18,23 @@ export interface MathRoadmapNode {
   blogSlug: string | null;
 }
 
+export interface MathRoadmapGroup {
+  id: string;
+  stepNumber: number;
+  title: string;
+  level: "Cơ bản Olympic" | "Chuyên sâu VMO" | "Nâng cao TST" | "Đỉnh cao IMO";
+  levelBadge: string;
+  description: string;
+  nodeIds: string[];
+}
+
 export interface MathRoadmapStage {
   id: number;
   name: string;
   subtitle: string;
   description: string;
   icon: string;
+  groups: MathRoadmapGroup[];
   nodes: MathRoadmapNode[];
 }
 
@@ -37,6 +48,44 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
     subtitle: "Olympiad Number Theory (NT)",
     description: "Từ nền tảng chia hết, thuật toán Euclid đến đồng dư thức, bổ đề LTE, thặng dư bậc hai và phương pháp Vieta Jumping đỉnh cao IMO.",
     icon: "fa6-solid:infinity",
+    groups: [
+      {
+        id: "nt-step-1",
+        stepNumber: 1,
+        title: "Nền tảng chia hết & Thuật toán Euclid",
+        level: "Cơ bản Olympic",
+        levelBadge: "Level 1 • Cơ bản",
+        description: "Bắt đầu với quan hệ chia hết, thuật toán Euclid tìm ước chung lớn nhất và bổ đề Bézout giải phương trình Diophantine tuyến tính.",
+        nodeIds: ["nt-divisibility-euclid"]
+      },
+      {
+        id: "nt-step-2",
+        stepNumber: 2,
+        title: "Lý thuyết đồng dư & Vành số nguyên modulo",
+        level: "Cơ bản Olympic",
+        levelBadge: "Level 2 • Cốt lõi",
+        description: "Làm chủ số học modulo m, định lý Fermat nhỏ, hàm phi Euler tính số dư lũy thừa lớn, định lý Wilson và hệ phương trình thặng dư Trung Hoa (CRT).",
+        nodeIds: ["nt-congruence-euler-fermat", "nt-wilson-crt"]
+      },
+      {
+        id: "nt-step-3",
+        stepNumber: 3,
+        title: "Cấu trúc nhân tính, Thặng dư bậc hai & LTE",
+        level: "Chuyên sâu VMO",
+        levelBadge: "Level 3 • Chuyên sâu VMO",
+        description: "Nghiên cứu cấp đồng dư, căn nguyên nguyên thủy, thặng dư bậc hai (ký hiệu Legendre) và bổ đề nâng bậc lũy thừa (Lifting The Exponent - LTE).",
+        nodeIds: ["nt-primitive-roots-order", "nt-legendre-quadratic-reciprocity", "nt-lte-lemma"]
+      },
+      {
+        id: "nt-step-4",
+        stepNumber: 4,
+        title: "Phương trình nghiệm nguyên & Cực hạn số học",
+        level: "Đỉnh cao IMO",
+        levelBadge: "Level 4 • Đỉnh cao IMO",
+        description: "Tuyệt kỹ Vieta Jumping (bước nhảy Viète) và nguyên lý cực hạn giải quyết các bài toán số học khó nhất trong kỳ thi TST và IMO.",
+        nodeIds: ["nt-vieta-jumping-imo"]
+      }
+    ],
     nodes: [
       {
         id: "nt-divisibility-euclid",
@@ -215,6 +264,44 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
     subtitle: "Olympiad Algebra & Functional Equations",
     description: "Từ đa thức cơ bản, hệ thức Viète đến tiêu chuẩn Eisenstein, dãy số truy hồi, phương trình hàm Cauchy và các kỹ thuật song ánh đỉnh cao IMO.",
     icon: "fa6-solid:square-root-variable",
+    groups: [
+      {
+        id: "alg-step-1",
+        stepNumber: 1,
+        title: "Đa thức cơ bản & Hệ thức Viète",
+        level: "Cơ bản Olympic",
+        levelBadge: "Level 1 • Cơ bản",
+        description: "Nền móng đa thức một biến, phép chia có dư, định lý Bézout và mối liên hệ giữa các nghiệm qua hệ thức Viète.",
+        nodeIds: ["alg-polynomial-vieta"]
+      },
+      {
+        id: "alg-step-2",
+        stepNumber: 2,
+        title: "Đa thức nguyên, Tính bất khả quy & Dãy số",
+        level: "Chuyên sâu VMO",
+        levelBadge: "Level 2 • Chuyên sâu VMO",
+        description: "Tiêu chuẩn Eisenstein chứng minh đa thức bất khả quy, nội suy Lagrange và khảo sát tính đơn điệu, giới hạn dãy số truy hồi.",
+        nodeIds: ["alg-roots-irreducibility-eisenstein", "alg-sequences-limits-recurrence"]
+      },
+      {
+        id: "alg-step-3",
+        stepNumber: 3,
+        title: "Phương trình hàm cơ bản & Phương trình Cauchy",
+        level: "Chuyên sâu VMO",
+        levelBadge: "Level 3 • Cốt lõi VMO",
+        description: "Phương pháp giải phương trình hàm cổ điển Cauchy từ tập Q lên R thông qua các điều kiện biên liên tục, đơn điệu hoặc bị chặn.",
+        nodeIds: ["alg-cauchy-jensen-fe"]
+      },
+      {
+        id: "alg-step-4",
+        stepNumber: 4,
+        title: "Phương trình hàm nâng cao & Kỹ thuật song ánh",
+        level: "Đỉnh cao IMO",
+        levelBadge: "Level 4 • Đỉnh cao IMO",
+        description: "Khai thác tính đơn ánh, toàn ánh, điểm bất động và xử lý phương trình hàm tự lồng f(f(x)) trên tập số thực và số nguyên.",
+        nodeIds: ["alg-advanced-fe-imo"]
+      }
+    ],
     nodes: [
       {
         id: "alg-polynomial-vieta",
@@ -333,6 +420,44 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
     subtitle: "Olympiad Euclidean Geometry",
     description: "Từ định lý Ceva, Menelaus, phương tích đến hàng điểm điều hòa, định lý Pascal, Desargues và phép nghịch đảo đường tròn đỉnh cao IMO.",
     icon: "fa6-solid:shapes",
+    groups: [
+      {
+        id: "geo-step-1",
+        stepNumber: 1,
+        title: "Đồng quy, thẳng hàng & Điểm đặc biệt",
+        level: "Cơ bản Olympic",
+        levelBadge: "Level 1 • Cơ bản",
+        description: "Nắm vững tỉ số đoạn thẳng với định lý Ceva, Menelaus, đường thẳng Euler và tính chất các tâm đặc biệt trong tam giác.",
+        nodeIds: ["geo-collinearity-special-points"]
+      },
+      {
+        id: "geo-step-2",
+        stepNumber: 2,
+        title: "Phương tích, Trục đẳng phương & Tâm đẳng phương",
+        level: "Cơ bản Olympic",
+        levelBadge: "Level 2 • Cốt lõi",
+        description: "Lý thuyết phương tích điểm đối với đường tròn, trục đẳng phương và tâm đẳng phương chứng minh đồng quy, thẳng hàng.",
+        nodeIds: ["geo-power-radical-axis"]
+      },
+      {
+        id: "geo-step-3",
+        stepNumber: 3,
+        title: "Hàng điểm điều hòa & Tỉ số kép",
+        level: "Chuyên sâu VMO",
+        levelBadge: "Level 3 • Chuyên sâu VMO",
+        description: "Công cụ hàng điểm điều hòa, chùm điều hòa, tứ giác toàn phần và tứ giác nội tiếp điều hòa giải bài toán hình học VMO.",
+        nodeIds: ["geo-harmonic-bundles"]
+      },
+      {
+        id: "geo-step-4",
+        stepNumber: 4,
+        title: "Hình học xạ ảnh & Phép biến hình nghịch đảo",
+        level: "Đỉnh cao IMO",
+        levelBadge: "Level 4 • Đỉnh cao IMO",
+        description: "Các định lý xạ ảnh Pascal, Desargues, cực - đối cực và phép nghịch đảo đường tròn giải các cấu hình tiếp xúc phức tạp.",
+        nodeIds: ["geo-projective-theorems", "geo-inversion-spiral-similarity"]
+      }
+    ],
     nodes: [
       {
         id: "geo-collinearity-special-points",
@@ -451,6 +576,44 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
     subtitle: "Olympiad Combinatorics & Discrete Mathematics",
     description: "Từ nguyên lý Dirichlet, cực hạn đến bất biến, đếm hai cách, lý thuyết đồ thị Turán - Ramsey và các trò chơi tổ hợp đỉnh cao IMO.",
     icon: "fa6-solid:dice-d20",
+    groups: [
+      {
+        id: "comb-step-1",
+        stepNumber: 1,
+        title: "Nền tảng: Dirichlet, Cực hạn & Đếm Euler (PIE)",
+        level: "Cơ bản Olympic",
+        levelBadge: "Level 1 • Cơ bản",
+        description: "Làm chủ nguyên lý chuồng bồ câu (Dirichlet) dạng rời rạc và liên tục, nguyên lý cực hạn (Extremal Principle), và bài toán chia kẹo Euler (Stars and Bars) kết hợp bù trừ PIE.",
+        nodeIds: ["comb-pigeonhole-extremal", "comb-counting-pie"]
+      },
+      {
+        id: "comb-step-2",
+        stepNumber: 2,
+        title: "Kỹ thuật biến đổi trạng thái & Đếm hai cách",
+        level: "Chuyên sâu VMO",
+        levelBadge: "Level 2 • Chuyên sâu VMO",
+        description: "Tìm đại lượng bất biến, hàm đơn biến thế vị, kỹ thuật tô màu bàn cờ và phương pháp đếm bằng hai cách (Double Counting) chứng minh đẳng thức.",
+        nodeIds: ["comb-invariants-monovariants-coloring", "comb-double-counting-identities"]
+      },
+      {
+        id: "comb-step-3",
+        stepNumber: 3,
+        title: "Lý thuyết Đồ thị Olympic & Cực trị rời rạc",
+        level: "Nâng cao TST",
+        levelBadge: "Level 3 • Nâng cao TST",
+        description: "Cực trị số cạnh đồ thị không chứa tam giác (Mantel), định lý Turán tổng quát và lý thuyết tô màu đồ thị Ramsey trong các bài toán TST.",
+        nodeIds: ["comb-graph-theory-turan-ramsey"]
+      },
+      {
+        id: "comb-step-4",
+        stepNumber: 4,
+        title: "Lý thuyết Trò chơi tổ hợp & Hình học tổ hợp IMO",
+        level: "Đỉnh cao IMO",
+        levelBadge: "Level 4 • Đỉnh cao IMO",
+        description: "Trò chơi Nim, hàm Sprague-Grundy, chiến lược đối xứng và bài toán hình học tổ hợp cối xay gió (Windmill - Terence Tao).",
+        nodeIds: ["comb-games-windmill-imo"]
+      }
+    ],
     nodes: [
       {
         id: "comb-pigeonhole-extremal",
@@ -472,6 +635,27 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
           { title: "IMO 2011 Problem 2: Windmill (Cối xay gió tổ hợp)", judge: "IMO", url: "https://artofproblemsolving.com/community/c3158_imo", difficulty: "Hard" }
         ],
         blogSlug: "2026-04-10-olympiad-comb-pigeonhole-extremal-principle"
+      },
+      {
+        id: "comb-counting-pie",
+        title: "Quy Tắc Đếm, Bài Toán Chia Kẹo & Nguyên Lý Bù Trừ",
+        vietnameseTitle: "Stars and Bars, Phân hoạch & Principle of Inclusion-Exclusion (PIE)",
+        description: "Các quy tắc cộng, nhân, hoán vị, chỉnh hợp, tổ hợp. Phương pháp chia kẹo Euler (Stars and Bars) tìm số nghiệm tự nhiên của phương trình x1 + ... + xk = n. Nguyên lý bù trừ (PIE) và bài toán số mất thứ tự (Derangements).",
+        status: "completed",
+        difficulty: "Cơ bản Olympic",
+        prerequisites: ["Tổ hợp chập k của n", "Tập hợp hữu hạn"],
+        keyTheorems: [
+          "Bài toán chia kẹo Euler: Số nghiệm nguyên không âm của x_1 + ... + x_k = n là C(n + k - 1, k - 1)",
+          "Nguyên lý bù trừ (PIE): |A1 ∪ ... ∪ An| = ∑ |Ai| - ∑ |Ai ∩ Aj| + ... + (-1)^(n-1) |A1 ∩ ... ∩ An|",
+          "Số mất thứ tự (Derangements): D_n = n! * ∑_{i=0}^n (-1)^i / i!"
+        ],
+        latexFormula: "x_1 + \\dots + x_k = n \\implies \\binom{n+k-1}{k-1}, \\quad D_n = n! \\sum_{i=0}^n \\frac{(-1)^i}{i!}",
+        applications: ["Đếm số cấu hình thỏa mãn điều kiện cấm", "Bài toán xếp chỗ và phân chia đồ vật"],
+        practiceProblems: [
+          { title: "VMO 2016 Bài 5: Bài toán chia kẹo và phân hoạch", judge: "VMO", url: "https://artofproblemsolving.com/community/c3417_vietnam_national_olympiad", difficulty: "Medium" },
+          { title: "AIME 2020 Problem 9: Stars and Bars", judge: "USAMO", url: "https://artofproblemsolving.com/community/c3413_usamo", difficulty: "Easy" }
+        ],
+        blogSlug: "2026-04-12-olympiad-comb-counting-stars-and-bars-pie"
       },
       {
         id: "comb-invariants-monovariants-coloring",
@@ -570,6 +754,44 @@ export const mathRoadmapStages: MathRoadmapStage[] = [
     subtitle: "Olympiad Inequalities & Optimization",
     description: "Từ AM-GM, Cauchy-Schwarz dạng Engel đến bất đẳng thức Schur, kỹ thuật đổi biến p, q, r, phân tích bình phương SOS và dồn biến EV/MV đỉnh cao IMO.",
     icon: "fa6-solid:scale-balanced",
+    groups: [
+      {
+        id: "ineq-step-1",
+        stepNumber: 1,
+        title: "Bất đẳng thức cổ điển & Kỹ thuật chọn điểm rơi",
+        level: "Cơ bản Olympic",
+        levelBadge: "Level 1 • Cơ bản",
+        description: "Làm chủ AM-GM và Cauchy-Schwarz dạng Engel, kỹ thuật chọn điểm rơi đối xứng / không đối xứng và kỹ thuật chuẩn hóa biến.",
+        nodeIds: ["ineq-classical-amgm-cauchy"]
+      },
+      {
+        id: "ineq-step-2",
+        stepNumber: 2,
+        title: "Bất đẳng thức nâng cao & Đơn điệu hoán vị",
+        level: "Chuyên sâu VMO",
+        levelBadge: "Level 2 • Chuyên sâu VMO",
+        description: "Bất đẳng thức Hölder khử căn thức, Minkowski hình học vector và Chebyshev cho dãy số đơn điệu cùng chiều.",
+        nodeIds: ["ineq-holder-minkowski-chebyshev"]
+      },
+      {
+        id: "ineq-step-3",
+        stepNumber: 3,
+        title: "BĐT Schur & Phương pháp đổi biến p, q, r",
+        level: "Chuyên sâu VMO",
+        levelBadge: "Level 3 • Cốt lõi VMO",
+        description: "Kỹ thuật phân tích đa thức đối xứng 3 biến theo p, q, r và ứng dụng bất đẳng thức Schur bậc 3, bậc 4.",
+        nodeIds: ["ineq-schur-pqr-method"]
+      },
+      {
+        id: "ineq-step-4",
+        stepNumber: 4,
+        title: "Phân tích bình phương SOS & Kỹ thuật dồn biến",
+        level: "Đỉnh cao IMO",
+        levelBadge: "Level 4 • Đỉnh cao IMO",
+        description: "Phân tích SOS đưa về tổng bình phương, dồn biến EV (Equal Variables) và bất đẳng thức Karamata với dãy trội.",
+        nodeIds: ["ineq-sos-ev-karamata"]
+      }
+    ],
     nodes: [
       {
         id: "ineq-classical-amgm-cauchy",
